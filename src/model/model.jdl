@@ -27,7 +27,7 @@ entity TicketAuditHistory{
 	comments String maxlength(5000)
 	assignedTo String
 	tag String
-	actionTime Time
+	actionTime Instant
 	operationType String
 }
 
