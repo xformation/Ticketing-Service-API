@@ -1,0 +1,78 @@
+entity Ticket{
+	subject String
+	description String maxlength(5000) 
+	type String
+	status String
+	priority String
+	createdOn LocalDate
+	createdBy String
+	updatedBy String
+	updatedOn LocalDate
+	expectedDateOfCompletion LocalDate
+	actualDateOfCompletion LocalDate
+	assignedTo String 
+	tag String
+}
+	
+entity TicketAuditHistory{
+	subject String 
+	description String maxlength(5000)
+	type String 
+	status String 
+	priority String 
+	createdOn LocalDate
+	createdBy String 
+	updatedBy String 
+	updatedOn LocalDate
+	comments String maxlength(5000)
+	assignedTo String
+	tag String
+	actionTime Time
+	operationType String
+}
+
+entity Email {
+	from String
+	to String
+	subject String
+	description String maxlength (5000)
+	priority String
+	status String
+	tags String
+	createdBy String
+	createdOn Instant
+}
+
+entity Contact {
+	userName String
+	title String
+	primaryEmail String
+	alternateEmail String
+	workPhone String
+	mobilePhone String
+	twitterHandle String
+	uniqueExternalId String
+	imageLocation String
+	imageFileName String
+}
+
+	
+entity Company {
+	companyName String
+	description String maxlength (5000)
+	notes String maxlength (5000)
+	healthScore String
+	accountTier String
+	renewalDate LocalDate
+	industry String
+	companyLogoFileName String
+	companyLogoFileLocation String
+}
+	
+relationship ManyToOne {
+	TicketAuditHistory{ticket required} to Ticket,
+	Contact{company} to Company
+}
+
+
+dto * with mapstruct service all with serviceImpl

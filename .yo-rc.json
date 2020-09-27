@@ -1,0 +1,37 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "com.syn.tkt"
+    },
+    "jhipsterVersion": "6.9.1",
+    "applicationType": "microservice",
+    "baseName": "servicedesk",
+    "packageName": "com.syn.tkt",
+    "packageFolder": "com/syn/tkt",
+    "serverPort": "7011",
+    "authenticationType": "jwt",
+    "cacheProvider": "no",
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "postgresql",
+    "prodDatabaseType": "postgresql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "maven",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "ZjdlYzY3YzkxY2VhNzkzYWI5NWQzOGZiNWNlZWYxYTA1NDM4MGRkMDA3OWUxNGJiNmEzMmJlZjAwNDhkM2E5YmQxZmUwNDIwNDE2ZTc0OWFiODcyMjkyZTU2NGZmMTQ1YjkyNDFmN2U3NjY3YzdiZTAyZmQ3YzE1ZWZhZmU0ODg=",
+    "embeddableLaunchScript": false,
+    "creationTimestamp": 1601202300988,
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": false,
+    "clientPackageManager": "npm",
+    "blueprints": [],
+    "skipClient": true,
+    "skipUserManagement": true
+  }
+}
