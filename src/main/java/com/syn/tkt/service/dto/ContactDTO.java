@@ -31,8 +31,49 @@ public class ContactDTO implements Serializable {
 
 
     private Long companyId;
+    public ContactDTO() {
+    	
+    }
     
-    public Long getId() {
+    
+    public ContactDTO(String userName, String title, String primaryEmail, String alternateEmail, String workPhone,
+			String mobilePhone, String twitterHandle, String uniqueExternalId, String imageLocation,
+			String imageFileName, Long companyId) {
+		super();
+		this.userName = userName;
+		this.title = title;
+		this.primaryEmail = primaryEmail;
+		this.alternateEmail = alternateEmail;
+		this.workPhone = workPhone;
+		this.mobilePhone = mobilePhone;
+		this.twitterHandle = twitterHandle;
+		this.uniqueExternalId = uniqueExternalId;
+		this.imageLocation = imageLocation;
+		this.imageFileName = imageFileName;
+		this.companyId = companyId;
+	}
+
+
+	public ContactDTO(Long id, String userName, String title, String primaryEmail, String alternateEmail,
+			String workPhone, String mobilePhone, String twitterHandle, String uniqueExternalId, String imageLocation,
+			String imageFileName, Long companyId) {
+		super();
+		this.id = id;
+		this.userName = userName;
+		this.title = title;
+		this.primaryEmail = primaryEmail;
+		this.alternateEmail = alternateEmail;
+		this.workPhone = workPhone;
+		this.mobilePhone = mobilePhone;
+		this.twitterHandle = twitterHandle;
+		this.uniqueExternalId = uniqueExternalId;
+		this.imageLocation = imageLocation;
+		this.imageFileName = imageFileName;
+		this.companyId = companyId;
+	}
+
+
+	public Long getId() {
         return id;
     }
 

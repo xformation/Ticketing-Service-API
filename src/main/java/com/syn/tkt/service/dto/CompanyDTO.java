@@ -30,9 +30,41 @@ public class CompanyDTO implements Serializable {
     private String companyLogoFileName;
 
     private String companyLogoFileLocation;
-
+    public CompanyDTO() {
+    	
+    }
+    public CompanyDTO(Long id, String companyName, @Size(max = 5000) String description, @Size(max = 5000) String notes,
+			String healthScore, String accountTier, LocalDate renewalDate, String industry, String companyLogoFileName,
+			String companyLogoFileLocation) {
+		super();
+		this.id = id;
+		this.companyName = companyName;
+		this.description = description;
+		this.notes = notes;
+		this.healthScore = healthScore;
+		this.accountTier = accountTier;
+		this.renewalDate = renewalDate;
+		this.industry = industry;
+		this.companyLogoFileName = companyLogoFileName;
+		this.companyLogoFileLocation = companyLogoFileLocation;
+	}
     
-    public Long getId() {
+
+	public CompanyDTO(String companyName, @Size(max = 5000) String description, @Size(max = 5000) String notes,
+			String healthScore, String accountTier, LocalDate renewalDate, String industry, String companyLogoFileName,
+			String companyLogoFileLocation) {
+		super();
+		this.companyName = companyName;
+		this.description = description;
+		this.notes = notes;
+		this.healthScore = healthScore;
+		this.accountTier = accountTier;
+		this.renewalDate = renewalDate;
+		this.industry = industry;
+		this.companyLogoFileName = companyLogoFileName;
+		this.companyLogoFileLocation = companyLogoFileLocation;
+	}
+	public Long getId() {
         return id;
     }
 

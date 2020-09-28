@@ -11,9 +11,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,8 +51,23 @@ public class ContactResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/contacts")
-    public ResponseEntity<ContactDTO> createContact(@RequestBody ContactDTO contactDTO) throws URISyntaxException {
-        log.debug("REST request to save Contact : {}", contactDTO);
+    public ResponseEntity<ContactDTO> createContact(@RequestParam MultipartFile photo, @RequestParam String fullName,
+			@RequestParam String title, @RequestParam String primaryEmail, @RequestParam String alternateEmail,
+			@RequestParam String workPhone, @RequestParam String mobilePhone, @RequestParam String twitterHandle,
+			@RequestParam String uniqueExternalId,@RequestParam(required = false) Long companyId) throws URISyntaxException {
+        log.debug("REST request to save Contact : {}", title);
+        File file=new File("files/contact");
+		if(!file.exists()) {
+			file.mkdirs();
+		}
+		Path path=Paths.get("files/company",photo.getOriginalFilename());
+		try {
+			Files.write(path, photo.getBytes());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+        ContactDTO contactDTO=new ContactDTO(null, title, primaryEmail, alternateEmail, workPhone, mobilePhone, twitterHandle, uniqueExternalId, "file/contact", photo.getOriginalFilename(), companyId);
         if (contactDTO.getId() != null) {
             throw new BadRequestAlertException("A new contact cannot already have an ID", ENTITY_NAME, "idexists");
         }

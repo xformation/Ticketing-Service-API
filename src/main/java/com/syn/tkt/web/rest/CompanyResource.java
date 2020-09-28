@@ -6,15 +6,26 @@ import com.syn.tkt.service.dto.CompanyDTO;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import liquibase.pro.packaged.lo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,8 +57,24 @@ public class CompanyResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/companies")
-    public ResponseEntity<CompanyDTO> createCompany(@Valid @RequestBody CompanyDTO companyDTO) throws URISyntaxException {
-        log.debug("REST request to save Company : {}", companyDTO);
+    public ResponseEntity<CompanyDTO> createCompany(@RequestParam(required = false) MultipartFile logo, @RequestParam String companyName,
+			@RequestParam String description, @RequestParam String notes, @RequestParam String company,
+			@RequestParam String healthScore, @RequestParam String accountTier, @RequestParam(required = false) LocalDate renewalDate,
+			@RequestParam String industry) throws URISyntaxException {
+        log.debug("REST request to save Company : {}", companyName);
+        //String 	projectDirectory =System.getProperty("user.dir");
+        File file=new File("files/company");
+		if(!file.exists()) {
+			file.mkdirs();
+		}
+		Path path=Paths.get("files/company",logo.getOriginalFilename());
+		try {
+			Files.write(path, logo.getBytes());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		CompanyDTO companyDTO=new CompanyDTO(companyName, description, notes, healthScore, accountTier, renewalDate, industry, logo.getOriginalFilename(),"files/company");
         if (companyDTO.getId() != null) {
             throw new BadRequestAlertException("A new company cannot already have an ID", ENTITY_NAME, "idexists");
         }
@@ -84,9 +111,9 @@ public class CompanyResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of companies in body.
      */
     @GetMapping("/companies")
-    public List<CompanyDTO> getAllCompanies() {
+    public  ResponseEntity<List<CompanyDTO>> getAllCompanies() {
         log.debug("REST request to get all Companies");
-        return companyService.findAll();
+        return new ResponseEntity<List<CompanyDTO>>(companyService.findAll(),HttpStatus.OK);
     }
 
     /**
