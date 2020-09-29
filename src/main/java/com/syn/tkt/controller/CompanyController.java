@@ -1,22 +1,4 @@
-package com.syn.tkt.web.rest;
-
-import com.syn.tkt.service.CompanyService;
-import com.syn.tkt.web.rest.errors.BadRequestAlertException;
-import com.syn.tkt.service.dto.CompanyDTO;
-
-import io.github.jhipster.web.util.HeaderUtil;
-import io.github.jhipster.web.util.ResponseUtil;
-import liquibase.pro.packaged.lo;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.Valid;
+package com.syn.tkt.controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,23 +11,49 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.syn.tkt.config.Constants;
+import com.syn.tkt.service.CompanyService;
+import com.syn.tkt.service.dto.CompanyDTO;
+import com.syn.tkt.web.rest.errors.BadRequestAlertException;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.ResponseUtil;
+
 /**
  * REST controller for managing {@link com.syn.tkt.domain.Company}.
  */
 @RestController
 @RequestMapping("/api")
-public class CompanyResource {
+public class CompanyController {
 
-    private final Logger log = LoggerFactory.getLogger(CompanyResource.class);
+    private final Logger log = LoggerFactory.getLogger(CompanyController.class);
 
-    private static final String ENTITY_NAME = "servicedeskCompany";
+    private static final String ENTITY_NAME = "company";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
     private final CompanyService companyService;
 
-    public CompanyResource(CompanyService companyService) {
+    public CompanyController(CompanyService companyService) {
         this.companyService = companyService;
     }
 
@@ -62,22 +70,20 @@ public class CompanyResource {
 			@RequestParam String healthScore, @RequestParam String accountTier, @RequestParam(required = false) LocalDate renewalDate,
 			@RequestParam String industry) throws URISyntaxException {
         log.debug("REST request to save Company : {}", companyName);
-        //String 	projectDirectory =System.getProperty("user.dir");
-        File file=new File("files/company");
+        
+        File file=new File(Constants.COMPANY_LOGO_FILE_PATH);
 		if(!file.exists()) {
 			file.mkdirs();
 		}
-		Path path=Paths.get("files/company",logo.getOriginalFilename());
+		Path path=Paths.get(Constants.COMPANY_LOGO_FILE_PATH,logo.getOriginalFilename());
 		try {
 			Files.write(path, logo.getBytes());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-		CompanyDTO companyDTO=new CompanyDTO(companyName, description, notes, healthScore, accountTier, renewalDate, industry, logo.getOriginalFilename(),"files/company");
-        if (companyDTO.getId() != null) {
-            throw new BadRequestAlertException("A new company cannot already have an ID", ENTITY_NAME, "idexists");
-        }
+			log.error("IOException while creating company logo file. ",e);
+		}
+		
+		CompanyDTO companyDTO=new CompanyDTO(companyName, description, notes, healthScore, accountTier, renewalDate, industry, logo.getOriginalFilename(), Constants.COMPANY_LOGO_FILE_PATH);
+        
         CompanyDTO result = companyService.save(companyDTO);
         return ResponseEntity.created(new URI("/api/companies/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
