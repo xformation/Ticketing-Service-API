@@ -61,6 +61,9 @@ public class CompanyResourceIT {
     private static final String DEFAULT_COMPANY_LOGO_FILE_LOCATION = "AAAAAAAAAA";
     private static final String UPDATED_COMPANY_LOGO_FILE_LOCATION = "BBBBBBBBBB";
 
+    private static final String DEFAULT_DOMAIN = "AAAAAAAAAA";
+    private static final String UPDATED_DOMAIN = "BBBBBBBBBB";
+
     @Autowired
     private CompanyRepository companyRepository;
 
@@ -94,7 +97,8 @@ public class CompanyResourceIT {
             .renewalDate(DEFAULT_RENEWAL_DATE)
             .industry(DEFAULT_INDUSTRY)
             .companyLogoFileName(DEFAULT_COMPANY_LOGO_FILE_NAME)
-            .companyLogoFileLocation(DEFAULT_COMPANY_LOGO_FILE_LOCATION);
+            .companyLogoFileLocation(DEFAULT_COMPANY_LOGO_FILE_LOCATION)
+            .domain(DEFAULT_DOMAIN);
         return company;
     }
     /**
@@ -113,7 +117,8 @@ public class CompanyResourceIT {
             .renewalDate(UPDATED_RENEWAL_DATE)
             .industry(UPDATED_INDUSTRY)
             .companyLogoFileName(UPDATED_COMPANY_LOGO_FILE_NAME)
-            .companyLogoFileLocation(UPDATED_COMPANY_LOGO_FILE_LOCATION);
+            .companyLogoFileLocation(UPDATED_COMPANY_LOGO_FILE_LOCATION)
+            .domain(UPDATED_DOMAIN);
         return company;
     }
 
@@ -146,6 +151,7 @@ public class CompanyResourceIT {
         assertThat(testCompany.getIndustry()).isEqualTo(DEFAULT_INDUSTRY);
         assertThat(testCompany.getCompanyLogoFileName()).isEqualTo(DEFAULT_COMPANY_LOGO_FILE_NAME);
         assertThat(testCompany.getCompanyLogoFileLocation()).isEqualTo(DEFAULT_COMPANY_LOGO_FILE_LOCATION);
+        assertThat(testCompany.getDomain()).isEqualTo(DEFAULT_DOMAIN);
     }
 
     @Test
@@ -188,7 +194,8 @@ public class CompanyResourceIT {
             .andExpect(jsonPath("$.[*].renewalDate").value(hasItem(DEFAULT_RENEWAL_DATE.toString())))
             .andExpect(jsonPath("$.[*].industry").value(hasItem(DEFAULT_INDUSTRY)))
             .andExpect(jsonPath("$.[*].companyLogoFileName").value(hasItem(DEFAULT_COMPANY_LOGO_FILE_NAME)))
-            .andExpect(jsonPath("$.[*].companyLogoFileLocation").value(hasItem(DEFAULT_COMPANY_LOGO_FILE_LOCATION)));
+            .andExpect(jsonPath("$.[*].companyLogoFileLocation").value(hasItem(DEFAULT_COMPANY_LOGO_FILE_LOCATION)))
+            .andExpect(jsonPath("$.[*].domain").value(hasItem(DEFAULT_DOMAIN)));
     }
     
     @Test
@@ -210,7 +217,8 @@ public class CompanyResourceIT {
             .andExpect(jsonPath("$.renewalDate").value(DEFAULT_RENEWAL_DATE.toString()))
             .andExpect(jsonPath("$.industry").value(DEFAULT_INDUSTRY))
             .andExpect(jsonPath("$.companyLogoFileName").value(DEFAULT_COMPANY_LOGO_FILE_NAME))
-            .andExpect(jsonPath("$.companyLogoFileLocation").value(DEFAULT_COMPANY_LOGO_FILE_LOCATION));
+            .andExpect(jsonPath("$.companyLogoFileLocation").value(DEFAULT_COMPANY_LOGO_FILE_LOCATION))
+            .andExpect(jsonPath("$.domain").value(DEFAULT_DOMAIN));
     }
     @Test
     @Transactional
@@ -241,7 +249,8 @@ public class CompanyResourceIT {
             .renewalDate(UPDATED_RENEWAL_DATE)
             .industry(UPDATED_INDUSTRY)
             .companyLogoFileName(UPDATED_COMPANY_LOGO_FILE_NAME)
-            .companyLogoFileLocation(UPDATED_COMPANY_LOGO_FILE_LOCATION);
+            .companyLogoFileLocation(UPDATED_COMPANY_LOGO_FILE_LOCATION)
+            .domain(UPDATED_DOMAIN);
         CompanyDTO companyDTO = companyMapper.toDto(updatedCompany);
 
         restCompanyMockMvc.perform(put("/api/companies")
@@ -262,6 +271,7 @@ public class CompanyResourceIT {
         assertThat(testCompany.getIndustry()).isEqualTo(UPDATED_INDUSTRY);
         assertThat(testCompany.getCompanyLogoFileName()).isEqualTo(UPDATED_COMPANY_LOGO_FILE_NAME);
         assertThat(testCompany.getCompanyLogoFileLocation()).isEqualTo(UPDATED_COMPANY_LOGO_FILE_LOCATION);
+        assertThat(testCompany.getDomain()).isEqualTo(UPDATED_DOMAIN);
     }
 
     @Test

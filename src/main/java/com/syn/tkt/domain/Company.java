@@ -50,6 +50,9 @@ public class Company implements Serializable {
     @Column(name = "company_logo_file_location")
     private String companyLogoFileLocation;
 
+    @Column(name = "domain")
+    private String domain;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
@@ -175,6 +178,19 @@ public class Company implements Serializable {
     public void setCompanyLogoFileLocation(String companyLogoFileLocation) {
         this.companyLogoFileLocation = companyLogoFileLocation;
     }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public Company domain(String domain) {
+        this.domain = domain;
+        return this;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -207,6 +223,7 @@ public class Company implements Serializable {
             ", industry='" + getIndustry() + "'" +
             ", companyLogoFileName='" + getCompanyLogoFileName() + "'" +
             ", companyLogoFileLocation='" + getCompanyLogoFileLocation() + "'" +
+            ", domain='" + getDomain() + "'" +
             "}";
     }
 }

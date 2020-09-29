@@ -67,6 +67,7 @@ entity Company {
 	industry String
 	companyLogoFileName String
 	companyLogoFileLocation String
+	domain String
 }
 	
 relationship ManyToOne {

@@ -42,8 +42,13 @@
             <column name="company_logo_file_location" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="domain" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
     </changeSet>
+
+    
 
 </databaseChangeLog>
