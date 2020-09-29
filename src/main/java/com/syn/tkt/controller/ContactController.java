@@ -10,8 +10,10 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
+import org.aspectj.apache.bcel.classfile.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +27,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.syn.tkt.config.Constants;
+import com.syn.tkt.domain.Company;
+import com.syn.tkt.domain.Contact;
+import com.syn.tkt.repository.CompanyRepository;
+import com.syn.tkt.repository.ContactRepository;
 import com.syn.tkt.service.ContactService;
 import com.syn.tkt.service.dto.ContactDTO;
 import com.syn.tkt.web.rest.errors.BadRequestAlertException;
@@ -45,49 +52,67 @@ public class ContactController {
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
-
-    private final ContactService contactService;
-
-    public ContactController(ContactService contactService) {
-        this.contactService = contactService;
-    }
+    
+//    private final ContactService contactService;
+//
+//    public ContactController(ContactService contactService) {
+//        this.contactService = contactService;
+//    }
+    @Autowired
+    private ContactRepository contactRepository;
+    
+    @Autowired
+    private CompanyRepository companyRepository;
 
     /**
-     * {@code POST  /contacts} : Create a new contact.
+     * {@code POST  /contact} : Create a new contact.
      *
      * @param contactDTO the contactDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new contactDTO, or with status {@code 400 (Bad Request)} if the contact has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/contacts")
-    public ResponseEntity<ContactDTO> createContact(@RequestParam MultipartFile photo, @RequestParam String fullName,
+    @PostMapping("/contact")
+    public ResponseEntity<Contact> createContact(@RequestParam MultipartFile photo, @RequestParam String fullName,
 			@RequestParam String title, @RequestParam String primaryEmail, @RequestParam String alternateEmail,
 			@RequestParam String workPhone, @RequestParam String mobilePhone, @RequestParam String twitterHandle,
 			@RequestParam String uniqueExternalId,@RequestParam(required = false) Long companyId) throws URISyntaxException {
         log.debug("REST request to save Contact : {}", title);
-        File file=new File("files/contact");
+        File file=new File(Constants.CONTACT_PHOTO_FILE_PATH);
 		if(!file.exists()) {
 			file.mkdirs();
 		}
-		Path path=Paths.get("files/company",photo.getOriginalFilename());
+		Path path=Paths.get(Constants.CONTACT_PHOTO_FILE_PATH,photo.getOriginalFilename());
 		try {
 			Files.write(path, photo.getBytes());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
-        ContactDTO contactDTO=new ContactDTO(null, title, primaryEmail, alternateEmail, workPhone, mobilePhone, twitterHandle, uniqueExternalId, "file/contact", photo.getOriginalFilename(), companyId);
-        if (contactDTO.getId() != null) {
+		}
+		Company  company =companyRepository.findById(companyId).get();
+		
+		Contact contact=new Contact();
+		contact.setUserName(fullName);
+		contact.setTitle(title);
+		contact.setPrimaryEmail(primaryEmail);
+		contact.setAlternateEmail(alternateEmail);
+		contact.setWorkPhone(workPhone);
+		contact.setMobilePhone(mobilePhone);
+		contact.setTwitterHandle(twitterHandle);
+		contact.setUniqueExternalId(uniqueExternalId);
+		contact.setCompany(company);
+		contact.setImageFileName(photo.getOriginalFilename());
+		contact.setImageLocation(Constants.CONTACT_PHOTO_FILE_PATH);
+        if (contact.getId() != null) {
             throw new BadRequestAlertException("A new contact cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        ContactDTO result = contactService.save(contactDTO);
-        return ResponseEntity.created(new URI("/api/contacts/" + result.getId()))
+        Contact result = contactRepository.save(contact);
+        return ResponseEntity.created(new URI("/api/contact/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
-     * {@code PUT  /contacts} : Updates an existing contact.
+     * {@code PUT  /contact} : Updates an existing contact.
      *
      * @param contactDTO the contactDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated contactDTO,
@@ -95,52 +120,52 @@ public class ContactController {
      * or with status {@code 500 (Internal Server Error)} if the contactDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/contacts")
-    public ResponseEntity<ContactDTO> updateContact(@RequestBody ContactDTO contactDTO) throws URISyntaxException {
-        log.debug("REST request to update Contact : {}", contactDTO);
-        if (contactDTO.getId() == null) {
+    @PutMapping("/contact")
+    public ResponseEntity<Contact> updateContact(@RequestBody Contact contact) throws URISyntaxException {
+        log.debug("REST request to update Contact : {}", contact);
+        if (contact.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        ContactDTO result = contactService.save(contactDTO);
+        Contact result = contactRepository.save(contact);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, contactDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, contact.getId().toString()))
             .body(result);
     }
 
     /**
-     * {@code GET  /contacts} : get all the contacts.
+     * {@code GET  /contact} : get all the contact.
      *
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of contacts in body.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of contact in body.
      */
-    @GetMapping("/contacts")
-    public List<ContactDTO> getAllContacts() {
+    @GetMapping("/contact")
+    public List<Contact> getAllContacts() {
         log.debug("REST request to get all Contacts");
-        return contactService.findAll();
+        return contactRepository.findAll();
     }
 
     /**
-     * {@code GET  /contacts/:id} : get the "id" contact.
+     * {@code GET  /contact/:id} : get the "id" contact.
      *
      * @param id the id of the contactDTO to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the contactDTO, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/contacts/{id}")
-    public ResponseEntity<ContactDTO> getContact(@PathVariable Long id) {
+    @GetMapping("/contact/{id}")
+    public ResponseEntity<Contact> getContact(@PathVariable Long id) {
         log.debug("REST request to get Contact : {}", id);
-        Optional<ContactDTO> contactDTO = contactService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(contactDTO);
+        Optional<Contact> contact = contactRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(contact);
     }
 
     /**
-     * {@code DELETE  /contacts/:id} : delete the "id" contact.
+     * {@code DELETE  /contact/:id} : delete the "id" contact.
      *
      * @param id the id of the contactDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/contacts/{id}")
+    @DeleteMapping("/contact/{id}")
     public ResponseEntity<Void> deleteContact(@PathVariable Long id) {
         log.debug("REST request to delete Contact : {}", id);
-        contactService.delete(id);
+        contactRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

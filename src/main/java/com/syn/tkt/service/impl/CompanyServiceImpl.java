@@ -57,9 +57,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Transactional(readOnly = true)
     public List<CompanyDTO> findAll() {
         log.debug("Request to get all Companies");
-        return companyRepository.findAll().stream()
-            .map(companyMapper::toDto)
-            .collect(Collectors.toCollection(LinkedList::new));
+        return (List)companyRepository.findAll();
     }
 
 
