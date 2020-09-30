@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,10 +37,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.syn.tkt.config.Constants;
 import com.syn.tkt.domain.Company;
+import com.syn.tkt.domain.CompanyContactVo;
 import com.syn.tkt.domain.Contact;
 import com.syn.tkt.repository.CompanyRepository;
 import com.syn.tkt.repository.ContactRepository;
-import com.syn.tkt.service.dto.CompanyDTO;
 import com.syn.tkt.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -61,12 +60,6 @@ public class CompanyController {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-//    private final CompanyService companyService;
-//
-//    public CompanyController(CompanyService companyService) {
-//        this.companyService = companyService;
-//    }
-
     @Autowired
     private CompanyRepository companyRepository;
     
@@ -79,8 +72,8 @@ public class CompanyController {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new companyDTO, or with status {@code 400 (Bad Request)} if the company has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-	@PostMapping("/company")
-    public ResponseEntity<Company> createCompany(@RequestParam(required = false) MultipartFile logo, @RequestParam String companyName,
+	@PostMapping("/addCompany")
+    public ResponseEntity<Company> addCompany(@RequestParam(required = false) MultipartFile logo, @RequestParam String companyName,
 			@RequestParam String description, @RequestParam String notes, @RequestParam String domain,
 			@RequestParam String healthScore, @RequestParam String accountTier, @RequestParam(required = false) LocalDate renewalDate,
 			@RequestParam String industry) throws URISyntaxException {
@@ -128,7 +121,7 @@ public class CompanyController {
      * or with status {@code 500 (Internal Server Error)} if the companyDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/company")
+    @PutMapping("/updateCompany")
     public ResponseEntity<Company> updateCompany(@Valid @RequestBody Company companyDTO) throws URISyntaxException {
         log.debug("REST request to update Company : {}", companyDTO);
         if (companyDTO.getId() == null) {
@@ -140,32 +133,31 @@ public class CompanyController {
             .body(result);
     }
 
-    /**
-     * {@code GET  /company} : get all the company.
-     *
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of company in body.
-     */
-    @GetMapping("/company")
-    public List<Company> getAllcompany() {
-        log.debug("REST request to get all company");
+    
+    @GetMapping("/listAllcompanies")
+    public List<Company> listAllcompanies() {
+        log.debug("REST request to get all companies");
         return companyRepository.findAll();
     }
 
     @GetMapping("/companyConatctList")
-    public Map<String, Integer> getCompanyListWithContactCount() {
-        log.debug("REST request to get all company");
-        List<Company> list =companyRepository.findAll();
-        Map<String, Integer> map=new HashMap<String, Integer>();
-        for(Company company : list) {
+    public List<CompanyContactVo> getCompanyListWithContactCount() {
+        log.debug("Request to get all companies and total contacts belongs to it");
+        List<CompanyContactVo> jsonList = new ArrayList<>();
+        List<Company> companyList =companyRepository.findAll();
+        for(Company company : companyList) {
+        	CompanyContactVo obj = new CompanyContactVo();
         	Contact contact=new Contact();
         	contact.setCompany(company);
         	List<Contact> contatcList=contactRepository.findAll(Example.of(contact));
-        	int numberOfRecord=contatcList.size();
-        	map.put(company.getCompanyName(), numberOfRecord);
+			obj.setCompany(company.getCompanyName());
+			obj.setContacts(contatcList.size());
+			obj.setCheckStatus(false);
+			jsonList.add(obj);
         }
-		return map;
-        
+		return jsonList;
     }
+    
     @GetMapping("/companyConatctList2")
     public List<Map<String, Object>> getCompanyListWithContactCount2() throws JSONException {
         log.debug("REST request to get all company");
