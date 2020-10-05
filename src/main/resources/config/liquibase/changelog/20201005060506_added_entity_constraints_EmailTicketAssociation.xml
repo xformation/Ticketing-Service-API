@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <!--
+        Added the constraints for entity EmailTicketAssociation.
+    -->
+    <changeSet id="20201005060506-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="email_id"
+                                 baseTableName="email_ticket_association"
+                                 constraintName="fk_email_ticket_association_email_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="email"/>
+
+        <addForeignKeyConstraint baseColumnNames="ticket_id"
+                                 baseTableName="email_ticket_association"
+                                 constraintName="fk_email_ticket_association_ticket_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="ticket"/>
+
+    </changeSet>
+</databaseChangeLog>

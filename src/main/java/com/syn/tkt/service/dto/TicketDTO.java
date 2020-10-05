@@ -1,5 +1,6 @@
 package com.syn.tkt.service.dto;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -22,22 +23,33 @@ public class TicketDTO implements Serializable {
 
     private String priority;
 
-    private LocalDate createdOn;
+    private Instant createdOn;
 
     private String createdBy;
 
     private String updatedBy;
 
-    private LocalDate updatedOn;
+    private Instant updatedOn;
+
+    @Size(max = 5000)
+    private String comments;
 
     private LocalDate expectedDateOfCompletion;
 
     private LocalDate actualDateOfCompletion;
 
-    private String assignedTo;
-
     private String tag;
 
+    private String assignedUserType;
+
+    private String associatedEntityName;
+
+    private String associatedEntityId;
+
+
+    private Long contactId;
+
+    private Long agentId;
     
     public Long getId() {
         return id;
@@ -87,11 +99,11 @@ public class TicketDTO implements Serializable {
         this.priority = priority;
     }
 
-    public LocalDate getCreatedOn() {
+    public Instant getCreatedOn() {
         return createdOn;
     }
 
-    public void setCreatedOn(LocalDate createdOn) {
+    public void setCreatedOn(Instant createdOn) {
         this.createdOn = createdOn;
     }
 
@@ -111,12 +123,20 @@ public class TicketDTO implements Serializable {
         this.updatedBy = updatedBy;
     }
 
-    public LocalDate getUpdatedOn() {
+    public Instant getUpdatedOn() {
         return updatedOn;
     }
 
-    public void setUpdatedOn(LocalDate updatedOn) {
+    public void setUpdatedOn(Instant updatedOn) {
         this.updatedOn = updatedOn;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     public LocalDate getExpectedDateOfCompletion() {
@@ -135,20 +155,52 @@ public class TicketDTO implements Serializable {
         this.actualDateOfCompletion = actualDateOfCompletion;
     }
 
-    public String getAssignedTo() {
-        return assignedTo;
-    }
-
-    public void setAssignedTo(String assignedTo) {
-        this.assignedTo = assignedTo;
-    }
-
     public String getTag() {
         return tag;
     }
 
     public void setTag(String tag) {
         this.tag = tag;
+    }
+
+    public String getAssignedUserType() {
+        return assignedUserType;
+    }
+
+    public void setAssignedUserType(String assignedUserType) {
+        this.assignedUserType = assignedUserType;
+    }
+
+    public String getAssociatedEntityName() {
+        return associatedEntityName;
+    }
+
+    public void setAssociatedEntityName(String associatedEntityName) {
+        this.associatedEntityName = associatedEntityName;
+    }
+
+    public String getAssociatedEntityId() {
+        return associatedEntityId;
+    }
+
+    public void setAssociatedEntityId(String associatedEntityId) {
+        this.associatedEntityId = associatedEntityId;
+    }
+
+    public Long getContactId() {
+        return contactId;
+    }
+
+    public void setContactId(Long contactId) {
+        this.contactId = contactId;
+    }
+
+    public Long getAgentId() {
+        return agentId;
+    }
+
+    public void setAgentId(Long agentId) {
+        this.agentId = agentId;
     }
 
     @Override
@@ -182,10 +234,15 @@ public class TicketDTO implements Serializable {
             ", createdBy='" + getCreatedBy() + "'" +
             ", updatedBy='" + getUpdatedBy() + "'" +
             ", updatedOn='" + getUpdatedOn() + "'" +
+            ", comments='" + getComments() + "'" +
             ", expectedDateOfCompletion='" + getExpectedDateOfCompletion() + "'" +
             ", actualDateOfCompletion='" + getActualDateOfCompletion() + "'" +
-            ", assignedTo='" + getAssignedTo() + "'" +
             ", tag='" + getTag() + "'" +
+            ", assignedUserType='" + getAssignedUserType() + "'" +
+            ", associatedEntityName='" + getAssociatedEntityName() + "'" +
+            ", associatedEntityId='" + getAssociatedEntityId() + "'" +
+            ", contactId=" + getContactId() +
+            ", agentId=" + getAgentId() +
             "}";
     }
 }

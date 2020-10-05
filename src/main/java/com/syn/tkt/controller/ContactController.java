@@ -12,12 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.aspectj.apache.bcel.classfile.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,8 +34,6 @@ import com.syn.tkt.domain.Contact;
 import com.syn.tkt.domain.ContactCompanyVo;
 import com.syn.tkt.repository.CompanyRepository;
 import com.syn.tkt.repository.ContactRepository;
-import com.syn.tkt.service.ContactService;
-import com.syn.tkt.service.dto.ContactDTO;
 import com.syn.tkt.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -57,11 +53,6 @@ public class ContactController {
 	@Value("${jhipster.clientApp.name}")
 	private String applicationName;
 
-//    private final ContactService contactService;
-//
-//    public ContactController(ContactService contactService) {
-//        this.contactService = contactService;
-//    }
 	@Autowired
 	private ContactRepository contactRepository;
 

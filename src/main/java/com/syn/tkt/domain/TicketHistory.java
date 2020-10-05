@@ -10,11 +10,11 @@ import java.time.Instant;
 import java.time.LocalDate;
 
 /**
- * A Ticket.
+ * A TicketHistory.
  */
 @Entity
-@Table(name = "ticket")
-public class Ticket implements Serializable {
+@Table(name = "ticket_history")
+public class TicketHistory implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -73,13 +73,10 @@ public class Ticket implements Serializable {
     @Column(name = "associated_entity_id")
     private String associatedEntityId;
 
-    @ManyToOne
-    @JsonIgnoreProperties(value = "tickets", allowSetters = true)
-    private Contact contact;
-
-    @ManyToOne
-    @JsonIgnoreProperties(value = "tickets", allowSetters = true)
-    private Agent agent;
+    @ManyToOne(optional = false)
+    @NotNull
+    @JsonIgnoreProperties(value = "ticketHistories", allowSetters = true)
+    private Ticket ticket;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -94,7 +91,7 @@ public class Ticket implements Serializable {
         return subject;
     }
 
-    public Ticket subject(String subject) {
+    public TicketHistory subject(String subject) {
         this.subject = subject;
         return this;
     }
@@ -107,7 +104,7 @@ public class Ticket implements Serializable {
         return description;
     }
 
-    public Ticket description(String description) {
+    public TicketHistory description(String description) {
         this.description = description;
         return this;
     }
@@ -120,7 +117,7 @@ public class Ticket implements Serializable {
         return type;
     }
 
-    public Ticket type(String type) {
+    public TicketHistory type(String type) {
         this.type = type;
         return this;
     }
@@ -133,7 +130,7 @@ public class Ticket implements Serializable {
         return status;
     }
 
-    public Ticket status(String status) {
+    public TicketHistory status(String status) {
         this.status = status;
         return this;
     }
@@ -146,7 +143,7 @@ public class Ticket implements Serializable {
         return priority;
     }
 
-    public Ticket priority(String priority) {
+    public TicketHistory priority(String priority) {
         this.priority = priority;
         return this;
     }
@@ -159,7 +156,7 @@ public class Ticket implements Serializable {
         return createdOn;
     }
 
-    public Ticket createdOn(Instant createdOn) {
+    public TicketHistory createdOn(Instant createdOn) {
         this.createdOn = createdOn;
         return this;
     }
@@ -172,7 +169,7 @@ public class Ticket implements Serializable {
         return createdBy;
     }
 
-    public Ticket createdBy(String createdBy) {
+    public TicketHistory createdBy(String createdBy) {
         this.createdBy = createdBy;
         return this;
     }
@@ -185,7 +182,7 @@ public class Ticket implements Serializable {
         return updatedBy;
     }
 
-    public Ticket updatedBy(String updatedBy) {
+    public TicketHistory updatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
         return this;
     }
@@ -198,7 +195,7 @@ public class Ticket implements Serializable {
         return updatedOn;
     }
 
-    public Ticket updatedOn(Instant updatedOn) {
+    public TicketHistory updatedOn(Instant updatedOn) {
         this.updatedOn = updatedOn;
         return this;
     }
@@ -211,7 +208,7 @@ public class Ticket implements Serializable {
         return comments;
     }
 
-    public Ticket comments(String comments) {
+    public TicketHistory comments(String comments) {
         this.comments = comments;
         return this;
     }
@@ -224,7 +221,7 @@ public class Ticket implements Serializable {
         return expectedDateOfCompletion;
     }
 
-    public Ticket expectedDateOfCompletion(LocalDate expectedDateOfCompletion) {
+    public TicketHistory expectedDateOfCompletion(LocalDate expectedDateOfCompletion) {
         this.expectedDateOfCompletion = expectedDateOfCompletion;
         return this;
     }
@@ -237,7 +234,7 @@ public class Ticket implements Serializable {
         return actualDateOfCompletion;
     }
 
-    public Ticket actualDateOfCompletion(LocalDate actualDateOfCompletion) {
+    public TicketHistory actualDateOfCompletion(LocalDate actualDateOfCompletion) {
         this.actualDateOfCompletion = actualDateOfCompletion;
         return this;
     }
@@ -250,7 +247,7 @@ public class Ticket implements Serializable {
         return tag;
     }
 
-    public Ticket tag(String tag) {
+    public TicketHistory tag(String tag) {
         this.tag = tag;
         return this;
     }
@@ -263,7 +260,7 @@ public class Ticket implements Serializable {
         return assignedUserType;
     }
 
-    public Ticket assignedUserType(String assignedUserType) {
+    public TicketHistory assignedUserType(String assignedUserType) {
         this.assignedUserType = assignedUserType;
         return this;
     }
@@ -276,7 +273,7 @@ public class Ticket implements Serializable {
         return associatedEntityName;
     }
 
-    public Ticket associatedEntityName(String associatedEntityName) {
+    public TicketHistory associatedEntityName(String associatedEntityName) {
         this.associatedEntityName = associatedEntityName;
         return this;
     }
@@ -289,7 +286,7 @@ public class Ticket implements Serializable {
         return associatedEntityId;
     }
 
-    public Ticket associatedEntityId(String associatedEntityId) {
+    public TicketHistory associatedEntityId(String associatedEntityId) {
         this.associatedEntityId = associatedEntityId;
         return this;
     }
@@ -298,30 +295,17 @@ public class Ticket implements Serializable {
         this.associatedEntityId = associatedEntityId;
     }
 
-    public Contact getContact() {
-        return contact;
+    public Ticket getTicket() {
+        return ticket;
     }
 
-    public Ticket contact(Contact contact) {
-        this.contact = contact;
+    public TicketHistory ticket(Ticket ticket) {
+        this.ticket = ticket;
         return this;
     }
 
-    public void setContact(Contact contact) {
-        this.contact = contact;
-    }
-
-    public Agent getAgent() {
-        return agent;
-    }
-
-    public Ticket agent(Agent agent) {
-        this.agent = agent;
-        return this;
-    }
-
-    public void setAgent(Agent agent) {
-        this.agent = agent;
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
@@ -330,10 +314,10 @@ public class Ticket implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Ticket)) {
+        if (!(o instanceof TicketHistory)) {
             return false;
         }
-        return id != null && id.equals(((Ticket) o).id);
+        return id != null && id.equals(((TicketHistory) o).id);
     }
 
     @Override
@@ -344,7 +328,7 @@ public class Ticket implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "Ticket{" +
+        return "TicketHistory{" +
             "id=" + getId() +
             ", subject='" + getSubject() + "'" +
             ", description='" + getDescription() + "'" +

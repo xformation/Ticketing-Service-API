@@ -1,87 +1,54 @@
-package com.syn.tkt.domain;
+package com.syn.tkt.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
-
-import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
+import javax.validation.constraints.*;
+import java.io.Serializable;
 
 /**
- * A Ticket.
+ * A DTO for the {@link com.syn.tkt.domain.TicketHistory} entity.
  */
-@Entity
-@Table(name = "ticket")
-public class Ticket implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+public class TicketHistoryDTO implements Serializable {
+    
     private Long id;
 
-    @Column(name = "subject")
     private String subject;
 
     @Size(max = 5000)
-    @Column(name = "description", length = 5000)
     private String description;
 
-    @Column(name = "type")
     private String type;
 
-    @Column(name = "status")
     private String status;
 
-    @Column(name = "priority")
     private String priority;
 
-    @Column(name = "created_on")
     private Instant createdOn;
 
-    @Column(name = "created_by")
     private String createdBy;
 
-    @Column(name = "updated_by")
     private String updatedBy;
 
-    @Column(name = "updated_on")
     private Instant updatedOn;
 
     @Size(max = 5000)
-    @Column(name = "comments", length = 5000)
     private String comments;
 
-    @Column(name = "expected_date_of_completion")
     private LocalDate expectedDateOfCompletion;
 
-    @Column(name = "actual_date_of_completion")
     private LocalDate actualDateOfCompletion;
 
-    @Column(name = "tag")
     private String tag;
 
-    @Column(name = "assigned_user_type")
     private String assignedUserType;
 
-    @Column(name = "associated_entity_name")
     private String associatedEntityName;
 
-    @Column(name = "associated_entity_id")
     private String associatedEntityId;
 
-    @ManyToOne
-    @JsonIgnoreProperties(value = "tickets", allowSetters = true)
-    private Contact contact;
 
-    @ManyToOne
-    @JsonIgnoreProperties(value = "tickets", allowSetters = true)
-    private Agent agent;
-
-    // jhipster-needle-entity-add-field - JHipster will add fields here
+    private Long ticketId;
+    
     public Long getId() {
         return id;
     }
@@ -94,22 +61,12 @@ public class Ticket implements Serializable {
         return subject;
     }
 
-    public Ticket subject(String subject) {
-        this.subject = subject;
-        return this;
-    }
-
     public void setSubject(String subject) {
         this.subject = subject;
     }
 
     public String getDescription() {
         return description;
-    }
-
-    public Ticket description(String description) {
-        this.description = description;
-        return this;
     }
 
     public void setDescription(String description) {
@@ -120,22 +77,12 @@ public class Ticket implements Serializable {
         return type;
     }
 
-    public Ticket type(String type) {
-        this.type = type;
-        return this;
-    }
-
     public void setType(String type) {
         this.type = type;
     }
 
     public String getStatus() {
         return status;
-    }
-
-    public Ticket status(String status) {
-        this.status = status;
-        return this;
     }
 
     public void setStatus(String status) {
@@ -146,22 +93,12 @@ public class Ticket implements Serializable {
         return priority;
     }
 
-    public Ticket priority(String priority) {
-        this.priority = priority;
-        return this;
-    }
-
     public void setPriority(String priority) {
         this.priority = priority;
     }
 
     public Instant getCreatedOn() {
         return createdOn;
-    }
-
-    public Ticket createdOn(Instant createdOn) {
-        this.createdOn = createdOn;
-        return this;
     }
 
     public void setCreatedOn(Instant createdOn) {
@@ -172,22 +109,12 @@ public class Ticket implements Serializable {
         return createdBy;
     }
 
-    public Ticket createdBy(String createdBy) {
-        this.createdBy = createdBy;
-        return this;
-    }
-
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
     public String getUpdatedBy() {
         return updatedBy;
-    }
-
-    public Ticket updatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-        return this;
     }
 
     public void setUpdatedBy(String updatedBy) {
@@ -198,22 +125,12 @@ public class Ticket implements Serializable {
         return updatedOn;
     }
 
-    public Ticket updatedOn(Instant updatedOn) {
-        this.updatedOn = updatedOn;
-        return this;
-    }
-
     public void setUpdatedOn(Instant updatedOn) {
         this.updatedOn = updatedOn;
     }
 
     public String getComments() {
         return comments;
-    }
-
-    public Ticket comments(String comments) {
-        this.comments = comments;
-        return this;
     }
 
     public void setComments(String comments) {
@@ -224,22 +141,12 @@ public class Ticket implements Serializable {
         return expectedDateOfCompletion;
     }
 
-    public Ticket expectedDateOfCompletion(LocalDate expectedDateOfCompletion) {
-        this.expectedDateOfCompletion = expectedDateOfCompletion;
-        return this;
-    }
-
     public void setExpectedDateOfCompletion(LocalDate expectedDateOfCompletion) {
         this.expectedDateOfCompletion = expectedDateOfCompletion;
     }
 
     public LocalDate getActualDateOfCompletion() {
         return actualDateOfCompletion;
-    }
-
-    public Ticket actualDateOfCompletion(LocalDate actualDateOfCompletion) {
-        this.actualDateOfCompletion = actualDateOfCompletion;
-        return this;
     }
 
     public void setActualDateOfCompletion(LocalDate actualDateOfCompletion) {
@@ -250,22 +157,12 @@ public class Ticket implements Serializable {
         return tag;
     }
 
-    public Ticket tag(String tag) {
-        this.tag = tag;
-        return this;
-    }
-
     public void setTag(String tag) {
         this.tag = tag;
     }
 
     public String getAssignedUserType() {
         return assignedUserType;
-    }
-
-    public Ticket assignedUserType(String assignedUserType) {
-        this.assignedUserType = assignedUserType;
-        return this;
     }
 
     public void setAssignedUserType(String assignedUserType) {
@@ -276,11 +173,6 @@ public class Ticket implements Serializable {
         return associatedEntityName;
     }
 
-    public Ticket associatedEntityName(String associatedEntityName) {
-        this.associatedEntityName = associatedEntityName;
-        return this;
-    }
-
     public void setAssociatedEntityName(String associatedEntityName) {
         this.associatedEntityName = associatedEntityName;
     }
@@ -289,51 +181,28 @@ public class Ticket implements Serializable {
         return associatedEntityId;
     }
 
-    public Ticket associatedEntityId(String associatedEntityId) {
-        this.associatedEntityId = associatedEntityId;
-        return this;
-    }
-
     public void setAssociatedEntityId(String associatedEntityId) {
         this.associatedEntityId = associatedEntityId;
     }
 
-    public Contact getContact() {
-        return contact;
+    public Long getTicketId() {
+        return ticketId;
     }
 
-    public Ticket contact(Contact contact) {
-        this.contact = contact;
-        return this;
+    public void setTicketId(Long ticketId) {
+        this.ticketId = ticketId;
     }
-
-    public void setContact(Contact contact) {
-        this.contact = contact;
-    }
-
-    public Agent getAgent() {
-        return agent;
-    }
-
-    public Ticket agent(Agent agent) {
-        this.agent = agent;
-        return this;
-    }
-
-    public void setAgent(Agent agent) {
-        this.agent = agent;
-    }
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Ticket)) {
+        if (!(o instanceof TicketHistoryDTO)) {
             return false;
         }
-        return id != null && id.equals(((Ticket) o).id);
+
+        return id != null && id.equals(((TicketHistoryDTO) o).id);
     }
 
     @Override
@@ -344,7 +213,7 @@ public class Ticket implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "Ticket{" +
+        return "TicketHistoryDTO{" +
             "id=" + getId() +
             ", subject='" + getSubject() + "'" +
             ", description='" + getDescription() + "'" +
@@ -362,6 +231,7 @@ public class Ticket implements Serializable {
             ", assignedUserType='" + getAssignedUserType() + "'" +
             ", associatedEntityName='" + getAssociatedEntityName() + "'" +
             ", associatedEntityId='" + getAssociatedEntityId() + "'" +
+            ", ticketId=" + getTicketId() +
             "}";
     }
 }

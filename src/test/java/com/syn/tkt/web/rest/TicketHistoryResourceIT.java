@@ -1,11 +1,12 @@
 package com.syn.tkt.web.rest;
 
 import com.syn.tkt.ServicedeskApp;
+import com.syn.tkt.domain.TicketHistory;
 import com.syn.tkt.domain.Ticket;
-import com.syn.tkt.repository.TicketRepository;
-import com.syn.tkt.service.TicketService;
-import com.syn.tkt.service.dto.TicketDTO;
-import com.syn.tkt.service.mapper.TicketMapper;
+import com.syn.tkt.repository.TicketHistoryRepository;
+import com.syn.tkt.service.TicketHistoryService;
+import com.syn.tkt.service.dto.TicketHistoryDTO;
+import com.syn.tkt.service.mapper.TicketHistoryMapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,12 +30,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Integration tests for the {@link TicketResource} REST controller.
+ * Integration tests for the {@link TicketHistoryResource} REST controller.
  */
 @SpringBootTest(classes = ServicedeskApp.class)
 @AutoConfigureMockMvc
 @WithMockUser
-public class TicketResourceIT {
+public class TicketHistoryResourceIT {
 
     private static final String DEFAULT_SUBJECT = "AAAAAAAAAA";
     private static final String UPDATED_SUBJECT = "BBBBBBBBBB";
@@ -85,21 +86,21 @@ public class TicketResourceIT {
     private static final String UPDATED_ASSOCIATED_ENTITY_ID = "BBBBBBBBBB";
 
     @Autowired
-    private TicketRepository ticketRepository;
+    private TicketHistoryRepository ticketHistoryRepository;
 
     @Autowired
-    private TicketMapper ticketMapper;
+    private TicketHistoryMapper ticketHistoryMapper;
 
     @Autowired
-    private TicketService ticketService;
+    private TicketHistoryService ticketHistoryService;
 
     @Autowired
     private EntityManager em;
 
     @Autowired
-    private MockMvc restTicketMockMvc;
+    private MockMvc restTicketHistoryMockMvc;
 
-    private Ticket ticket;
+    private TicketHistory ticketHistory;
 
     /**
      * Create an entity for this test.
@@ -107,8 +108,8 @@ public class TicketResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Ticket createEntity(EntityManager em) {
-        Ticket ticket = new Ticket()
+    public static TicketHistory createEntity(EntityManager em) {
+        TicketHistory ticketHistory = new TicketHistory()
             .subject(DEFAULT_SUBJECT)
             .description(DEFAULT_DESCRIPTION)
             .type(DEFAULT_TYPE)
@@ -125,7 +126,17 @@ public class TicketResourceIT {
             .assignedUserType(DEFAULT_ASSIGNED_USER_TYPE)
             .associatedEntityName(DEFAULT_ASSOCIATED_ENTITY_NAME)
             .associatedEntityId(DEFAULT_ASSOCIATED_ENTITY_ID);
-        return ticket;
+        // Add required entity
+        Ticket ticket;
+        if (TestUtil.findAll(em, Ticket.class).isEmpty()) {
+            ticket = TicketResourceIT.createEntity(em);
+            em.persist(ticket);
+            em.flush();
+        } else {
+            ticket = TestUtil.findAll(em, Ticket.class).get(0);
+        }
+        ticketHistory.setTicket(ticket);
+        return ticketHistory;
     }
     /**
      * Create an updated entity for this test.
@@ -133,8 +144,8 @@ public class TicketResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Ticket createUpdatedEntity(EntityManager em) {
-        Ticket ticket = new Ticket()
+    public static TicketHistory createUpdatedEntity(EntityManager em) {
+        TicketHistory ticketHistory = new TicketHistory()
             .subject(UPDATED_SUBJECT)
             .description(UPDATED_DESCRIPTION)
             .type(UPDATED_TYPE)
@@ -151,79 +162,89 @@ public class TicketResourceIT {
             .assignedUserType(UPDATED_ASSIGNED_USER_TYPE)
             .associatedEntityName(UPDATED_ASSOCIATED_ENTITY_NAME)
             .associatedEntityId(UPDATED_ASSOCIATED_ENTITY_ID);
-        return ticket;
+        // Add required entity
+        Ticket ticket;
+        if (TestUtil.findAll(em, Ticket.class).isEmpty()) {
+            ticket = TicketResourceIT.createUpdatedEntity(em);
+            em.persist(ticket);
+            em.flush();
+        } else {
+            ticket = TestUtil.findAll(em, Ticket.class).get(0);
+        }
+        ticketHistory.setTicket(ticket);
+        return ticketHistory;
     }
 
     @BeforeEach
     public void initTest() {
-        ticket = createEntity(em);
+        ticketHistory = createEntity(em);
     }
 
     @Test
     @Transactional
-    public void createTicket() throws Exception {
-        int databaseSizeBeforeCreate = ticketRepository.findAll().size();
-        // Create the Ticket
-        TicketDTO ticketDTO = ticketMapper.toDto(ticket);
-        restTicketMockMvc.perform(post("/api/tickets")
+    public void createTicketHistory() throws Exception {
+        int databaseSizeBeforeCreate = ticketHistoryRepository.findAll().size();
+        // Create the TicketHistory
+        TicketHistoryDTO ticketHistoryDTO = ticketHistoryMapper.toDto(ticketHistory);
+        restTicketHistoryMockMvc.perform(post("/api/ticket-histories")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(ticketDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(ticketHistoryDTO)))
             .andExpect(status().isCreated());
 
-        // Validate the Ticket in the database
-        List<Ticket> ticketList = ticketRepository.findAll();
-        assertThat(ticketList).hasSize(databaseSizeBeforeCreate + 1);
-        Ticket testTicket = ticketList.get(ticketList.size() - 1);
-        assertThat(testTicket.getSubject()).isEqualTo(DEFAULT_SUBJECT);
-        assertThat(testTicket.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(testTicket.getType()).isEqualTo(DEFAULT_TYPE);
-        assertThat(testTicket.getStatus()).isEqualTo(DEFAULT_STATUS);
-        assertThat(testTicket.getPriority()).isEqualTo(DEFAULT_PRIORITY);
-        assertThat(testTicket.getCreatedOn()).isEqualTo(DEFAULT_CREATED_ON);
-        assertThat(testTicket.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
-        assertThat(testTicket.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
-        assertThat(testTicket.getUpdatedOn()).isEqualTo(DEFAULT_UPDATED_ON);
-        assertThat(testTicket.getComments()).isEqualTo(DEFAULT_COMMENTS);
-        assertThat(testTicket.getExpectedDateOfCompletion()).isEqualTo(DEFAULT_EXPECTED_DATE_OF_COMPLETION);
-        assertThat(testTicket.getActualDateOfCompletion()).isEqualTo(DEFAULT_ACTUAL_DATE_OF_COMPLETION);
-        assertThat(testTicket.getTag()).isEqualTo(DEFAULT_TAG);
-        assertThat(testTicket.getAssignedUserType()).isEqualTo(DEFAULT_ASSIGNED_USER_TYPE);
-        assertThat(testTicket.getAssociatedEntityName()).isEqualTo(DEFAULT_ASSOCIATED_ENTITY_NAME);
-        assertThat(testTicket.getAssociatedEntityId()).isEqualTo(DEFAULT_ASSOCIATED_ENTITY_ID);
+        // Validate the TicketHistory in the database
+        List<TicketHistory> ticketHistoryList = ticketHistoryRepository.findAll();
+        assertThat(ticketHistoryList).hasSize(databaseSizeBeforeCreate + 1);
+        TicketHistory testTicketHistory = ticketHistoryList.get(ticketHistoryList.size() - 1);
+        assertThat(testTicketHistory.getSubject()).isEqualTo(DEFAULT_SUBJECT);
+        assertThat(testTicketHistory.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertThat(testTicketHistory.getType()).isEqualTo(DEFAULT_TYPE);
+        assertThat(testTicketHistory.getStatus()).isEqualTo(DEFAULT_STATUS);
+        assertThat(testTicketHistory.getPriority()).isEqualTo(DEFAULT_PRIORITY);
+        assertThat(testTicketHistory.getCreatedOn()).isEqualTo(DEFAULT_CREATED_ON);
+        assertThat(testTicketHistory.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
+        assertThat(testTicketHistory.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
+        assertThat(testTicketHistory.getUpdatedOn()).isEqualTo(DEFAULT_UPDATED_ON);
+        assertThat(testTicketHistory.getComments()).isEqualTo(DEFAULT_COMMENTS);
+        assertThat(testTicketHistory.getExpectedDateOfCompletion()).isEqualTo(DEFAULT_EXPECTED_DATE_OF_COMPLETION);
+        assertThat(testTicketHistory.getActualDateOfCompletion()).isEqualTo(DEFAULT_ACTUAL_DATE_OF_COMPLETION);
+        assertThat(testTicketHistory.getTag()).isEqualTo(DEFAULT_TAG);
+        assertThat(testTicketHistory.getAssignedUserType()).isEqualTo(DEFAULT_ASSIGNED_USER_TYPE);
+        assertThat(testTicketHistory.getAssociatedEntityName()).isEqualTo(DEFAULT_ASSOCIATED_ENTITY_NAME);
+        assertThat(testTicketHistory.getAssociatedEntityId()).isEqualTo(DEFAULT_ASSOCIATED_ENTITY_ID);
     }
 
     @Test
     @Transactional
-    public void createTicketWithExistingId() throws Exception {
-        int databaseSizeBeforeCreate = ticketRepository.findAll().size();
+    public void createTicketHistoryWithExistingId() throws Exception {
+        int databaseSizeBeforeCreate = ticketHistoryRepository.findAll().size();
 
-        // Create the Ticket with an existing ID
-        ticket.setId(1L);
-        TicketDTO ticketDTO = ticketMapper.toDto(ticket);
+        // Create the TicketHistory with an existing ID
+        ticketHistory.setId(1L);
+        TicketHistoryDTO ticketHistoryDTO = ticketHistoryMapper.toDto(ticketHistory);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restTicketMockMvc.perform(post("/api/tickets")
+        restTicketHistoryMockMvc.perform(post("/api/ticket-histories")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(ticketDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(ticketHistoryDTO)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Ticket in the database
-        List<Ticket> ticketList = ticketRepository.findAll();
-        assertThat(ticketList).hasSize(databaseSizeBeforeCreate);
+        // Validate the TicketHistory in the database
+        List<TicketHistory> ticketHistoryList = ticketHistoryRepository.findAll();
+        assertThat(ticketHistoryList).hasSize(databaseSizeBeforeCreate);
     }
 
 
     @Test
     @Transactional
-    public void getAllTickets() throws Exception {
+    public void getAllTicketHistories() throws Exception {
         // Initialize the database
-        ticketRepository.saveAndFlush(ticket);
+        ticketHistoryRepository.saveAndFlush(ticketHistory);
 
-        // Get all the ticketList
-        restTicketMockMvc.perform(get("/api/tickets?sort=id,desc"))
+        // Get all the ticketHistoryList
+        restTicketHistoryMockMvc.perform(get("/api/ticket-histories?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(ticket.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(ticketHistory.getId().intValue())))
             .andExpect(jsonPath("$.[*].subject").value(hasItem(DEFAULT_SUBJECT)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE)))
@@ -244,15 +265,15 @@ public class TicketResourceIT {
     
     @Test
     @Transactional
-    public void getTicket() throws Exception {
+    public void getTicketHistory() throws Exception {
         // Initialize the database
-        ticketRepository.saveAndFlush(ticket);
+        ticketHistoryRepository.saveAndFlush(ticketHistory);
 
-        // Get the ticket
-        restTicketMockMvc.perform(get("/api/tickets/{id}", ticket.getId()))
+        // Get the ticketHistory
+        restTicketHistoryMockMvc.perform(get("/api/ticket-histories/{id}", ticketHistory.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(ticket.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(ticketHistory.getId().intValue()))
             .andExpect(jsonPath("$.subject").value(DEFAULT_SUBJECT))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
             .andExpect(jsonPath("$.type").value(DEFAULT_TYPE))
@@ -272,25 +293,25 @@ public class TicketResourceIT {
     }
     @Test
     @Transactional
-    public void getNonExistingTicket() throws Exception {
-        // Get the ticket
-        restTicketMockMvc.perform(get("/api/tickets/{id}", Long.MAX_VALUE))
+    public void getNonExistingTicketHistory() throws Exception {
+        // Get the ticketHistory
+        restTicketHistoryMockMvc.perform(get("/api/ticket-histories/{id}", Long.MAX_VALUE))
             .andExpect(status().isNotFound());
     }
 
     @Test
     @Transactional
-    public void updateTicket() throws Exception {
+    public void updateTicketHistory() throws Exception {
         // Initialize the database
-        ticketRepository.saveAndFlush(ticket);
+        ticketHistoryRepository.saveAndFlush(ticketHistory);
 
-        int databaseSizeBeforeUpdate = ticketRepository.findAll().size();
+        int databaseSizeBeforeUpdate = ticketHistoryRepository.findAll().size();
 
-        // Update the ticket
-        Ticket updatedTicket = ticketRepository.findById(ticket.getId()).get();
-        // Disconnect from session so that the updates on updatedTicket are not directly saved in db
-        em.detach(updatedTicket);
-        updatedTicket
+        // Update the ticketHistory
+        TicketHistory updatedTicketHistory = ticketHistoryRepository.findById(ticketHistory.getId()).get();
+        // Disconnect from session so that the updates on updatedTicketHistory are not directly saved in db
+        em.detach(updatedTicketHistory);
+        updatedTicketHistory
             .subject(UPDATED_SUBJECT)
             .description(UPDATED_DESCRIPTION)
             .type(UPDATED_TYPE)
@@ -307,69 +328,69 @@ public class TicketResourceIT {
             .assignedUserType(UPDATED_ASSIGNED_USER_TYPE)
             .associatedEntityName(UPDATED_ASSOCIATED_ENTITY_NAME)
             .associatedEntityId(UPDATED_ASSOCIATED_ENTITY_ID);
-        TicketDTO ticketDTO = ticketMapper.toDto(updatedTicket);
+        TicketHistoryDTO ticketHistoryDTO = ticketHistoryMapper.toDto(updatedTicketHistory);
 
-        restTicketMockMvc.perform(put("/api/tickets")
+        restTicketHistoryMockMvc.perform(put("/api/ticket-histories")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(ticketDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(ticketHistoryDTO)))
             .andExpect(status().isOk());
 
-        // Validate the Ticket in the database
-        List<Ticket> ticketList = ticketRepository.findAll();
-        assertThat(ticketList).hasSize(databaseSizeBeforeUpdate);
-        Ticket testTicket = ticketList.get(ticketList.size() - 1);
-        assertThat(testTicket.getSubject()).isEqualTo(UPDATED_SUBJECT);
-        assertThat(testTicket.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testTicket.getType()).isEqualTo(UPDATED_TYPE);
-        assertThat(testTicket.getStatus()).isEqualTo(UPDATED_STATUS);
-        assertThat(testTicket.getPriority()).isEqualTo(UPDATED_PRIORITY);
-        assertThat(testTicket.getCreatedOn()).isEqualTo(UPDATED_CREATED_ON);
-        assertThat(testTicket.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testTicket.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testTicket.getUpdatedOn()).isEqualTo(UPDATED_UPDATED_ON);
-        assertThat(testTicket.getComments()).isEqualTo(UPDATED_COMMENTS);
-        assertThat(testTicket.getExpectedDateOfCompletion()).isEqualTo(UPDATED_EXPECTED_DATE_OF_COMPLETION);
-        assertThat(testTicket.getActualDateOfCompletion()).isEqualTo(UPDATED_ACTUAL_DATE_OF_COMPLETION);
-        assertThat(testTicket.getTag()).isEqualTo(UPDATED_TAG);
-        assertThat(testTicket.getAssignedUserType()).isEqualTo(UPDATED_ASSIGNED_USER_TYPE);
-        assertThat(testTicket.getAssociatedEntityName()).isEqualTo(UPDATED_ASSOCIATED_ENTITY_NAME);
-        assertThat(testTicket.getAssociatedEntityId()).isEqualTo(UPDATED_ASSOCIATED_ENTITY_ID);
+        // Validate the TicketHistory in the database
+        List<TicketHistory> ticketHistoryList = ticketHistoryRepository.findAll();
+        assertThat(ticketHistoryList).hasSize(databaseSizeBeforeUpdate);
+        TicketHistory testTicketHistory = ticketHistoryList.get(ticketHistoryList.size() - 1);
+        assertThat(testTicketHistory.getSubject()).isEqualTo(UPDATED_SUBJECT);
+        assertThat(testTicketHistory.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertThat(testTicketHistory.getType()).isEqualTo(UPDATED_TYPE);
+        assertThat(testTicketHistory.getStatus()).isEqualTo(UPDATED_STATUS);
+        assertThat(testTicketHistory.getPriority()).isEqualTo(UPDATED_PRIORITY);
+        assertThat(testTicketHistory.getCreatedOn()).isEqualTo(UPDATED_CREATED_ON);
+        assertThat(testTicketHistory.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
+        assertThat(testTicketHistory.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
+        assertThat(testTicketHistory.getUpdatedOn()).isEqualTo(UPDATED_UPDATED_ON);
+        assertThat(testTicketHistory.getComments()).isEqualTo(UPDATED_COMMENTS);
+        assertThat(testTicketHistory.getExpectedDateOfCompletion()).isEqualTo(UPDATED_EXPECTED_DATE_OF_COMPLETION);
+        assertThat(testTicketHistory.getActualDateOfCompletion()).isEqualTo(UPDATED_ACTUAL_DATE_OF_COMPLETION);
+        assertThat(testTicketHistory.getTag()).isEqualTo(UPDATED_TAG);
+        assertThat(testTicketHistory.getAssignedUserType()).isEqualTo(UPDATED_ASSIGNED_USER_TYPE);
+        assertThat(testTicketHistory.getAssociatedEntityName()).isEqualTo(UPDATED_ASSOCIATED_ENTITY_NAME);
+        assertThat(testTicketHistory.getAssociatedEntityId()).isEqualTo(UPDATED_ASSOCIATED_ENTITY_ID);
     }
 
     @Test
     @Transactional
-    public void updateNonExistingTicket() throws Exception {
-        int databaseSizeBeforeUpdate = ticketRepository.findAll().size();
+    public void updateNonExistingTicketHistory() throws Exception {
+        int databaseSizeBeforeUpdate = ticketHistoryRepository.findAll().size();
 
-        // Create the Ticket
-        TicketDTO ticketDTO = ticketMapper.toDto(ticket);
+        // Create the TicketHistory
+        TicketHistoryDTO ticketHistoryDTO = ticketHistoryMapper.toDto(ticketHistory);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restTicketMockMvc.perform(put("/api/tickets")
+        restTicketHistoryMockMvc.perform(put("/api/ticket-histories")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(ticketDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(ticketHistoryDTO)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Ticket in the database
-        List<Ticket> ticketList = ticketRepository.findAll();
-        assertThat(ticketList).hasSize(databaseSizeBeforeUpdate);
+        // Validate the TicketHistory in the database
+        List<TicketHistory> ticketHistoryList = ticketHistoryRepository.findAll();
+        assertThat(ticketHistoryList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
     @Transactional
-    public void deleteTicket() throws Exception {
+    public void deleteTicketHistory() throws Exception {
         // Initialize the database
-        ticketRepository.saveAndFlush(ticket);
+        ticketHistoryRepository.saveAndFlush(ticketHistory);
 
-        int databaseSizeBeforeDelete = ticketRepository.findAll().size();
+        int databaseSizeBeforeDelete = ticketHistoryRepository.findAll().size();
 
-        // Delete the ticket
-        restTicketMockMvc.perform(delete("/api/tickets/{id}", ticket.getId())
+        // Delete the ticketHistory
+        restTicketHistoryMockMvc.perform(delete("/api/ticket-histories/{id}", ticketHistory.getId())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<Ticket> ticketList = ticketRepository.findAll();
-        assertThat(ticketList).hasSize(databaseSizeBeforeDelete - 1);
+        List<TicketHistory> ticketHistoryList = ticketHistoryRepository.findAll();
+        assertThat(ticketHistoryList).hasSize(databaseSizeBeforeDelete - 1);
     }
 }

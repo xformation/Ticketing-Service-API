@@ -1,34 +1,47 @@
-entity Ticket{
+entity Ticket {
 	subject String
 	description String maxlength(5000) 
 	type String
 	status String
 	priority String
-	createdOn LocalDate
+	createdOn Instant
 	createdBy String
 	updatedBy String
-	updatedOn LocalDate
+	updatedOn Instant
+	comments String maxlength(5000)
 	expectedDateOfCompletion LocalDate
 	actualDateOfCompletion LocalDate
-	assignedTo String 
 	tag String
+	assignedUserType String
+	associatedEntityName String
+	associatedEntityId String
 }
 	
-entity TicketAuditHistory{
-	subject String 
-	description String maxlength(5000)
-	type String 
-	status String 
-	priority String 
-	createdOn LocalDate
-	createdBy String 
-	updatedBy String 
-	updatedOn LocalDate
+entity TicketHistory{
+	subject String
+	description String maxlength(5000) 
+	type String
+	status String
+	priority String
+	createdOn Instant
+	createdBy String
+	updatedBy String
+	updatedOn Instant
 	comments String maxlength(5000)
-	assignedTo String
+	expectedDateOfCompletion LocalDate
+	actualDateOfCompletion LocalDate
 	tag String
+	assignedUserType String
+	associatedEntityName String
+	associatedEntityId String	
+}
+
+entity TicketAuditReport {
+	property String
+	oldValue String
+	newValue String
+	user String
 	actionTime Instant
-	operationType String
 }
 
 entity Email {
@@ -42,6 +55,8 @@ entity Email {
 	createdBy String
 	createdOn Instant
 }
+
+entity EmailTicketAssociation {}
 
 entity Contact {
 	userName String
@@ -69,11 +84,26 @@ entity Company {
 	companyLogoFileLocation String
 	domain String
 }
+
+entity Agent {
+	name String
+	description String
+}
 	
 relationship ManyToOne {
-	TicketAuditHistory{ticket required} to Ticket,
-	Contact{company} to Company
+	Ticket{contact} to Contact,
+	Ticket{agent} to Agent,
+	TicketHistory{ticket required} to Ticket,
+	TicketAuditReport{ticket required} to Ticket,
+	
+	EmailTicketAssociation{email} to Email,
+	EmailTicketAssociation{ticket} to Ticket,
+	
+	Contact{company} to Company,
+	Agent{company} to Company
+	
 }
+
 
 
 dto * with mapstruct service all with serviceImpl

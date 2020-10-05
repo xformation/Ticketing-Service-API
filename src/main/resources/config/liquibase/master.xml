@@ -15,13 +15,20 @@
 
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200927103053_added_entity_Ticket.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20200927103153_added_entity_TicketAuditHistory.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200927103253_added_entity_Email.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200927103353_added_entity_Contact.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200927103453_added_entity_Company.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20201005060206_added_entity_TicketHistory.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20201005060306_added_entity_TicketAuditReport.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20201005060506_added_entity_EmailTicketAssociation.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20201005060806_added_entity_Agent.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
-    <include file="config/liquibase/changelog/20200927103153_added_entity_constraints_TicketAuditHistory.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200927103353_added_entity_constraints_Contact.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200927103053_added_entity_constraints_Ticket.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20201005060206_added_entity_constraints_TicketHistory.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20201005060306_added_entity_constraints_TicketAuditReport.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20201005060506_added_entity_constraints_EmailTicketAssociation.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20201005060806_added_entity_constraints_Agent.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
 </databaseChangeLog>
