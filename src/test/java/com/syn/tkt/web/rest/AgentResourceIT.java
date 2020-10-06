@@ -38,6 +38,36 @@ public class AgentResourceIT {
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
+    private static final String DEFAULT_TITLE = "AAAAAAAAAA";
+    private static final String UPDATED_TITLE = "BBBBBBBBBB";
+
+    private static final String DEFAULT_PRIMARY_EMAIL = "AAAAAAAAAA";
+    private static final String UPDATED_PRIMARY_EMAIL = "BBBBBBBBBB";
+
+    private static final String DEFAULT_ALTERNATE_EMAIL = "AAAAAAAAAA";
+    private static final String UPDATED_ALTERNATE_EMAIL = "BBBBBBBBBB";
+
+    private static final String DEFAULT_WORK_PHONE = "AAAAAAAAAA";
+    private static final String UPDATED_WORK_PHONE = "BBBBBBBBBB";
+
+    private static final String DEFAULT_MOBILE_PHONE = "AAAAAAAAAA";
+    private static final String UPDATED_MOBILE_PHONE = "BBBBBBBBBB";
+
+    private static final String DEFAULT_TWITTER_HANDLE = "AAAAAAAAAA";
+    private static final String UPDATED_TWITTER_HANDLE = "BBBBBBBBBB";
+
+    private static final String DEFAULT_UNIQUE_EXTERNAL_ID = "AAAAAAAAAA";
+    private static final String UPDATED_UNIQUE_EXTERNAL_ID = "BBBBBBBBBB";
+
+    private static final String DEFAULT_IMAGE_LOCATION = "AAAAAAAAAA";
+    private static final String UPDATED_IMAGE_LOCATION = "BBBBBBBBBB";
+
+    private static final String DEFAULT_IMAGE_FILE_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_IMAGE_FILE_NAME = "BBBBBBBBBB";
+
+    private static final String DEFAULT_ADDRESS = "AAAAAAAAAA";
+    private static final String UPDATED_ADDRESS = "BBBBBBBBBB";
+
     @Autowired
     private AgentRepository agentRepository;
 
@@ -64,7 +94,17 @@ public class AgentResourceIT {
     public static Agent createEntity(EntityManager em) {
         Agent agent = new Agent()
             .name(DEFAULT_NAME)
-            .description(DEFAULT_DESCRIPTION);
+            .description(DEFAULT_DESCRIPTION)
+            .title(DEFAULT_TITLE)
+            .primaryEmail(DEFAULT_PRIMARY_EMAIL)
+            .alternateEmail(DEFAULT_ALTERNATE_EMAIL)
+            .workPhone(DEFAULT_WORK_PHONE)
+            .mobilePhone(DEFAULT_MOBILE_PHONE)
+            .twitterHandle(DEFAULT_TWITTER_HANDLE)
+            .uniqueExternalId(DEFAULT_UNIQUE_EXTERNAL_ID)
+            .imageLocation(DEFAULT_IMAGE_LOCATION)
+            .imageFileName(DEFAULT_IMAGE_FILE_NAME)
+            .address(DEFAULT_ADDRESS);
         return agent;
     }
     /**
@@ -76,7 +116,17 @@ public class AgentResourceIT {
     public static Agent createUpdatedEntity(EntityManager em) {
         Agent agent = new Agent()
             .name(UPDATED_NAME)
-            .description(UPDATED_DESCRIPTION);
+            .description(UPDATED_DESCRIPTION)
+            .title(UPDATED_TITLE)
+            .primaryEmail(UPDATED_PRIMARY_EMAIL)
+            .alternateEmail(UPDATED_ALTERNATE_EMAIL)
+            .workPhone(UPDATED_WORK_PHONE)
+            .mobilePhone(UPDATED_MOBILE_PHONE)
+            .twitterHandle(UPDATED_TWITTER_HANDLE)
+            .uniqueExternalId(UPDATED_UNIQUE_EXTERNAL_ID)
+            .imageLocation(UPDATED_IMAGE_LOCATION)
+            .imageFileName(UPDATED_IMAGE_FILE_NAME)
+            .address(UPDATED_ADDRESS);
         return agent;
     }
 
@@ -102,6 +152,16 @@ public class AgentResourceIT {
         Agent testAgent = agentList.get(agentList.size() - 1);
         assertThat(testAgent.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testAgent.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertThat(testAgent.getTitle()).isEqualTo(DEFAULT_TITLE);
+        assertThat(testAgent.getPrimaryEmail()).isEqualTo(DEFAULT_PRIMARY_EMAIL);
+        assertThat(testAgent.getAlternateEmail()).isEqualTo(DEFAULT_ALTERNATE_EMAIL);
+        assertThat(testAgent.getWorkPhone()).isEqualTo(DEFAULT_WORK_PHONE);
+        assertThat(testAgent.getMobilePhone()).isEqualTo(DEFAULT_MOBILE_PHONE);
+        assertThat(testAgent.getTwitterHandle()).isEqualTo(DEFAULT_TWITTER_HANDLE);
+        assertThat(testAgent.getUniqueExternalId()).isEqualTo(DEFAULT_UNIQUE_EXTERNAL_ID);
+        assertThat(testAgent.getImageLocation()).isEqualTo(DEFAULT_IMAGE_LOCATION);
+        assertThat(testAgent.getImageFileName()).isEqualTo(DEFAULT_IMAGE_FILE_NAME);
+        assertThat(testAgent.getAddress()).isEqualTo(DEFAULT_ADDRESS);
     }
 
     @Test
@@ -137,7 +197,17 @@ public class AgentResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(agent.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
+            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
+            .andExpect(jsonPath("$.[*].primaryEmail").value(hasItem(DEFAULT_PRIMARY_EMAIL)))
+            .andExpect(jsonPath("$.[*].alternateEmail").value(hasItem(DEFAULT_ALTERNATE_EMAIL)))
+            .andExpect(jsonPath("$.[*].workPhone").value(hasItem(DEFAULT_WORK_PHONE)))
+            .andExpect(jsonPath("$.[*].mobilePhone").value(hasItem(DEFAULT_MOBILE_PHONE)))
+            .andExpect(jsonPath("$.[*].twitterHandle").value(hasItem(DEFAULT_TWITTER_HANDLE)))
+            .andExpect(jsonPath("$.[*].uniqueExternalId").value(hasItem(DEFAULT_UNIQUE_EXTERNAL_ID)))
+            .andExpect(jsonPath("$.[*].imageLocation").value(hasItem(DEFAULT_IMAGE_LOCATION)))
+            .andExpect(jsonPath("$.[*].imageFileName").value(hasItem(DEFAULT_IMAGE_FILE_NAME)))
+            .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)));
     }
     
     @Test
@@ -152,7 +222,17 @@ public class AgentResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(agent.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION));
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
+            .andExpect(jsonPath("$.title").value(DEFAULT_TITLE))
+            .andExpect(jsonPath("$.primaryEmail").value(DEFAULT_PRIMARY_EMAIL))
+            .andExpect(jsonPath("$.alternateEmail").value(DEFAULT_ALTERNATE_EMAIL))
+            .andExpect(jsonPath("$.workPhone").value(DEFAULT_WORK_PHONE))
+            .andExpect(jsonPath("$.mobilePhone").value(DEFAULT_MOBILE_PHONE))
+            .andExpect(jsonPath("$.twitterHandle").value(DEFAULT_TWITTER_HANDLE))
+            .andExpect(jsonPath("$.uniqueExternalId").value(DEFAULT_UNIQUE_EXTERNAL_ID))
+            .andExpect(jsonPath("$.imageLocation").value(DEFAULT_IMAGE_LOCATION))
+            .andExpect(jsonPath("$.imageFileName").value(DEFAULT_IMAGE_FILE_NAME))
+            .andExpect(jsonPath("$.address").value(DEFAULT_ADDRESS));
     }
     @Test
     @Transactional
@@ -176,7 +256,17 @@ public class AgentResourceIT {
         em.detach(updatedAgent);
         updatedAgent
             .name(UPDATED_NAME)
-            .description(UPDATED_DESCRIPTION);
+            .description(UPDATED_DESCRIPTION)
+            .title(UPDATED_TITLE)
+            .primaryEmail(UPDATED_PRIMARY_EMAIL)
+            .alternateEmail(UPDATED_ALTERNATE_EMAIL)
+            .workPhone(UPDATED_WORK_PHONE)
+            .mobilePhone(UPDATED_MOBILE_PHONE)
+            .twitterHandle(UPDATED_TWITTER_HANDLE)
+            .uniqueExternalId(UPDATED_UNIQUE_EXTERNAL_ID)
+            .imageLocation(UPDATED_IMAGE_LOCATION)
+            .imageFileName(UPDATED_IMAGE_FILE_NAME)
+            .address(UPDATED_ADDRESS);
         AgentDTO agentDTO = agentMapper.toDto(updatedAgent);
 
         restAgentMockMvc.perform(put("/api/agents")
@@ -190,6 +280,16 @@ public class AgentResourceIT {
         Agent testAgent = agentList.get(agentList.size() - 1);
         assertThat(testAgent.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testAgent.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertThat(testAgent.getTitle()).isEqualTo(UPDATED_TITLE);
+        assertThat(testAgent.getPrimaryEmail()).isEqualTo(UPDATED_PRIMARY_EMAIL);
+        assertThat(testAgent.getAlternateEmail()).isEqualTo(UPDATED_ALTERNATE_EMAIL);
+        assertThat(testAgent.getWorkPhone()).isEqualTo(UPDATED_WORK_PHONE);
+        assertThat(testAgent.getMobilePhone()).isEqualTo(UPDATED_MOBILE_PHONE);
+        assertThat(testAgent.getTwitterHandle()).isEqualTo(UPDATED_TWITTER_HANDLE);
+        assertThat(testAgent.getUniqueExternalId()).isEqualTo(UPDATED_UNIQUE_EXTERNAL_ID);
+        assertThat(testAgent.getImageLocation()).isEqualTo(UPDATED_IMAGE_LOCATION);
+        assertThat(testAgent.getImageFileName()).isEqualTo(UPDATED_IMAGE_FILE_NAME);
+        assertThat(testAgent.getAddress()).isEqualTo(UPDATED_ADDRESS);
     }
 
     @Test

@@ -13,6 +13,26 @@ public class AgentDTO implements Serializable {
 
     private String description;
 
+    private String title;
+
+    private String primaryEmail;
+
+    private String alternateEmail;
+
+    private String workPhone;
+
+    private String mobilePhone;
+
+    private String twitterHandle;
+
+    private String uniqueExternalId;
+
+    private String imageLocation;
+
+    private String imageFileName;
+
+    private String address;
+
 
     private Long companyId;
     
@@ -38,6 +58,86 @@ public class AgentDTO implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getPrimaryEmail() {
+        return primaryEmail;
+    }
+
+    public void setPrimaryEmail(String primaryEmail) {
+        this.primaryEmail = primaryEmail;
+    }
+
+    public String getAlternateEmail() {
+        return alternateEmail;
+    }
+
+    public void setAlternateEmail(String alternateEmail) {
+        this.alternateEmail = alternateEmail;
+    }
+
+    public String getWorkPhone() {
+        return workPhone;
+    }
+
+    public void setWorkPhone(String workPhone) {
+        this.workPhone = workPhone;
+    }
+
+    public String getMobilePhone() {
+        return mobilePhone;
+    }
+
+    public void setMobilePhone(String mobilePhone) {
+        this.mobilePhone = mobilePhone;
+    }
+
+    public String getTwitterHandle() {
+        return twitterHandle;
+    }
+
+    public void setTwitterHandle(String twitterHandle) {
+        this.twitterHandle = twitterHandle;
+    }
+
+    public String getUniqueExternalId() {
+        return uniqueExternalId;
+    }
+
+    public void setUniqueExternalId(String uniqueExternalId) {
+        this.uniqueExternalId = uniqueExternalId;
+    }
+
+    public String getImageLocation() {
+        return imageLocation;
+    }
+
+    public void setImageLocation(String imageLocation) {
+        this.imageLocation = imageLocation;
+    }
+
+    public String getImageFileName() {
+        return imageFileName;
+    }
+
+    public void setImageFileName(String imageFileName) {
+        this.imageFileName = imageFileName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public Long getCompanyId() {
@@ -72,6 +172,16 @@ public class AgentDTO implements Serializable {
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
+            ", title='" + getTitle() + "'" +
+            ", primaryEmail='" + getPrimaryEmail() + "'" +
+            ", alternateEmail='" + getAlternateEmail() + "'" +
+            ", workPhone='" + getWorkPhone() + "'" +
+            ", mobilePhone='" + getMobilePhone() + "'" +
+            ", twitterHandle='" + getTwitterHandle() + "'" +
+            ", uniqueExternalId='" + getUniqueExternalId() + "'" +
+            ", imageLocation='" + getImageLocation() + "'" +
+            ", imageFileName='" + getImageFileName() + "'" +
+            ", address='" + getAddress() + "'" +
             ", companyId=" + getCompanyId() +
             "}";
     }

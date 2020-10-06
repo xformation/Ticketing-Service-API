@@ -26,6 +26,36 @@ public class Agent implements Serializable {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "primary_email")
+    private String primaryEmail;
+
+    @Column(name = "alternate_email")
+    private String alternateEmail;
+
+    @Column(name = "work_phone")
+    private String workPhone;
+
+    @Column(name = "mobile_phone")
+    private String mobilePhone;
+
+    @Column(name = "twitter_handle")
+    private String twitterHandle;
+
+    @Column(name = "unique_external_id")
+    private String uniqueExternalId;
+
+    @Column(name = "image_location")
+    private String imageLocation;
+
+    @Column(name = "image_file_name")
+    private String imageFileName;
+
+    @Column(name = "address")
+    private String address;
+
     @ManyToOne
     @JsonIgnoreProperties(value = "agents", allowSetters = true)
     private Company company;
@@ -65,6 +95,136 @@ public class Agent implements Serializable {
         this.description = description;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public Agent title(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getPrimaryEmail() {
+        return primaryEmail;
+    }
+
+    public Agent primaryEmail(String primaryEmail) {
+        this.primaryEmail = primaryEmail;
+        return this;
+    }
+
+    public void setPrimaryEmail(String primaryEmail) {
+        this.primaryEmail = primaryEmail;
+    }
+
+    public String getAlternateEmail() {
+        return alternateEmail;
+    }
+
+    public Agent alternateEmail(String alternateEmail) {
+        this.alternateEmail = alternateEmail;
+        return this;
+    }
+
+    public void setAlternateEmail(String alternateEmail) {
+        this.alternateEmail = alternateEmail;
+    }
+
+    public String getWorkPhone() {
+        return workPhone;
+    }
+
+    public Agent workPhone(String workPhone) {
+        this.workPhone = workPhone;
+        return this;
+    }
+
+    public void setWorkPhone(String workPhone) {
+        this.workPhone = workPhone;
+    }
+
+    public String getMobilePhone() {
+        return mobilePhone;
+    }
+
+    public Agent mobilePhone(String mobilePhone) {
+        this.mobilePhone = mobilePhone;
+        return this;
+    }
+
+    public void setMobilePhone(String mobilePhone) {
+        this.mobilePhone = mobilePhone;
+    }
+
+    public String getTwitterHandle() {
+        return twitterHandle;
+    }
+
+    public Agent twitterHandle(String twitterHandle) {
+        this.twitterHandle = twitterHandle;
+        return this;
+    }
+
+    public void setTwitterHandle(String twitterHandle) {
+        this.twitterHandle = twitterHandle;
+    }
+
+    public String getUniqueExternalId() {
+        return uniqueExternalId;
+    }
+
+    public Agent uniqueExternalId(String uniqueExternalId) {
+        this.uniqueExternalId = uniqueExternalId;
+        return this;
+    }
+
+    public void setUniqueExternalId(String uniqueExternalId) {
+        this.uniqueExternalId = uniqueExternalId;
+    }
+
+    public String getImageLocation() {
+        return imageLocation;
+    }
+
+    public Agent imageLocation(String imageLocation) {
+        this.imageLocation = imageLocation;
+        return this;
+    }
+
+    public void setImageLocation(String imageLocation) {
+        this.imageLocation = imageLocation;
+    }
+
+    public String getImageFileName() {
+        return imageFileName;
+    }
+
+    public Agent imageFileName(String imageFileName) {
+        this.imageFileName = imageFileName;
+        return this;
+    }
+
+    public void setImageFileName(String imageFileName) {
+        this.imageFileName = imageFileName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public Agent address(String address) {
+        this.address = address;
+        return this;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public Company getCompany() {
         return company;
     }
@@ -102,6 +262,16 @@ public class Agent implements Serializable {
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
+            ", title='" + getTitle() + "'" +
+            ", primaryEmail='" + getPrimaryEmail() + "'" +
+            ", alternateEmail='" + getAlternateEmail() + "'" +
+            ", workPhone='" + getWorkPhone() + "'" +
+            ", mobilePhone='" + getMobilePhone() + "'" +
+            ", twitterHandle='" + getTwitterHandle() + "'" +
+            ", uniqueExternalId='" + getUniqueExternalId() + "'" +
+            ", imageLocation='" + getImageLocation() + "'" +
+            ", imageFileName='" + getImageFileName() + "'" +
+            ", address='" + getAddress() + "'" +
             "}";
     }
 }

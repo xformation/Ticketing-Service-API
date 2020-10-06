@@ -104,6 +104,7 @@ entity Agent {
 	uniqueExternalId String
 	imageLocation String
 	imageFileName String
+	address String
 } 
 	
 relationship ManyToOne {

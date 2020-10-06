@@ -38,6 +38,7 @@ local.properties
 .loadpath
 .factorypath
 /src/main/resources/rebel.xml
+/src/main/resources/config/liquibase/fake-data/*.csv
 
 # External tool builders
 .externalToolBuilders/**
