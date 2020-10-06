@@ -12,7 +12,10 @@ entity Ticket {
 	expectedDateOfCompletion LocalDate
 	actualDateOfCompletion LocalDate
 	tag String
-	assignedUserType String
+	assignedToUserType String
+	requesterUserType String
+	assignedToId Long
+	requesterId Long
 	associatedEntityName String
 	associatedEntityId String
 }
@@ -31,16 +34,20 @@ entity TicketHistory{
 	expectedDateOfCompletion LocalDate
 	actualDateOfCompletion LocalDate
 	tag String
-	assignedUserType String
+	assignedToUserType String
+	requesterUserType String
+	assignedToId Long
+	requesterId Long
 	associatedEntityName String
-	associatedEntityId String	
+	associatedEntityId String
+	operationType String	
 }
 
 entity TicketAuditReport {
 	property String
 	oldValue String
 	newValue String
-	user String
+	updatedBy String
 	actionTime Instant
 }
 
@@ -88,11 +95,18 @@ entity Company {
 entity Agent {
 	name String
 	description String
-}
+	title String
+	primaryEmail String
+	alternateEmail String
+	workPhone String
+	mobilePhone String
+	twitterHandle String
+	uniqueExternalId String
+	imageLocation String
+	imageFileName String
+} 
 	
 relationship ManyToOne {
-	Ticket{contact} to Contact,
-	Ticket{agent} to Agent,
 	TicketHistory{ticket required} to Ticket,
 	TicketAuditReport{ticket required} to Ticket,
 	

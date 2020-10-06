@@ -8,47 +8,34 @@
 
     
     <!--
-        Added the entity Company.
+        Added the entity TicketAuditReport.
     -->
-    <changeSet id="20200927103453-1" author="jhipster">
-        <createTable tableName="company">
+    <changeSet id="20201005145127-1" author="jhipster">
+        <createTable tableName="ticket_audit_report">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="company_name" type="varchar(255)">
+            <column name="property" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="description" type="varchar(5000)">
+            <column name="old_value" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="notes" type="varchar(5000)">
+            <column name="new_value" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="health_score" type="varchar(255)">
+            <column name="updated_by" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="account_tier" type="varchar(255)">
+            <column name="action_time" type="datetime">
                 <constraints nullable="true" />
             </column>
-            <column name="renewal_date" type="date">
-                <constraints nullable="true" />
-            </column>
-            <column name="industry" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="company_logo_file_name" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="company_logo_file_location" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="domain" type="varchar(255)">
-                <constraints nullable="true" />
+            <column name="ticket_id" type="bigint">
+                <constraints nullable="false" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
+        <dropDefaultValue tableName="ticket_audit_report" columnName="action_time" columnDataType="datetime"/>
     </changeSet>
-
-    
 
 </databaseChangeLog>

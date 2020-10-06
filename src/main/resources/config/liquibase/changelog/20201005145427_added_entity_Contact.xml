@@ -8,43 +8,48 @@
 
     
     <!--
-        Added the entity Email.
+        Added the entity Contact.
     -->
-    <changeSet id="20200927103253-1" author="jhipster">
-        <createTable tableName="email">
+    <changeSet id="20201005145427-1" author="jhipster">
+        <createTable tableName="contact">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="jhi_from" type="varchar(255)">
+            <column name="user_name" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="jhi_to" type="varchar(255)">
+            <column name="title" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="subject" type="varchar(255)">
+            <column name="primary_email" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="description" type="varchar(5000)">
+            <column name="alternate_email" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="priority" type="varchar(255)">
+            <column name="work_phone" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="status" type="varchar(255)">
+            <column name="mobile_phone" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="tags" type="varchar(255)">
+            <column name="twitter_handle" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="created_by" type="varchar(255)">
+            <column name="unique_external_id" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="created_on" type="datetime">
+            <column name="image_location" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="image_file_name" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="company_id" type="bigint">
                 <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
-        <dropDefaultValue tableName="email" columnName="created_on" columnDataType="datetime"/>
     </changeSet>
 
 </databaseChangeLog>

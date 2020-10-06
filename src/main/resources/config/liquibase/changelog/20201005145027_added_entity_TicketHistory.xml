@@ -10,7 +10,7 @@
     <!--
         Added the entity TicketHistory.
     -->
-    <changeSet id="20201005060206-1" author="jhipster">
+    <changeSet id="20201005145027-1" author="jhipster">
         <createTable tableName="ticket_history">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
@@ -54,13 +54,25 @@
             <column name="tag" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="assigned_user_type" type="varchar(255)">
+            <column name="assigned_to_user_type" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="requester_user_type" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="assigned_to_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="requester_id" type="bigint">
                 <constraints nullable="true" />
             </column>
             <column name="associated_entity_name" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
             <column name="associated_entity_id" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="operation_type" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
             <column name="ticket_id" type="bigint">

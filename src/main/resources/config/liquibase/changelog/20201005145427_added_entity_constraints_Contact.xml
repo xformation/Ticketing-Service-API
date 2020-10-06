@@ -6,7 +6,7 @@
     <!--
         Added the constraints for entity Contact.
     -->
-    <changeSet id="20200927103353-2" author="jhipster">
+    <changeSet id="20201005145427-2" author="jhipster">
         
         <addForeignKeyConstraint baseColumnNames="company_id"
                                  baseTableName="contact"

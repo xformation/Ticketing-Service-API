@@ -8,34 +8,21 @@
 
     
     <!--
-        Added the entity TicketAuditReport.
+        Added the entity EmailTicketAssociation.
     -->
-    <changeSet id="20201005060306-1" author="jhipster">
-        <createTable tableName="ticket_audit_report">
+    <changeSet id="20201005145327-1" author="jhipster">
+        <createTable tableName="email_ticket_association">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="property" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="old_value" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="new_value" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="jhi_user" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="action_time" type="datetime">
+            <column name="email_id" type="bigint">
                 <constraints nullable="true" />
             </column>
             <column name="ticket_id" type="bigint">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
-        <dropDefaultValue tableName="ticket_audit_report" columnName="action_time" columnDataType="datetime"/>
     </changeSet>
 
 </databaseChangeLog>
