@@ -5,6 +5,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.time.LocalDate;
 
 /**
@@ -52,6 +53,18 @@ public class Company implements Serializable {
 
     @Column(name = "domain")
     private String domain;
+
+    @Column(name = "created_on")
+    private Instant createdOn;
+
+    @Column(name = "created_by")
+    private String createdBy;
+
+    @Column(name = "updated_by")
+    private String updatedBy;
+
+    @Column(name = "updated_on")
+    private Instant updatedOn;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -191,6 +204,58 @@ public class Company implements Serializable {
     public void setDomain(String domain) {
         this.domain = domain;
     }
+
+    public Instant getCreatedOn() {
+        return createdOn;
+    }
+
+    public Company createdOn(Instant createdOn) {
+        this.createdOn = createdOn;
+        return this;
+    }
+
+    public void setCreatedOn(Instant createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public Company createdBy(String createdBy) {
+        this.createdBy = createdBy;
+        return this;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public Company updatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+        return this;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Instant getUpdatedOn() {
+        return updatedOn;
+    }
+
+    public Company updatedOn(Instant updatedOn) {
+        this.updatedOn = updatedOn;
+        return this;
+    }
+
+    public void setUpdatedOn(Instant updatedOn) {
+        this.updatedOn = updatedOn;
+    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -224,6 +289,10 @@ public class Company implements Serializable {
             ", companyLogoFileName='" + getCompanyLogoFileName() + "'" +
             ", companyLogoFileLocation='" + getCompanyLogoFileLocation() + "'" +
             ", domain='" + getDomain() + "'" +
+            ", createdOn='" + getCreatedOn() + "'" +
+            ", createdBy='" + getCreatedBy() + "'" +
+            ", updatedBy='" + getUpdatedBy() + "'" +
+            ", updatedOn='" + getUpdatedOn() + "'" +
             "}";
     }
 }

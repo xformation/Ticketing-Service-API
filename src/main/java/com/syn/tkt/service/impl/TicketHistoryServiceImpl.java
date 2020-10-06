@@ -34,12 +34,6 @@ public class TicketHistoryServiceImpl implements TicketHistoryService {
         this.ticketHistoryMapper = ticketHistoryMapper;
     }
 
-    /**
-     * Save a ticketHistory.
-     *
-     * @param ticketHistoryDTO the entity to save.
-     * @return the persisted entity.
-     */
     @Override
     public TicketHistoryDTO save(TicketHistoryDTO ticketHistoryDTO) {
         log.debug("Request to save TicketHistory : {}", ticketHistoryDTO);
@@ -48,11 +42,6 @@ public class TicketHistoryServiceImpl implements TicketHistoryService {
         return ticketHistoryMapper.toDto(ticketHistory);
     }
 
-    /**
-     * Get all the ticketHistories.
-     *
-     * @return the list of entities.
-     */
     @Override
     @Transactional(readOnly = true)
     public List<TicketHistoryDTO> findAll() {
@@ -63,12 +52,6 @@ public class TicketHistoryServiceImpl implements TicketHistoryService {
     }
 
 
-    /**
-     * Get one ticketHistory by id.
-     *
-     * @param id the id of the entity.
-     * @return the entity.
-     */
     @Override
     @Transactional(readOnly = true)
     public Optional<TicketHistoryDTO> findOne(Long id) {
@@ -77,11 +60,6 @@ public class TicketHistoryServiceImpl implements TicketHistoryService {
             .map(ticketHistoryMapper::toDto);
     }
 
-    /**
-     * Delete the ticketHistory by id.
-     *
-     * @param id the id of the entity.
-     */
     @Override
     public void delete(Long id) {
         log.debug("Request to delete TicketHistory : {}", id);

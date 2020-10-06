@@ -14,7 +14,7 @@ public class TicketHistoryDTO implements Serializable {
 
     private String subject;
 
-    @Size(max = 5000)
+    @Size(max = 6000)
     private String description;
 
     private String type;
@@ -40,11 +40,19 @@ public class TicketHistoryDTO implements Serializable {
 
     private String tag;
 
-    private String assignedUserType;
+    private String assignedToUserType;
+
+    private String requesterUserType;
+
+    private Long assignedToId;
+
+    private Long requesterId;
 
     private String associatedEntityName;
 
     private String associatedEntityId;
+
+    private String operationType;
 
 
     private Long ticketId;
@@ -161,12 +169,36 @@ public class TicketHistoryDTO implements Serializable {
         this.tag = tag;
     }
 
-    public String getAssignedUserType() {
-        return assignedUserType;
+    public String getAssignedToUserType() {
+        return assignedToUserType;
     }
 
-    public void setAssignedUserType(String assignedUserType) {
-        this.assignedUserType = assignedUserType;
+    public void setAssignedToUserType(String assignedToUserType) {
+        this.assignedToUserType = assignedToUserType;
+    }
+
+    public String getRequesterUserType() {
+        return requesterUserType;
+    }
+
+    public void setRequesterUserType(String requesterUserType) {
+        this.requesterUserType = requesterUserType;
+    }
+
+    public Long getAssignedToId() {
+        return assignedToId;
+    }
+
+    public void setAssignedToId(Long assignedToId) {
+        this.assignedToId = assignedToId;
+    }
+
+    public Long getRequesterId() {
+        return requesterId;
+    }
+
+    public void setRequesterId(Long requesterId) {
+        this.requesterId = requesterId;
     }
 
     public String getAssociatedEntityName() {
@@ -183,6 +215,14 @@ public class TicketHistoryDTO implements Serializable {
 
     public void setAssociatedEntityId(String associatedEntityId) {
         this.associatedEntityId = associatedEntityId;
+    }
+
+    public String getOperationType() {
+        return operationType;
+    }
+
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
     }
 
     public Long getTicketId() {
@@ -228,9 +268,13 @@ public class TicketHistoryDTO implements Serializable {
             ", expectedDateOfCompletion='" + getExpectedDateOfCompletion() + "'" +
             ", actualDateOfCompletion='" + getActualDateOfCompletion() + "'" +
             ", tag='" + getTag() + "'" +
-            ", assignedUserType='" + getAssignedUserType() + "'" +
+            ", assignedToUserType='" + getAssignedToUserType() + "'" +
+            ", requesterUserType='" + getRequesterUserType() + "'" +
+            ", assignedToId=" + getAssignedToId() +
+            ", requesterId=" + getRequesterId() +
             ", associatedEntityName='" + getAssociatedEntityName() + "'" +
             ", associatedEntityId='" + getAssociatedEntityId() + "'" +
+            ", operationType='" + getOperationType() + "'" +
             ", ticketId=" + getTicketId() +
             "}";
     }

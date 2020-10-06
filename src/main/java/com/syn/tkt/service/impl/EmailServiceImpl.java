@@ -34,12 +34,6 @@ public class EmailServiceImpl implements EmailService {
         this.emailMapper = emailMapper;
     }
 
-    /**
-     * Save a email.
-     *
-     * @param emailDTO the entity to save.
-     * @return the persisted entity.
-     */
     @Override
     public EmailDTO save(EmailDTO emailDTO) {
         log.debug("Request to save Email : {}", emailDTO);
@@ -48,11 +42,6 @@ public class EmailServiceImpl implements EmailService {
         return emailMapper.toDto(email);
     }
 
-    /**
-     * Get all the emails.
-     *
-     * @return the list of entities.
-     */
     @Override
     @Transactional(readOnly = true)
     public List<EmailDTO> findAll() {
@@ -63,12 +52,6 @@ public class EmailServiceImpl implements EmailService {
     }
 
 
-    /**
-     * Get one email by id.
-     *
-     * @param id the id of the entity.
-     * @return the entity.
-     */
     @Override
     @Transactional(readOnly = true)
     public Optional<EmailDTO> findOne(Long id) {
@@ -77,11 +60,6 @@ public class EmailServiceImpl implements EmailService {
             .map(emailMapper::toDto);
     }
 
-    /**
-     * Delete the email by id.
-     *
-     * @param id the id of the entity.
-     */
     @Override
     public void delete(Long id) {
         log.debug("Request to delete Email : {}", id);

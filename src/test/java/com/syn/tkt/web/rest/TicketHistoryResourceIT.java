@@ -76,14 +76,26 @@ public class TicketHistoryResourceIT {
     private static final String DEFAULT_TAG = "AAAAAAAAAA";
     private static final String UPDATED_TAG = "BBBBBBBBBB";
 
-    private static final String DEFAULT_ASSIGNED_USER_TYPE = "AAAAAAAAAA";
-    private static final String UPDATED_ASSIGNED_USER_TYPE = "BBBBBBBBBB";
+    private static final String DEFAULT_ASSIGNED_TO_USER_TYPE = "AAAAAAAAAA";
+    private static final String UPDATED_ASSIGNED_TO_USER_TYPE = "BBBBBBBBBB";
+
+    private static final String DEFAULT_REQUESTER_USER_TYPE = "AAAAAAAAAA";
+    private static final String UPDATED_REQUESTER_USER_TYPE = "BBBBBBBBBB";
+
+    private static final Long DEFAULT_ASSIGNED_TO_ID = 1L;
+    private static final Long UPDATED_ASSIGNED_TO_ID = 2L;
+
+    private static final Long DEFAULT_REQUESTER_ID = 1L;
+    private static final Long UPDATED_REQUESTER_ID = 2L;
 
     private static final String DEFAULT_ASSOCIATED_ENTITY_NAME = "AAAAAAAAAA";
     private static final String UPDATED_ASSOCIATED_ENTITY_NAME = "BBBBBBBBBB";
 
     private static final String DEFAULT_ASSOCIATED_ENTITY_ID = "AAAAAAAAAA";
     private static final String UPDATED_ASSOCIATED_ENTITY_ID = "BBBBBBBBBB";
+
+    private static final String DEFAULT_OPERATION_TYPE = "AAAAAAAAAA";
+    private static final String UPDATED_OPERATION_TYPE = "BBBBBBBBBB";
 
     @Autowired
     private TicketHistoryRepository ticketHistoryRepository;
@@ -123,9 +135,13 @@ public class TicketHistoryResourceIT {
             .expectedDateOfCompletion(DEFAULT_EXPECTED_DATE_OF_COMPLETION)
             .actualDateOfCompletion(DEFAULT_ACTUAL_DATE_OF_COMPLETION)
             .tag(DEFAULT_TAG)
-            .assignedUserType(DEFAULT_ASSIGNED_USER_TYPE)
+            .assignedToUserType(DEFAULT_ASSIGNED_TO_USER_TYPE)
+            .requesterUserType(DEFAULT_REQUESTER_USER_TYPE)
+            .assignedToId(DEFAULT_ASSIGNED_TO_ID)
+            .requesterId(DEFAULT_REQUESTER_ID)
             .associatedEntityName(DEFAULT_ASSOCIATED_ENTITY_NAME)
-            .associatedEntityId(DEFAULT_ASSOCIATED_ENTITY_ID);
+            .associatedEntityId(DEFAULT_ASSOCIATED_ENTITY_ID)
+            .operationType(DEFAULT_OPERATION_TYPE);
         // Add required entity
         Ticket ticket;
         if (TestUtil.findAll(em, Ticket.class).isEmpty()) {
@@ -159,9 +175,13 @@ public class TicketHistoryResourceIT {
             .expectedDateOfCompletion(UPDATED_EXPECTED_DATE_OF_COMPLETION)
             .actualDateOfCompletion(UPDATED_ACTUAL_DATE_OF_COMPLETION)
             .tag(UPDATED_TAG)
-            .assignedUserType(UPDATED_ASSIGNED_USER_TYPE)
+            .assignedToUserType(UPDATED_ASSIGNED_TO_USER_TYPE)
+            .requesterUserType(UPDATED_REQUESTER_USER_TYPE)
+            .assignedToId(UPDATED_ASSIGNED_TO_ID)
+            .requesterId(UPDATED_REQUESTER_ID)
             .associatedEntityName(UPDATED_ASSOCIATED_ENTITY_NAME)
-            .associatedEntityId(UPDATED_ASSOCIATED_ENTITY_ID);
+            .associatedEntityId(UPDATED_ASSOCIATED_ENTITY_ID)
+            .operationType(UPDATED_OPERATION_TYPE);
         // Add required entity
         Ticket ticket;
         if (TestUtil.findAll(em, Ticket.class).isEmpty()) {
@@ -208,9 +228,13 @@ public class TicketHistoryResourceIT {
         assertThat(testTicketHistory.getExpectedDateOfCompletion()).isEqualTo(DEFAULT_EXPECTED_DATE_OF_COMPLETION);
         assertThat(testTicketHistory.getActualDateOfCompletion()).isEqualTo(DEFAULT_ACTUAL_DATE_OF_COMPLETION);
         assertThat(testTicketHistory.getTag()).isEqualTo(DEFAULT_TAG);
-        assertThat(testTicketHistory.getAssignedUserType()).isEqualTo(DEFAULT_ASSIGNED_USER_TYPE);
+        assertThat(testTicketHistory.getAssignedToUserType()).isEqualTo(DEFAULT_ASSIGNED_TO_USER_TYPE);
+        assertThat(testTicketHistory.getRequesterUserType()).isEqualTo(DEFAULT_REQUESTER_USER_TYPE);
+        assertThat(testTicketHistory.getAssignedToId()).isEqualTo(DEFAULT_ASSIGNED_TO_ID);
+        assertThat(testTicketHistory.getRequesterId()).isEqualTo(DEFAULT_REQUESTER_ID);
         assertThat(testTicketHistory.getAssociatedEntityName()).isEqualTo(DEFAULT_ASSOCIATED_ENTITY_NAME);
         assertThat(testTicketHistory.getAssociatedEntityId()).isEqualTo(DEFAULT_ASSOCIATED_ENTITY_ID);
+        assertThat(testTicketHistory.getOperationType()).isEqualTo(DEFAULT_OPERATION_TYPE);
     }
 
     @Test
@@ -258,9 +282,13 @@ public class TicketHistoryResourceIT {
             .andExpect(jsonPath("$.[*].expectedDateOfCompletion").value(hasItem(DEFAULT_EXPECTED_DATE_OF_COMPLETION.toString())))
             .andExpect(jsonPath("$.[*].actualDateOfCompletion").value(hasItem(DEFAULT_ACTUAL_DATE_OF_COMPLETION.toString())))
             .andExpect(jsonPath("$.[*].tag").value(hasItem(DEFAULT_TAG)))
-            .andExpect(jsonPath("$.[*].assignedUserType").value(hasItem(DEFAULT_ASSIGNED_USER_TYPE)))
+            .andExpect(jsonPath("$.[*].assignedToUserType").value(hasItem(DEFAULT_ASSIGNED_TO_USER_TYPE)))
+            .andExpect(jsonPath("$.[*].requesterUserType").value(hasItem(DEFAULT_REQUESTER_USER_TYPE)))
+            .andExpect(jsonPath("$.[*].assignedToId").value(hasItem(DEFAULT_ASSIGNED_TO_ID.intValue())))
+            .andExpect(jsonPath("$.[*].requesterId").value(hasItem(DEFAULT_REQUESTER_ID.intValue())))
             .andExpect(jsonPath("$.[*].associatedEntityName").value(hasItem(DEFAULT_ASSOCIATED_ENTITY_NAME)))
-            .andExpect(jsonPath("$.[*].associatedEntityId").value(hasItem(DEFAULT_ASSOCIATED_ENTITY_ID)));
+            .andExpect(jsonPath("$.[*].associatedEntityId").value(hasItem(DEFAULT_ASSOCIATED_ENTITY_ID)))
+            .andExpect(jsonPath("$.[*].operationType").value(hasItem(DEFAULT_OPERATION_TYPE)));
     }
     
     @Test
@@ -287,9 +315,13 @@ public class TicketHistoryResourceIT {
             .andExpect(jsonPath("$.expectedDateOfCompletion").value(DEFAULT_EXPECTED_DATE_OF_COMPLETION.toString()))
             .andExpect(jsonPath("$.actualDateOfCompletion").value(DEFAULT_ACTUAL_DATE_OF_COMPLETION.toString()))
             .andExpect(jsonPath("$.tag").value(DEFAULT_TAG))
-            .andExpect(jsonPath("$.assignedUserType").value(DEFAULT_ASSIGNED_USER_TYPE))
+            .andExpect(jsonPath("$.assignedToUserType").value(DEFAULT_ASSIGNED_TO_USER_TYPE))
+            .andExpect(jsonPath("$.requesterUserType").value(DEFAULT_REQUESTER_USER_TYPE))
+            .andExpect(jsonPath("$.assignedToId").value(DEFAULT_ASSIGNED_TO_ID.intValue()))
+            .andExpect(jsonPath("$.requesterId").value(DEFAULT_REQUESTER_ID.intValue()))
             .andExpect(jsonPath("$.associatedEntityName").value(DEFAULT_ASSOCIATED_ENTITY_NAME))
-            .andExpect(jsonPath("$.associatedEntityId").value(DEFAULT_ASSOCIATED_ENTITY_ID));
+            .andExpect(jsonPath("$.associatedEntityId").value(DEFAULT_ASSOCIATED_ENTITY_ID))
+            .andExpect(jsonPath("$.operationType").value(DEFAULT_OPERATION_TYPE));
     }
     @Test
     @Transactional
@@ -325,9 +357,13 @@ public class TicketHistoryResourceIT {
             .expectedDateOfCompletion(UPDATED_EXPECTED_DATE_OF_COMPLETION)
             .actualDateOfCompletion(UPDATED_ACTUAL_DATE_OF_COMPLETION)
             .tag(UPDATED_TAG)
-            .assignedUserType(UPDATED_ASSIGNED_USER_TYPE)
+            .assignedToUserType(UPDATED_ASSIGNED_TO_USER_TYPE)
+            .requesterUserType(UPDATED_REQUESTER_USER_TYPE)
+            .assignedToId(UPDATED_ASSIGNED_TO_ID)
+            .requesterId(UPDATED_REQUESTER_ID)
             .associatedEntityName(UPDATED_ASSOCIATED_ENTITY_NAME)
-            .associatedEntityId(UPDATED_ASSOCIATED_ENTITY_ID);
+            .associatedEntityId(UPDATED_ASSOCIATED_ENTITY_ID)
+            .operationType(UPDATED_OPERATION_TYPE);
         TicketHistoryDTO ticketHistoryDTO = ticketHistoryMapper.toDto(updatedTicketHistory);
 
         restTicketHistoryMockMvc.perform(put("/api/ticket-histories")
@@ -352,9 +388,13 @@ public class TicketHistoryResourceIT {
         assertThat(testTicketHistory.getExpectedDateOfCompletion()).isEqualTo(UPDATED_EXPECTED_DATE_OF_COMPLETION);
         assertThat(testTicketHistory.getActualDateOfCompletion()).isEqualTo(UPDATED_ACTUAL_DATE_OF_COMPLETION);
         assertThat(testTicketHistory.getTag()).isEqualTo(UPDATED_TAG);
-        assertThat(testTicketHistory.getAssignedUserType()).isEqualTo(UPDATED_ASSIGNED_USER_TYPE);
+        assertThat(testTicketHistory.getAssignedToUserType()).isEqualTo(UPDATED_ASSIGNED_TO_USER_TYPE);
+        assertThat(testTicketHistory.getRequesterUserType()).isEqualTo(UPDATED_REQUESTER_USER_TYPE);
+        assertThat(testTicketHistory.getAssignedToId()).isEqualTo(UPDATED_ASSIGNED_TO_ID);
+        assertThat(testTicketHistory.getRequesterId()).isEqualTo(UPDATED_REQUESTER_ID);
         assertThat(testTicketHistory.getAssociatedEntityName()).isEqualTo(UPDATED_ASSOCIATED_ENTITY_NAME);
         assertThat(testTicketHistory.getAssociatedEntityId()).isEqualTo(UPDATED_ASSOCIATED_ENTITY_ID);
+        assertThat(testTicketHistory.getOperationType()).isEqualTo(UPDATED_OPERATION_TYPE);
     }
 
     @Test

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 /**
  * A Agent.
@@ -55,6 +56,18 @@ public class Agent implements Serializable {
 
     @Column(name = "address")
     private String address;
+
+    @Column(name = "created_on")
+    private Instant createdOn;
+
+    @Column(name = "created_by")
+    private String createdBy;
+
+    @Column(name = "updated_by")
+    private String updatedBy;
+
+    @Column(name = "updated_on")
+    private Instant updatedOn;
 
     @ManyToOne
     @JsonIgnoreProperties(value = "agents", allowSetters = true)
@@ -225,6 +238,58 @@ public class Agent implements Serializable {
         this.address = address;
     }
 
+    public Instant getCreatedOn() {
+        return createdOn;
+    }
+
+    public Agent createdOn(Instant createdOn) {
+        this.createdOn = createdOn;
+        return this;
+    }
+
+    public void setCreatedOn(Instant createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public Agent createdBy(String createdBy) {
+        this.createdBy = createdBy;
+        return this;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public Agent updatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+        return this;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Instant getUpdatedOn() {
+        return updatedOn;
+    }
+
+    public Agent updatedOn(Instant updatedOn) {
+        this.updatedOn = updatedOn;
+        return this;
+    }
+
+    public void setUpdatedOn(Instant updatedOn) {
+        this.updatedOn = updatedOn;
+    }
+
     public Company getCompany() {
         return company;
     }
@@ -272,6 +337,10 @@ public class Agent implements Serializable {
             ", imageLocation='" + getImageLocation() + "'" +
             ", imageFileName='" + getImageFileName() + "'" +
             ", address='" + getAddress() + "'" +
+            ", createdOn='" + getCreatedOn() + "'" +
+            ", createdBy='" + getCreatedBy() + "'" +
+            ", updatedBy='" + getUpdatedBy() + "'" +
+            ", updatedOn='" + getUpdatedOn() + "'" +
             "}";
     }
 }

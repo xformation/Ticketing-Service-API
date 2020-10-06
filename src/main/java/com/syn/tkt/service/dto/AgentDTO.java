@@ -1,5 +1,6 @@
 package com.syn.tkt.service.dto;
 
+import java.time.Instant;
 import java.io.Serializable;
 
 /**
@@ -32,6 +33,14 @@ public class AgentDTO implements Serializable {
     private String imageFileName;
 
     private String address;
+
+    private Instant createdOn;
+
+    private String createdBy;
+
+    private String updatedBy;
+
+    private Instant updatedOn;
 
 
     private Long companyId;
@@ -140,6 +149,38 @@ public class AgentDTO implements Serializable {
         this.address = address;
     }
 
+    public Instant getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Instant createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Instant getUpdatedOn() {
+        return updatedOn;
+    }
+
+    public void setUpdatedOn(Instant updatedOn) {
+        this.updatedOn = updatedOn;
+    }
+
     public Long getCompanyId() {
         return companyId;
     }
@@ -182,6 +223,10 @@ public class AgentDTO implements Serializable {
             ", imageLocation='" + getImageLocation() + "'" +
             ", imageFileName='" + getImageFileName() + "'" +
             ", address='" + getAddress() + "'" +
+            ", createdOn='" + getCreatedOn() + "'" +
+            ", createdBy='" + getCreatedBy() + "'" +
+            ", updatedBy='" + getUpdatedBy() + "'" +
+            ", updatedOn='" + getUpdatedOn() + "'" +
             ", companyId=" + getCompanyId() +
             "}";
     }

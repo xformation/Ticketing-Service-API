@@ -1,5 +1,6 @@
 package com.syn.tkt.service.dto;
 
+import java.time.Instant;
 import java.io.Serializable;
 
 /**
@@ -8,6 +9,10 @@ import java.io.Serializable;
 public class EmailTicketAssociationDTO implements Serializable {
     
     private Long id;
+
+    private String updatedBy;
+
+    private Instant updatedOn;
 
 
     private Long emailId;
@@ -20,6 +25,22 @@ public class EmailTicketAssociationDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Instant getUpdatedOn() {
+        return updatedOn;
+    }
+
+    public void setUpdatedOn(Instant updatedOn) {
+        this.updatedOn = updatedOn;
     }
 
     public Long getEmailId() {
@@ -60,6 +81,8 @@ public class EmailTicketAssociationDTO implements Serializable {
     public String toString() {
         return "EmailTicketAssociationDTO{" +
             "id=" + getId() +
+            ", updatedBy='" + getUpdatedBy() + "'" +
+            ", updatedOn='" + getUpdatedOn() + "'" +
             ", emailId=" + getEmailId() +
             ", ticketId=" + getTicketId() +
             "}";

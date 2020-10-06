@@ -8,14 +8,17 @@
 
     
     <!--
-        Added the entity Contact.
+        Added the entity Agent.
     -->
-    <changeSet id="20201005145427-1" author="jhipster">
-        <createTable tableName="contact">
+    <changeSet id="20201006090600-1" author="jhipster">
+        <createTable tableName="agent">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="user_name" type="varchar(255)">
+            <column name="name" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="description" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
             <column name="title" type="varchar(255)">
@@ -45,11 +48,29 @@
             <column name="image_file_name" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="address" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="created_on" type="datetime">
+                <constraints nullable="true" />
+            </column>
+            <column name="created_by" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="updated_by" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="updated_on" type="datetime">
+                <constraints nullable="true" />
+            </column>
             <column name="company_id" type="bigint">
                 <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
+        <dropDefaultValue tableName="agent" columnName="created_on" columnDataType="datetime"/>
+        <dropDefaultValue tableName="agent" columnName="updated_on" columnDataType="datetime"/>
     </changeSet>
 
+    
 </databaseChangeLog>

@@ -34,12 +34,6 @@ public class ContactServiceImpl implements ContactService {
         this.contactMapper = contactMapper;
     }
 
-    /**
-     * Save a contact.
-     *
-     * @param contactDTO the entity to save.
-     * @return the persisted entity.
-     */
     @Override
     public ContactDTO save(ContactDTO contactDTO) {
         log.debug("Request to save Contact : {}", contactDTO);
@@ -48,11 +42,6 @@ public class ContactServiceImpl implements ContactService {
         return contactMapper.toDto(contact);
     }
 
-    /**
-     * Get all the contacts.
-     *
-     * @return the list of entities.
-     */
     @Override
     @Transactional(readOnly = true)
     public List<ContactDTO> findAll() {
@@ -63,12 +52,6 @@ public class ContactServiceImpl implements ContactService {
     }
 
 
-    /**
-     * Get one contact by id.
-     *
-     * @param id the id of the entity.
-     * @return the entity.
-     */
     @Override
     @Transactional(readOnly = true)
     public Optional<ContactDTO> findOne(Long id) {
@@ -77,11 +60,6 @@ public class ContactServiceImpl implements ContactService {
             .map(contactMapper::toDto);
     }
 
-    /**
-     * Delete the contact by id.
-     *
-     * @param id the id of the entity.
-     */
     @Override
     public void delete(Long id) {
         log.debug("Request to delete Contact : {}", id);

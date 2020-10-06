@@ -34,12 +34,6 @@ public class CompanyServiceImpl implements CompanyService {
         this.companyMapper = companyMapper;
     }
 
-    /**
-     * Save a company.
-     *
-     * @param companyDTO the entity to save.
-     * @return the persisted entity.
-     */
     @Override
     public CompanyDTO save(CompanyDTO companyDTO) {
         log.debug("Request to save Company : {}", companyDTO);
@@ -48,25 +42,16 @@ public class CompanyServiceImpl implements CompanyService {
         return companyMapper.toDto(company);
     }
 
-    /**
-     * Get all the companies.
-     *
-     * @return the list of entities.
-     */
     @Override
     @Transactional(readOnly = true)
     public List<CompanyDTO> findAll() {
         log.debug("Request to get all Companies");
-        return (List)companyRepository.findAll();
+        return companyRepository.findAll().stream()
+            .map(companyMapper::toDto)
+            .collect(Collectors.toCollection(LinkedList::new));
     }
 
 
-    /**
-     * Get one company by id.
-     *
-     * @param id the id of the entity.
-     * @return the entity.
-     */
     @Override
     @Transactional(readOnly = true)
     public Optional<CompanyDTO> findOne(Long id) {
@@ -75,11 +60,6 @@ public class CompanyServiceImpl implements CompanyService {
             .map(companyMapper::toDto);
     }
 
-    /**
-     * Delete the company by id.
-     *
-     * @param id the id of the entity.
-     */
     @Override
     public void delete(Long id) {
         log.debug("Request to delete Company : {}", id);

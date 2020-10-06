@@ -34,12 +34,6 @@ public class EmailTicketAssociationServiceImpl implements EmailTicketAssociation
         this.emailTicketAssociationMapper = emailTicketAssociationMapper;
     }
 
-    /**
-     * Save a emailTicketAssociation.
-     *
-     * @param emailTicketAssociationDTO the entity to save.
-     * @return the persisted entity.
-     */
     @Override
     public EmailTicketAssociationDTO save(EmailTicketAssociationDTO emailTicketAssociationDTO) {
         log.debug("Request to save EmailTicketAssociation : {}", emailTicketAssociationDTO);
@@ -48,11 +42,6 @@ public class EmailTicketAssociationServiceImpl implements EmailTicketAssociation
         return emailTicketAssociationMapper.toDto(emailTicketAssociation);
     }
 
-    /**
-     * Get all the emailTicketAssociations.
-     *
-     * @return the list of entities.
-     */
     @Override
     @Transactional(readOnly = true)
     public List<EmailTicketAssociationDTO> findAll() {
@@ -63,12 +52,6 @@ public class EmailTicketAssociationServiceImpl implements EmailTicketAssociation
     }
 
 
-    /**
-     * Get one emailTicketAssociation by id.
-     *
-     * @param id the id of the entity.
-     * @return the entity.
-     */
     @Override
     @Transactional(readOnly = true)
     public Optional<EmailTicketAssociationDTO> findOne(Long id) {
@@ -77,11 +60,6 @@ public class EmailTicketAssociationServiceImpl implements EmailTicketAssociation
             .map(emailTicketAssociationMapper::toDto);
     }
 
-    /**
-     * Delete the emailTicketAssociation by id.
-     *
-     * @param id the id of the entity.
-     */
     @Override
     public void delete(Long id) {
         log.debug("Request to delete EmailTicketAssociation : {}", id);

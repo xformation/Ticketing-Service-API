@@ -26,8 +26,8 @@ public class TicketHistory implements Serializable {
     @Column(name = "subject")
     private String subject;
 
-    @Size(max = 5000)
-    @Column(name = "description", length = 5000)
+    @Size(max = 6000)
+    @Column(name = "description", length = 6000)
     private String description;
 
     @Column(name = "type")
@@ -64,14 +64,26 @@ public class TicketHistory implements Serializable {
     @Column(name = "tag")
     private String tag;
 
-    @Column(name = "assigned_user_type")
-    private String assignedUserType;
+    @Column(name = "assigned_to_user_type")
+    private String assignedToUserType;
+
+    @Column(name = "requester_user_type")
+    private String requesterUserType;
+
+    @Column(name = "assigned_to_id")
+    private Long assignedToId;
+
+    @Column(name = "requester_id")
+    private Long requesterId;
 
     @Column(name = "associated_entity_name")
     private String associatedEntityName;
 
     @Column(name = "associated_entity_id")
     private String associatedEntityId;
+
+    @Column(name = "operation_type")
+    private String operationType;
 
     @ManyToOne(optional = false)
     @NotNull
@@ -256,17 +268,56 @@ public class TicketHistory implements Serializable {
         this.tag = tag;
     }
 
-    public String getAssignedUserType() {
-        return assignedUserType;
+    public String getAssignedToUserType() {
+        return assignedToUserType;
     }
 
-    public TicketHistory assignedUserType(String assignedUserType) {
-        this.assignedUserType = assignedUserType;
+    public TicketHistory assignedToUserType(String assignedToUserType) {
+        this.assignedToUserType = assignedToUserType;
         return this;
     }
 
-    public void setAssignedUserType(String assignedUserType) {
-        this.assignedUserType = assignedUserType;
+    public void setAssignedToUserType(String assignedToUserType) {
+        this.assignedToUserType = assignedToUserType;
+    }
+
+    public String getRequesterUserType() {
+        return requesterUserType;
+    }
+
+    public TicketHistory requesterUserType(String requesterUserType) {
+        this.requesterUserType = requesterUserType;
+        return this;
+    }
+
+    public void setRequesterUserType(String requesterUserType) {
+        this.requesterUserType = requesterUserType;
+    }
+
+    public Long getAssignedToId() {
+        return assignedToId;
+    }
+
+    public TicketHistory assignedToId(Long assignedToId) {
+        this.assignedToId = assignedToId;
+        return this;
+    }
+
+    public void setAssignedToId(Long assignedToId) {
+        this.assignedToId = assignedToId;
+    }
+
+    public Long getRequesterId() {
+        return requesterId;
+    }
+
+    public TicketHistory requesterId(Long requesterId) {
+        this.requesterId = requesterId;
+        return this;
+    }
+
+    public void setRequesterId(Long requesterId) {
+        this.requesterId = requesterId;
     }
 
     public String getAssociatedEntityName() {
@@ -293,6 +344,19 @@ public class TicketHistory implements Serializable {
 
     public void setAssociatedEntityId(String associatedEntityId) {
         this.associatedEntityId = associatedEntityId;
+    }
+
+    public String getOperationType() {
+        return operationType;
+    }
+
+    public TicketHistory operationType(String operationType) {
+        this.operationType = operationType;
+        return this;
+    }
+
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
     }
 
     public Ticket getTicket() {
@@ -343,9 +407,13 @@ public class TicketHistory implements Serializable {
             ", expectedDateOfCompletion='" + getExpectedDateOfCompletion() + "'" +
             ", actualDateOfCompletion='" + getActualDateOfCompletion() + "'" +
             ", tag='" + getTag() + "'" +
-            ", assignedUserType='" + getAssignedUserType() + "'" +
+            ", assignedToUserType='" + getAssignedToUserType() + "'" +
+            ", requesterUserType='" + getRequesterUserType() + "'" +
+            ", assignedToId=" + getAssignedToId() +
+            ", requesterId=" + getRequesterId() +
             ", associatedEntityName='" + getAssociatedEntityName() + "'" +
             ", associatedEntityId='" + getAssociatedEntityId() + "'" +
+            ", operationType='" + getOperationType() + "'" +
             "}";
     }
 }

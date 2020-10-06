@@ -17,6 +17,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -62,6 +64,18 @@ public class ContactResourceIT {
     private static final String DEFAULT_IMAGE_FILE_NAME = "AAAAAAAAAA";
     private static final String UPDATED_IMAGE_FILE_NAME = "BBBBBBBBBB";
 
+    private static final Instant DEFAULT_CREATED_ON = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_CREATED_ON = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
+    private static final String DEFAULT_CREATED_BY = "AAAAAAAAAA";
+    private static final String UPDATED_CREATED_BY = "BBBBBBBBBB";
+
+    private static final String DEFAULT_UPDATED_BY = "AAAAAAAAAA";
+    private static final String UPDATED_UPDATED_BY = "BBBBBBBBBB";
+
+    private static final Instant DEFAULT_UPDATED_ON = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_UPDATED_ON = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
     @Autowired
     private ContactRepository contactRepository;
 
@@ -96,7 +110,11 @@ public class ContactResourceIT {
             .twitterHandle(DEFAULT_TWITTER_HANDLE)
             .uniqueExternalId(DEFAULT_UNIQUE_EXTERNAL_ID)
             .imageLocation(DEFAULT_IMAGE_LOCATION)
-            .imageFileName(DEFAULT_IMAGE_FILE_NAME);
+            .imageFileName(DEFAULT_IMAGE_FILE_NAME)
+            .createdOn(DEFAULT_CREATED_ON)
+            .createdBy(DEFAULT_CREATED_BY)
+            .updatedBy(DEFAULT_UPDATED_BY)
+            .updatedOn(DEFAULT_UPDATED_ON);
         return contact;
     }
     /**
@@ -116,7 +134,11 @@ public class ContactResourceIT {
             .twitterHandle(UPDATED_TWITTER_HANDLE)
             .uniqueExternalId(UPDATED_UNIQUE_EXTERNAL_ID)
             .imageLocation(UPDATED_IMAGE_LOCATION)
-            .imageFileName(UPDATED_IMAGE_FILE_NAME);
+            .imageFileName(UPDATED_IMAGE_FILE_NAME)
+            .createdOn(UPDATED_CREATED_ON)
+            .createdBy(UPDATED_CREATED_BY)
+            .updatedBy(UPDATED_UPDATED_BY)
+            .updatedOn(UPDATED_UPDATED_ON);
         return contact;
     }
 
@@ -150,6 +172,10 @@ public class ContactResourceIT {
         assertThat(testContact.getUniqueExternalId()).isEqualTo(DEFAULT_UNIQUE_EXTERNAL_ID);
         assertThat(testContact.getImageLocation()).isEqualTo(DEFAULT_IMAGE_LOCATION);
         assertThat(testContact.getImageFileName()).isEqualTo(DEFAULT_IMAGE_FILE_NAME);
+        assertThat(testContact.getCreatedOn()).isEqualTo(DEFAULT_CREATED_ON);
+        assertThat(testContact.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
+        assertThat(testContact.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
+        assertThat(testContact.getUpdatedOn()).isEqualTo(DEFAULT_UPDATED_ON);
     }
 
     @Test
@@ -193,7 +219,11 @@ public class ContactResourceIT {
             .andExpect(jsonPath("$.[*].twitterHandle").value(hasItem(DEFAULT_TWITTER_HANDLE)))
             .andExpect(jsonPath("$.[*].uniqueExternalId").value(hasItem(DEFAULT_UNIQUE_EXTERNAL_ID)))
             .andExpect(jsonPath("$.[*].imageLocation").value(hasItem(DEFAULT_IMAGE_LOCATION)))
-            .andExpect(jsonPath("$.[*].imageFileName").value(hasItem(DEFAULT_IMAGE_FILE_NAME)));
+            .andExpect(jsonPath("$.[*].imageFileName").value(hasItem(DEFAULT_IMAGE_FILE_NAME)))
+            .andExpect(jsonPath("$.[*].createdOn").value(hasItem(DEFAULT_CREATED_ON.toString())))
+            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
+            .andExpect(jsonPath("$.[*].updatedBy").value(hasItem(DEFAULT_UPDATED_BY)))
+            .andExpect(jsonPath("$.[*].updatedOn").value(hasItem(DEFAULT_UPDATED_ON.toString())));
     }
     
     @Test
@@ -216,7 +246,11 @@ public class ContactResourceIT {
             .andExpect(jsonPath("$.twitterHandle").value(DEFAULT_TWITTER_HANDLE))
             .andExpect(jsonPath("$.uniqueExternalId").value(DEFAULT_UNIQUE_EXTERNAL_ID))
             .andExpect(jsonPath("$.imageLocation").value(DEFAULT_IMAGE_LOCATION))
-            .andExpect(jsonPath("$.imageFileName").value(DEFAULT_IMAGE_FILE_NAME));
+            .andExpect(jsonPath("$.imageFileName").value(DEFAULT_IMAGE_FILE_NAME))
+            .andExpect(jsonPath("$.createdOn").value(DEFAULT_CREATED_ON.toString()))
+            .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY))
+            .andExpect(jsonPath("$.updatedBy").value(DEFAULT_UPDATED_BY))
+            .andExpect(jsonPath("$.updatedOn").value(DEFAULT_UPDATED_ON.toString()));
     }
     @Test
     @Transactional
@@ -248,7 +282,11 @@ public class ContactResourceIT {
             .twitterHandle(UPDATED_TWITTER_HANDLE)
             .uniqueExternalId(UPDATED_UNIQUE_EXTERNAL_ID)
             .imageLocation(UPDATED_IMAGE_LOCATION)
-            .imageFileName(UPDATED_IMAGE_FILE_NAME);
+            .imageFileName(UPDATED_IMAGE_FILE_NAME)
+            .createdOn(UPDATED_CREATED_ON)
+            .createdBy(UPDATED_CREATED_BY)
+            .updatedBy(UPDATED_UPDATED_BY)
+            .updatedOn(UPDATED_UPDATED_ON);
         ContactDTO contactDTO = contactMapper.toDto(updatedContact);
 
         restContactMockMvc.perform(put("/api/contacts")
@@ -270,6 +308,10 @@ public class ContactResourceIT {
         assertThat(testContact.getUniqueExternalId()).isEqualTo(UPDATED_UNIQUE_EXTERNAL_ID);
         assertThat(testContact.getImageLocation()).isEqualTo(UPDATED_IMAGE_LOCATION);
         assertThat(testContact.getImageFileName()).isEqualTo(UPDATED_IMAGE_FILE_NAME);
+        assertThat(testContact.getCreatedOn()).isEqualTo(UPDATED_CREATED_ON);
+        assertThat(testContact.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
+        assertThat(testContact.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
+        assertThat(testContact.getUpdatedOn()).isEqualTo(UPDATED_UPDATED_ON);
     }
 
     @Test

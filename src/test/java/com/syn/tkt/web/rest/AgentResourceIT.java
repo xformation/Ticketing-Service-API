@@ -17,6 +17,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -68,6 +70,18 @@ public class AgentResourceIT {
     private static final String DEFAULT_ADDRESS = "AAAAAAAAAA";
     private static final String UPDATED_ADDRESS = "BBBBBBBBBB";
 
+    private static final Instant DEFAULT_CREATED_ON = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_CREATED_ON = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
+    private static final String DEFAULT_CREATED_BY = "AAAAAAAAAA";
+    private static final String UPDATED_CREATED_BY = "BBBBBBBBBB";
+
+    private static final String DEFAULT_UPDATED_BY = "AAAAAAAAAA";
+    private static final String UPDATED_UPDATED_BY = "BBBBBBBBBB";
+
+    private static final Instant DEFAULT_UPDATED_ON = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_UPDATED_ON = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
     @Autowired
     private AgentRepository agentRepository;
 
@@ -104,7 +118,11 @@ public class AgentResourceIT {
             .uniqueExternalId(DEFAULT_UNIQUE_EXTERNAL_ID)
             .imageLocation(DEFAULT_IMAGE_LOCATION)
             .imageFileName(DEFAULT_IMAGE_FILE_NAME)
-            .address(DEFAULT_ADDRESS);
+            .address(DEFAULT_ADDRESS)
+            .createdOn(DEFAULT_CREATED_ON)
+            .createdBy(DEFAULT_CREATED_BY)
+            .updatedBy(DEFAULT_UPDATED_BY)
+            .updatedOn(DEFAULT_UPDATED_ON);
         return agent;
     }
     /**
@@ -126,7 +144,11 @@ public class AgentResourceIT {
             .uniqueExternalId(UPDATED_UNIQUE_EXTERNAL_ID)
             .imageLocation(UPDATED_IMAGE_LOCATION)
             .imageFileName(UPDATED_IMAGE_FILE_NAME)
-            .address(UPDATED_ADDRESS);
+            .address(UPDATED_ADDRESS)
+            .createdOn(UPDATED_CREATED_ON)
+            .createdBy(UPDATED_CREATED_BY)
+            .updatedBy(UPDATED_UPDATED_BY)
+            .updatedOn(UPDATED_UPDATED_ON);
         return agent;
     }
 
@@ -162,6 +184,10 @@ public class AgentResourceIT {
         assertThat(testAgent.getImageLocation()).isEqualTo(DEFAULT_IMAGE_LOCATION);
         assertThat(testAgent.getImageFileName()).isEqualTo(DEFAULT_IMAGE_FILE_NAME);
         assertThat(testAgent.getAddress()).isEqualTo(DEFAULT_ADDRESS);
+        assertThat(testAgent.getCreatedOn()).isEqualTo(DEFAULT_CREATED_ON);
+        assertThat(testAgent.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
+        assertThat(testAgent.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
+        assertThat(testAgent.getUpdatedOn()).isEqualTo(DEFAULT_UPDATED_ON);
     }
 
     @Test
@@ -207,7 +233,11 @@ public class AgentResourceIT {
             .andExpect(jsonPath("$.[*].uniqueExternalId").value(hasItem(DEFAULT_UNIQUE_EXTERNAL_ID)))
             .andExpect(jsonPath("$.[*].imageLocation").value(hasItem(DEFAULT_IMAGE_LOCATION)))
             .andExpect(jsonPath("$.[*].imageFileName").value(hasItem(DEFAULT_IMAGE_FILE_NAME)))
-            .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)));
+            .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)))
+            .andExpect(jsonPath("$.[*].createdOn").value(hasItem(DEFAULT_CREATED_ON.toString())))
+            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
+            .andExpect(jsonPath("$.[*].updatedBy").value(hasItem(DEFAULT_UPDATED_BY)))
+            .andExpect(jsonPath("$.[*].updatedOn").value(hasItem(DEFAULT_UPDATED_ON.toString())));
     }
     
     @Test
@@ -232,7 +262,11 @@ public class AgentResourceIT {
             .andExpect(jsonPath("$.uniqueExternalId").value(DEFAULT_UNIQUE_EXTERNAL_ID))
             .andExpect(jsonPath("$.imageLocation").value(DEFAULT_IMAGE_LOCATION))
             .andExpect(jsonPath("$.imageFileName").value(DEFAULT_IMAGE_FILE_NAME))
-            .andExpect(jsonPath("$.address").value(DEFAULT_ADDRESS));
+            .andExpect(jsonPath("$.address").value(DEFAULT_ADDRESS))
+            .andExpect(jsonPath("$.createdOn").value(DEFAULT_CREATED_ON.toString()))
+            .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY))
+            .andExpect(jsonPath("$.updatedBy").value(DEFAULT_UPDATED_BY))
+            .andExpect(jsonPath("$.updatedOn").value(DEFAULT_UPDATED_ON.toString()));
     }
     @Test
     @Transactional
@@ -266,7 +300,11 @@ public class AgentResourceIT {
             .uniqueExternalId(UPDATED_UNIQUE_EXTERNAL_ID)
             .imageLocation(UPDATED_IMAGE_LOCATION)
             .imageFileName(UPDATED_IMAGE_FILE_NAME)
-            .address(UPDATED_ADDRESS);
+            .address(UPDATED_ADDRESS)
+            .createdOn(UPDATED_CREATED_ON)
+            .createdBy(UPDATED_CREATED_BY)
+            .updatedBy(UPDATED_UPDATED_BY)
+            .updatedOn(UPDATED_UPDATED_ON);
         AgentDTO agentDTO = agentMapper.toDto(updatedAgent);
 
         restAgentMockMvc.perform(put("/api/agents")
@@ -290,6 +328,10 @@ public class AgentResourceIT {
         assertThat(testAgent.getImageLocation()).isEqualTo(UPDATED_IMAGE_LOCATION);
         assertThat(testAgent.getImageFileName()).isEqualTo(UPDATED_IMAGE_FILE_NAME);
         assertThat(testAgent.getAddress()).isEqualTo(UPDATED_ADDRESS);
+        assertThat(testAgent.getCreatedOn()).isEqualTo(UPDATED_CREATED_ON);
+        assertThat(testAgent.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
+        assertThat(testAgent.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
+        assertThat(testAgent.getUpdatedOn()).isEqualTo(UPDATED_UPDATED_ON);
     }
 
     @Test

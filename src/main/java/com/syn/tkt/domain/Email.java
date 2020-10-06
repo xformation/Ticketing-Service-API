@@ -21,13 +21,14 @@ public class Email implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @Column(name = "jhi_from")
-    private String from;
+    @Column(name = "mail_from")
+    private String mailFrom;
 
-    @Column(name = "jhi_to")
-    private String to;
+    @Column(name = "mail_to")
+    private String mailTo;
 
-    @Column(name = "subject")
+    @Size(max = 500)
+    @Column(name = "subject", length = 500)
     private String subject;
 
     @Size(max = 5000)
@@ -58,30 +59,30 @@ public class Email implements Serializable {
         this.id = id;
     }
 
-    public String getFrom() {
-        return from;
+    public String getMailFrom() {
+        return mailFrom;
     }
 
-    public Email from(String from) {
-        this.from = from;
+    public Email mailFrom(String mailFrom) {
+        this.mailFrom = mailFrom;
         return this;
     }
 
-    public void setFrom(String from) {
-        this.from = from;
+    public void setMailFrom(String mailFrom) {
+        this.mailFrom = mailFrom;
     }
 
-    public String getTo() {
-        return to;
+    public String getMailTo() {
+        return mailTo;
     }
 
-    public Email to(String to) {
-        this.to = to;
+    public Email mailTo(String mailTo) {
+        this.mailTo = mailTo;
         return this;
     }
 
-    public void setTo(String to) {
-        this.to = to;
+    public void setMailTo(String mailTo) {
+        this.mailTo = mailTo;
     }
 
     public String getSubject() {
@@ -197,8 +198,8 @@ public class Email implements Serializable {
     public String toString() {
         return "Email{" +
             "id=" + getId() +
-            ", from='" + getFrom() + "'" +
-            ", to='" + getTo() + "'" +
+            ", mailFrom='" + getMailFrom() + "'" +
+            ", mailTo='" + getMailTo() + "'" +
             ", subject='" + getSubject() + "'" +
             ", description='" + getDescription() + "'" +
             ", priority='" + getPriority() + "'" +

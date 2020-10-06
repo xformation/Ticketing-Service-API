@@ -1,7 +1,14 @@
 package com.syn.tkt.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,10 +24,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.syn.tkt.config.Constants;
 import com.syn.tkt.domain.Agent;
+import com.syn.tkt.domain.Company;
+import com.syn.tkt.domain.Contact;
 import com.syn.tkt.repository.AgentRepository;
+import com.syn.tkt.repository.CompanyRepository;
 import com.syn.tkt.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -41,6 +54,9 @@ public class AgentController {
     private String applicationName;
     @Autowired
     private  AgentRepository agentRepository;
+    
+    @Autowired
+    private CompanyRepository companyRepository;
 
 
     /**
@@ -50,7 +66,7 @@ public class AgentController {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new agent, or with status {@code 400 (Bad Request)} if the agent has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/addAgent")
+    @PostMapping("/addAgent2")
     public ResponseEntity<Agent> createAgent(@RequestBody Agent agent) throws URISyntaxException {
         log.debug("REST request to save Agent : {}", agent);
         if (agent.getId() != null) {
@@ -61,7 +77,102 @@ public class AgentController {
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
-    
+    @PostMapping("/addAgent")
+	public ResponseEntity<Agent> createContact(@RequestParam MultipartFile contactPhoto, @RequestParam String fullName,
+			@RequestParam String title, @RequestParam(required = false) String primaryEmail,
+			@RequestParam(required = false) String alternateEmail, @RequestParam(required = false) String workPhone,
+			@RequestParam(required = false) String mobilePhone, @RequestParam(required = false) String twitterHandle,
+			@RequestParam(required = false) String uniqueExternalId, @RequestParam(required = false) Long companyId,
+			@RequestParam(required = false) MultipartFile logo, @RequestParam(required = false) String companyName,
+			@RequestParam(required = false) String description, @RequestParam(required = false) String notes,
+			@RequestParam(required = false) String domain, @RequestParam(required = false) String healthScore,
+			@RequestParam(required = false) String accountTier, @RequestParam(required = false) LocalDate renewalDate,
+			@RequestParam(required = false) String industry,@RequestParam String agentDescription,@RequestParam String address) throws URISyntaxException {
+		log.debug("REST request to save Contact : {}", title);
+		Agent result=null;
+		if(companyId==-1) {
+			log.debug("REST request to save Company : {}", companyName);
+	        File file=new File(Constants.COMPANY_LOGO_FILE_PATH);
+			if(!file.exists()) {
+				file.mkdirs();
+			}
+			Path path=Paths.get(Constants.COMPANY_LOGO_FILE_PATH,logo.getOriginalFilename());
+			try {
+				Files.write(path, logo.getBytes());
+			} catch (IOException e) {
+				log.error("IOException while creating company logo file. ",e);
+			}
+			
+			Company company=new Company();
+	        company.setCompanyName(companyName);
+	        company.setDescription(description);
+	        company.setNotes(notes);
+	        company.setDomain(domain);
+	        company.setHealthScore(healthScore);
+	        company.setAccountTier(accountTier);
+	        company.setRenewalDate(renewalDate);
+	        company.setIndustry(industry);
+	        company.setCompanyLogoFileName(logo.getOriginalFilename());
+	        company.setCompanyLogoFileLocation(Constants.COMPANY_LOGO_FILE_PATH);
+	        company = companyRepository.save(company);
+			Agent agent = new Agent();
+			agent.setName(fullName);;
+			agent.setTitle(title);
+			agent.setPrimaryEmail(primaryEmail);
+			agent.setAlternateEmail(alternateEmail);
+			agent.setWorkPhone(workPhone);
+			agent.setMobilePhone(mobilePhone);
+			agent.setTwitterHandle(twitterHandle);
+			agent.setUniqueExternalId(uniqueExternalId);
+			agent.setCompany(company);
+			agent.setImageFileName(contactPhoto.getOriginalFilename());
+			agent.setImageLocation(Constants.AGENT_PHOTO_FILE_PATH);
+			agent.setDescription(agentDescription);
+			agent.setAddress(address);
+			agent.createdOn(Instant.now());
+			if (agent.getId() != null) {
+				throw new BadRequestAlertException("A new contact cannot already have an ID", ENTITY_NAME, "idexists");
+			}
+			result = agentRepository.save(agent);
+		}else {
+			File file = new File(Constants.CONTACT_PHOTO_FILE_PATH);
+			if (!file.exists()) {
+				file.mkdirs();
+			}
+			Path path = Paths.get(Constants.CONTACT_PHOTO_FILE_PATH, contactPhoto.getOriginalFilename());
+			try {
+				Files.write(path, contactPhoto.getBytes());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Company company = companyRepository.findById(companyId).get();
+
+			Agent agent = new Agent();
+			agent.setName(fullName);
+			agent.setTitle(title);
+			agent.setPrimaryEmail(primaryEmail);
+			agent.setAlternateEmail(alternateEmail);
+			agent.setWorkPhone(workPhone);
+			agent.setMobilePhone(mobilePhone);
+			agent.setTwitterHandle(twitterHandle);
+			agent.setUniqueExternalId(uniqueExternalId);
+			agent.setCompany(company);
+			agent.setImageFileName(contactPhoto.getOriginalFilename());
+			agent.setImageLocation(Constants.AGENT_PHOTO_FILE_PATH);
+			agent.setDescription(agentDescription);
+			agent.createdOn(Instant.now());
+			agent.setAddress(address);
+			if (agent.getId() != null) {
+				throw new BadRequestAlertException("A new contact cannot already have an ID", ENTITY_NAME, "idexists");
+			}
+			result = agentRepository.save(agent);
+		}
+		return ResponseEntity.created(new URI("/api/agents/" + result.getId()))
+	            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+	            .body(result);
+	}
+
     /**
      * {@code PUT  /agents} : Updates an existing agent.
      *
@@ -88,7 +199,7 @@ public class AgentController {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of agents in body.
      */
-    @GetMapping("/getAllAgent")
+    @GetMapping("/listAllAgents")
     public List<Agent> getAllAgents() {
         log.debug("REST request to get all Agents");
         return agentRepository.findAll();

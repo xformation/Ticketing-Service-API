@@ -1,6 +1,6 @@
 entity Ticket {
 	subject String
-	description String maxlength(5000) 
+	description String maxlength(6000) 
 	type String
 	status String
 	priority String
@@ -22,7 +22,7 @@ entity Ticket {
 	
 entity TicketHistory{
 	subject String
-	description String maxlength(5000) 
+	description String maxlength(6000) 
 	type String
 	status String
 	priority String
@@ -49,12 +49,13 @@ entity TicketAuditReport {
 	newValue String
 	updatedBy String
 	actionTime Instant
+	comments String maxlength(5000)
 }
 
 entity Email {
-	from String
-	to String
-	subject String
+	mailFrom String
+	mailTo String
+	subject String maxlength (500)
 	description String maxlength (5000)
 	priority String
 	status String
@@ -63,7 +64,10 @@ entity Email {
 	createdOn Instant
 }
 
-entity EmailTicketAssociation {}
+entity EmailTicketAssociation {
+	updatedBy String
+	updatedOn Instant	
+}
 
 entity Contact {
 	userName String
@@ -76,6 +80,11 @@ entity Contact {
 	uniqueExternalId String
 	imageLocation String
 	imageFileName String
+	createdOn Instant
+	createdBy String
+	updatedBy String
+	updatedOn Instant
+	
 }
 
 	
@@ -90,6 +99,11 @@ entity Company {
 	companyLogoFileName String
 	companyLogoFileLocation String
 	domain String
+	createdOn Instant
+	createdBy String
+	updatedBy String
+	updatedOn Instant
+	
 }
 
 entity Agent {
@@ -105,6 +119,10 @@ entity Agent {
 	imageLocation String
 	imageFileName String
 	address String
+	createdOn Instant
+	createdBy String
+	updatedBy String
+	updatedOn Instant
 } 
 	
 relationship ManyToOne {

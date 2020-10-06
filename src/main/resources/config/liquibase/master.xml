@@ -14,17 +14,17 @@
     <property name="uuidType" value="uuid" dbms="h2, postgresql"/>
 
 	<include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20201005144927_added_entity_Ticket.xml" relativeToChangelogFile="false"/>
-	<include file="config/liquibase/changelog/20201005145027_added_entity_TicketHistory.xml" relativeToChangelogFile="false"/>
-	<include file="config/liquibase/changelog/20201005145127_added_entity_TicketAuditReport.xml" relativeToChangelogFile="false"/>
-	<include file="config/liquibase/changelog/20201005145227_added_entity_Email.xml" relativeToChangelogFile="false"/>
-	<include file="config/liquibase/changelog/20201005145327_added_entity_EmailTicketAssociation.xml" relativeToChangelogFile="false"/>
-	<include file="config/liquibase/changelog/20201005145427_added_entity_Contact.xml" relativeToChangelogFile="false"/>
-	<include file="config/liquibase/changelog/20201005145527_added_entity_Company.xml" relativeToChangelogFile="false"/>
-	<include file="config/liquibase/changelog/20201005145627_added_entity_Agent.xml" relativeToChangelogFile="false"/>
-	<include file="config/liquibase/changelog/20201005145027_added_entity_constraints_TicketHistory.xml" relativeToChangelogFile="false"/>
-	<include file="config/liquibase/changelog/20201005145127_added_entity_constraints_TicketAuditReport.xml" relativeToChangelogFile="false"/>
-	<include file="config/liquibase/changelog/20201005145327_added_entity_constraints_EmailTicketAssociation.xml" relativeToChangelogFile="false"/>
-	<include file="config/liquibase/changelog/20201005145427_added_entity_constraints_Contact.xml" relativeToChangelogFile="false"/>
-	<include file="config/liquibase/changelog/20201005145627_added_entity_constraints_Agent.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20201006085900_added_entity_Ticket.xml" relativeToChangelogFile="false"/>
+	<include file="config/liquibase/changelog/20201006090000_added_entity_TicketHistory.xml" relativeToChangelogFile="false"/>
+	<include file="config/liquibase/changelog/20201006090100_added_entity_TicketAuditReport.xml" relativeToChangelogFile="false"/>
+	<include file="config/liquibase/changelog/20201006090200_added_entity_Email.xml" relativeToChangelogFile="false"/>
+	<include file="config/liquibase/changelog/20201006090300_added_entity_EmailTicketAssociation.xml" relativeToChangelogFile="false"/>
+	<include file="config/liquibase/changelog/20201006090400_added_entity_Contact.xml" relativeToChangelogFile="false"/>
+	<include file="config/liquibase/changelog/20201006090500_added_entity_Company.xml" relativeToChangelogFile="false"/>
+	<include file="config/liquibase/changelog/20201006090600_added_entity_Agent.xml" relativeToChangelogFile="false"/>
+	<include file="config/liquibase/changelog/20201006090000_added_entity_constraints_TicketHistory.xml" relativeToChangelogFile="false"/>
+	<include file="config/liquibase/changelog/20201006090100_added_entity_constraints_TicketAuditReport.xml" relativeToChangelogFile="false"/>
+	<include file="config/liquibase/changelog/20201006090300_added_entity_constraints_EmailTicketAssociation.xml" relativeToChangelogFile="false"/>
+	<include file="config/liquibase/changelog/20201006090400_added_entity_constraints_Contact.xml" relativeToChangelogFile="false"/>
+	<include file="config/liquibase/changelog/20201006090600_added_entity_constraints_Agent.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

@@ -34,11 +34,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser
 public class EmailResourceIT {
 
-    private static final String DEFAULT_FROM = "AAAAAAAAAA";
-    private static final String UPDATED_FROM = "BBBBBBBBBB";
+    private static final String DEFAULT_MAIL_FROM = "AAAAAAAAAA";
+    private static final String UPDATED_MAIL_FROM = "BBBBBBBBBB";
 
-    private static final String DEFAULT_TO = "AAAAAAAAAA";
-    private static final String UPDATED_TO = "BBBBBBBBBB";
+    private static final String DEFAULT_MAIL_TO = "AAAAAAAAAA";
+    private static final String UPDATED_MAIL_TO = "BBBBBBBBBB";
 
     private static final String DEFAULT_SUBJECT = "AAAAAAAAAA";
     private static final String UPDATED_SUBJECT = "BBBBBBBBBB";
@@ -86,8 +86,8 @@ public class EmailResourceIT {
      */
     public static Email createEntity(EntityManager em) {
         Email email = new Email()
-            .from(DEFAULT_FROM)
-            .to(DEFAULT_TO)
+            .mailFrom(DEFAULT_MAIL_FROM)
+            .mailTo(DEFAULT_MAIL_TO)
             .subject(DEFAULT_SUBJECT)
             .description(DEFAULT_DESCRIPTION)
             .priority(DEFAULT_PRIORITY)
@@ -105,8 +105,8 @@ public class EmailResourceIT {
      */
     public static Email createUpdatedEntity(EntityManager em) {
         Email email = new Email()
-            .from(UPDATED_FROM)
-            .to(UPDATED_TO)
+            .mailFrom(UPDATED_MAIL_FROM)
+            .mailTo(UPDATED_MAIL_TO)
             .subject(UPDATED_SUBJECT)
             .description(UPDATED_DESCRIPTION)
             .priority(UPDATED_PRIORITY)
@@ -137,8 +137,8 @@ public class EmailResourceIT {
         List<Email> emailList = emailRepository.findAll();
         assertThat(emailList).hasSize(databaseSizeBeforeCreate + 1);
         Email testEmail = emailList.get(emailList.size() - 1);
-        assertThat(testEmail.getFrom()).isEqualTo(DEFAULT_FROM);
-        assertThat(testEmail.getTo()).isEqualTo(DEFAULT_TO);
+        assertThat(testEmail.getMailFrom()).isEqualTo(DEFAULT_MAIL_FROM);
+        assertThat(testEmail.getMailTo()).isEqualTo(DEFAULT_MAIL_TO);
         assertThat(testEmail.getSubject()).isEqualTo(DEFAULT_SUBJECT);
         assertThat(testEmail.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testEmail.getPriority()).isEqualTo(DEFAULT_PRIORITY);
@@ -180,8 +180,8 @@ public class EmailResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(email.getId().intValue())))
-            .andExpect(jsonPath("$.[*].from").value(hasItem(DEFAULT_FROM)))
-            .andExpect(jsonPath("$.[*].to").value(hasItem(DEFAULT_TO)))
+            .andExpect(jsonPath("$.[*].mailFrom").value(hasItem(DEFAULT_MAIL_FROM)))
+            .andExpect(jsonPath("$.[*].mailTo").value(hasItem(DEFAULT_MAIL_TO)))
             .andExpect(jsonPath("$.[*].subject").value(hasItem(DEFAULT_SUBJECT)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
             .andExpect(jsonPath("$.[*].priority").value(hasItem(DEFAULT_PRIORITY)))
@@ -202,8 +202,8 @@ public class EmailResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(email.getId().intValue()))
-            .andExpect(jsonPath("$.from").value(DEFAULT_FROM))
-            .andExpect(jsonPath("$.to").value(DEFAULT_TO))
+            .andExpect(jsonPath("$.mailFrom").value(DEFAULT_MAIL_FROM))
+            .andExpect(jsonPath("$.mailTo").value(DEFAULT_MAIL_TO))
             .andExpect(jsonPath("$.subject").value(DEFAULT_SUBJECT))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
             .andExpect(jsonPath("$.priority").value(DEFAULT_PRIORITY))
@@ -233,8 +233,8 @@ public class EmailResourceIT {
         // Disconnect from session so that the updates on updatedEmail are not directly saved in db
         em.detach(updatedEmail);
         updatedEmail
-            .from(UPDATED_FROM)
-            .to(UPDATED_TO)
+            .mailFrom(UPDATED_MAIL_FROM)
+            .mailTo(UPDATED_MAIL_TO)
             .subject(UPDATED_SUBJECT)
             .description(UPDATED_DESCRIPTION)
             .priority(UPDATED_PRIORITY)
@@ -253,8 +253,8 @@ public class EmailResourceIT {
         List<Email> emailList = emailRepository.findAll();
         assertThat(emailList).hasSize(databaseSizeBeforeUpdate);
         Email testEmail = emailList.get(emailList.size() - 1);
-        assertThat(testEmail.getFrom()).isEqualTo(UPDATED_FROM);
-        assertThat(testEmail.getTo()).isEqualTo(UPDATED_TO);
+        assertThat(testEmail.getMailFrom()).isEqualTo(UPDATED_MAIL_FROM);
+        assertThat(testEmail.getMailTo()).isEqualTo(UPDATED_MAIL_TO);
         assertThat(testEmail.getSubject()).isEqualTo(UPDATED_SUBJECT);
         assertThat(testEmail.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testEmail.getPriority()).isEqualTo(UPDATED_PRIORITY);

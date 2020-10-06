@@ -14,7 +14,7 @@ public class TicketDTO implements Serializable {
 
     private String subject;
 
-    @Size(max = 5000)
+    @Size(max = 6000)
     private String description;
 
     private String type;
@@ -40,16 +40,18 @@ public class TicketDTO implements Serializable {
 
     private String tag;
 
-    private String assignedUserType;
+    private String assignedToUserType;
+
+    private String requesterUserType;
+
+    private Long assignedToId;
+
+    private Long requesterId;
 
     private String associatedEntityName;
 
     private String associatedEntityId;
 
-
-    private Long contactId;
-
-    private Long agentId;
     
     public Long getId() {
         return id;
@@ -163,12 +165,36 @@ public class TicketDTO implements Serializable {
         this.tag = tag;
     }
 
-    public String getAssignedUserType() {
-        return assignedUserType;
+    public String getAssignedToUserType() {
+        return assignedToUserType;
     }
 
-    public void setAssignedUserType(String assignedUserType) {
-        this.assignedUserType = assignedUserType;
+    public void setAssignedToUserType(String assignedToUserType) {
+        this.assignedToUserType = assignedToUserType;
+    }
+
+    public String getRequesterUserType() {
+        return requesterUserType;
+    }
+
+    public void setRequesterUserType(String requesterUserType) {
+        this.requesterUserType = requesterUserType;
+    }
+
+    public Long getAssignedToId() {
+        return assignedToId;
+    }
+
+    public void setAssignedToId(Long assignedToId) {
+        this.assignedToId = assignedToId;
+    }
+
+    public Long getRequesterId() {
+        return requesterId;
+    }
+
+    public void setRequesterId(Long requesterId) {
+        this.requesterId = requesterId;
     }
 
     public String getAssociatedEntityName() {
@@ -185,22 +211,6 @@ public class TicketDTO implements Serializable {
 
     public void setAssociatedEntityId(String associatedEntityId) {
         this.associatedEntityId = associatedEntityId;
-    }
-
-    public Long getContactId() {
-        return contactId;
-    }
-
-    public void setContactId(Long contactId) {
-        this.contactId = contactId;
-    }
-
-    public Long getAgentId() {
-        return agentId;
-    }
-
-    public void setAgentId(Long agentId) {
-        this.agentId = agentId;
     }
 
     @Override
@@ -238,11 +248,12 @@ public class TicketDTO implements Serializable {
             ", expectedDateOfCompletion='" + getExpectedDateOfCompletion() + "'" +
             ", actualDateOfCompletion='" + getActualDateOfCompletion() + "'" +
             ", tag='" + getTag() + "'" +
-            ", assignedUserType='" + getAssignedUserType() + "'" +
+            ", assignedToUserType='" + getAssignedToUserType() + "'" +
+            ", requesterUserType='" + getRequesterUserType() + "'" +
+            ", assignedToId=" + getAssignedToId() +
+            ", requesterId=" + getRequesterId() +
             ", associatedEntityName='" + getAssociatedEntityName() + "'" +
             ", associatedEntityId='" + getAssociatedEntityId() + "'" +
-            ", contactId=" + getContactId() +
-            ", agentId=" + getAgentId() +
             "}";
     }
 }

@@ -44,11 +44,14 @@ public class TicketAuditReportResourceIT {
     private static final String DEFAULT_NEW_VALUE = "AAAAAAAAAA";
     private static final String UPDATED_NEW_VALUE = "BBBBBBBBBB";
 
-    private static final String DEFAULT_USER = "AAAAAAAAAA";
-    private static final String UPDATED_USER = "BBBBBBBBBB";
+    private static final String DEFAULT_UPDATED_BY = "AAAAAAAAAA";
+    private static final String UPDATED_UPDATED_BY = "BBBBBBBBBB";
 
     private static final Instant DEFAULT_ACTION_TIME = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_ACTION_TIME = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
+    private static final String DEFAULT_COMMENTS = "AAAAAAAAAA";
+    private static final String UPDATED_COMMENTS = "BBBBBBBBBB";
 
     @Autowired
     private TicketAuditReportRepository ticketAuditReportRepository;
@@ -78,8 +81,9 @@ public class TicketAuditReportResourceIT {
             .property(DEFAULT_PROPERTY)
             .oldValue(DEFAULT_OLD_VALUE)
             .newValue(DEFAULT_NEW_VALUE)
-            .user(DEFAULT_USER)
-            .actionTime(DEFAULT_ACTION_TIME);
+            .updatedBy(DEFAULT_UPDATED_BY)
+            .actionTime(DEFAULT_ACTION_TIME)
+            .comments(DEFAULT_COMMENTS);
         // Add required entity
         Ticket ticket;
         if (TestUtil.findAll(em, Ticket.class).isEmpty()) {
@@ -103,8 +107,9 @@ public class TicketAuditReportResourceIT {
             .property(UPDATED_PROPERTY)
             .oldValue(UPDATED_OLD_VALUE)
             .newValue(UPDATED_NEW_VALUE)
-            .user(UPDATED_USER)
-            .actionTime(UPDATED_ACTION_TIME);
+            .updatedBy(UPDATED_UPDATED_BY)
+            .actionTime(UPDATED_ACTION_TIME)
+            .comments(UPDATED_COMMENTS);
         // Add required entity
         Ticket ticket;
         if (TestUtil.findAll(em, Ticket.class).isEmpty()) {
@@ -141,8 +146,9 @@ public class TicketAuditReportResourceIT {
         assertThat(testTicketAuditReport.getProperty()).isEqualTo(DEFAULT_PROPERTY);
         assertThat(testTicketAuditReport.getOldValue()).isEqualTo(DEFAULT_OLD_VALUE);
         assertThat(testTicketAuditReport.getNewValue()).isEqualTo(DEFAULT_NEW_VALUE);
-        assertThat(testTicketAuditReport.getUser()).isEqualTo(DEFAULT_USER);
+        assertThat(testTicketAuditReport.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
         assertThat(testTicketAuditReport.getActionTime()).isEqualTo(DEFAULT_ACTION_TIME);
+        assertThat(testTicketAuditReport.getComments()).isEqualTo(DEFAULT_COMMENTS);
     }
 
     @Test
@@ -180,8 +186,9 @@ public class TicketAuditReportResourceIT {
             .andExpect(jsonPath("$.[*].property").value(hasItem(DEFAULT_PROPERTY)))
             .andExpect(jsonPath("$.[*].oldValue").value(hasItem(DEFAULT_OLD_VALUE)))
             .andExpect(jsonPath("$.[*].newValue").value(hasItem(DEFAULT_NEW_VALUE)))
-            .andExpect(jsonPath("$.[*].user").value(hasItem(DEFAULT_USER)))
-            .andExpect(jsonPath("$.[*].actionTime").value(hasItem(DEFAULT_ACTION_TIME.toString())));
+            .andExpect(jsonPath("$.[*].updatedBy").value(hasItem(DEFAULT_UPDATED_BY)))
+            .andExpect(jsonPath("$.[*].actionTime").value(hasItem(DEFAULT_ACTION_TIME.toString())))
+            .andExpect(jsonPath("$.[*].comments").value(hasItem(DEFAULT_COMMENTS)));
     }
     
     @Test
@@ -198,8 +205,9 @@ public class TicketAuditReportResourceIT {
             .andExpect(jsonPath("$.property").value(DEFAULT_PROPERTY))
             .andExpect(jsonPath("$.oldValue").value(DEFAULT_OLD_VALUE))
             .andExpect(jsonPath("$.newValue").value(DEFAULT_NEW_VALUE))
-            .andExpect(jsonPath("$.user").value(DEFAULT_USER))
-            .andExpect(jsonPath("$.actionTime").value(DEFAULT_ACTION_TIME.toString()));
+            .andExpect(jsonPath("$.updatedBy").value(DEFAULT_UPDATED_BY))
+            .andExpect(jsonPath("$.actionTime").value(DEFAULT_ACTION_TIME.toString()))
+            .andExpect(jsonPath("$.comments").value(DEFAULT_COMMENTS));
     }
     @Test
     @Transactional
@@ -225,8 +233,9 @@ public class TicketAuditReportResourceIT {
             .property(UPDATED_PROPERTY)
             .oldValue(UPDATED_OLD_VALUE)
             .newValue(UPDATED_NEW_VALUE)
-            .user(UPDATED_USER)
-            .actionTime(UPDATED_ACTION_TIME);
+            .updatedBy(UPDATED_UPDATED_BY)
+            .actionTime(UPDATED_ACTION_TIME)
+            .comments(UPDATED_COMMENTS);
         TicketAuditReportDTO ticketAuditReportDTO = ticketAuditReportMapper.toDto(updatedTicketAuditReport);
 
         restTicketAuditReportMockMvc.perform(put("/api/ticket-audit-reports")
@@ -241,8 +250,9 @@ public class TicketAuditReportResourceIT {
         assertThat(testTicketAuditReport.getProperty()).isEqualTo(UPDATED_PROPERTY);
         assertThat(testTicketAuditReport.getOldValue()).isEqualTo(UPDATED_OLD_VALUE);
         assertThat(testTicketAuditReport.getNewValue()).isEqualTo(UPDATED_NEW_VALUE);
-        assertThat(testTicketAuditReport.getUser()).isEqualTo(UPDATED_USER);
+        assertThat(testTicketAuditReport.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
         assertThat(testTicketAuditReport.getActionTime()).isEqualTo(UPDATED_ACTION_TIME);
+        assertThat(testTicketAuditReport.getComments()).isEqualTo(UPDATED_COMMENTS);
     }
 
     @Test

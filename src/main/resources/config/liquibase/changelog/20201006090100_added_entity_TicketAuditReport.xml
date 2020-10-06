@@ -10,7 +10,7 @@
     <!--
         Added the entity TicketAuditReport.
     -->
-    <changeSet id="20201005145127-1" author="jhipster">
+    <changeSet id="20201006090100-1" author="jhipster">
         <createTable tableName="ticket_audit_report">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
@@ -30,6 +30,9 @@
             <column name="action_time" type="datetime">
                 <constraints nullable="true" />
             </column>
+            <column name="comments" type="varchar(5000)">
+                <constraints nullable="true" />
+            </column>
             <column name="ticket_id" type="bigint">
                 <constraints nullable="false" />
             </column>
@@ -37,5 +40,7 @@
         </createTable>
         <dropDefaultValue tableName="ticket_audit_report" columnName="action_time" columnDataType="datetime"/>
     </changeSet>
+
+    
 
 </databaseChangeLog>

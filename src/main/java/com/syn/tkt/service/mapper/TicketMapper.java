@@ -9,16 +9,10 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link Ticket} and its DTO {@link TicketDTO}.
  */
-@Mapper(componentModel = "spring", uses = {ContactMapper.class, AgentMapper.class})
+@Mapper(componentModel = "spring", uses = {})
 public interface TicketMapper extends EntityMapper<TicketDTO, Ticket> {
 
-    @Mapping(source = "contact.id", target = "contactId")
-    @Mapping(source = "agent.id", target = "agentId")
-    TicketDTO toDto(Ticket ticket);
 
-    @Mapping(source = "contactId", target = "contact")
-    @Mapping(source = "agentId", target = "agent")
-    Ticket toEntity(TicketDTO ticketDTO);
 
     default Ticket fromId(Long id) {
         if (id == null) {

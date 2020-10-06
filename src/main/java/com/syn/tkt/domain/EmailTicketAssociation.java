@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 /**
  * A EmailTicketAssociation.
@@ -19,6 +20,12 @@ public class EmailTicketAssociation implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
+
+    @Column(name = "updated_by")
+    private String updatedBy;
+
+    @Column(name = "updated_on")
+    private Instant updatedOn;
 
     @ManyToOne
     @JsonIgnoreProperties(value = "emailTicketAssociations", allowSetters = true)
@@ -35,6 +42,32 @@ public class EmailTicketAssociation implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public EmailTicketAssociation updatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+        return this;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Instant getUpdatedOn() {
+        return updatedOn;
+    }
+
+    public EmailTicketAssociation updatedOn(Instant updatedOn) {
+        this.updatedOn = updatedOn;
+        return this;
+    }
+
+    public void setUpdatedOn(Instant updatedOn) {
+        this.updatedOn = updatedOn;
     }
 
     public Email getEmail() {
@@ -85,6 +118,8 @@ public class EmailTicketAssociation implements Serializable {
     public String toString() {
         return "EmailTicketAssociation{" +
             "id=" + getId() +
+            ", updatedBy='" + getUpdatedBy() + "'" +
+            ", updatedOn='" + getUpdatedOn() + "'" +
             "}";
     }
 }

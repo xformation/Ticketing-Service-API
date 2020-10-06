@@ -6,7 +6,7 @@
     <!--
         Added the constraints for entity EmailTicketAssociation.
     -->
-    <changeSet id="20201005145327-2" author="jhipster">
+    <changeSet id="20201006090300-2" author="jhipster">
         
         <addForeignKeyConstraint baseColumnNames="email_id"
                                  baseTableName="email_ticket_association"

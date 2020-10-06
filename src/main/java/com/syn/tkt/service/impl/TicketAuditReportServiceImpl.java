@@ -34,12 +34,6 @@ public class TicketAuditReportServiceImpl implements TicketAuditReportService {
         this.ticketAuditReportMapper = ticketAuditReportMapper;
     }
 
-    /**
-     * Save a ticketAuditReport.
-     *
-     * @param ticketAuditReportDTO the entity to save.
-     * @return the persisted entity.
-     */
     @Override
     public TicketAuditReportDTO save(TicketAuditReportDTO ticketAuditReportDTO) {
         log.debug("Request to save TicketAuditReport : {}", ticketAuditReportDTO);
@@ -48,11 +42,6 @@ public class TicketAuditReportServiceImpl implements TicketAuditReportService {
         return ticketAuditReportMapper.toDto(ticketAuditReport);
     }
 
-    /**
-     * Get all the ticketAuditReports.
-     *
-     * @return the list of entities.
-     */
     @Override
     @Transactional(readOnly = true)
     public List<TicketAuditReportDTO> findAll() {
@@ -63,12 +52,6 @@ public class TicketAuditReportServiceImpl implements TicketAuditReportService {
     }
 
 
-    /**
-     * Get one ticketAuditReport by id.
-     *
-     * @param id the id of the entity.
-     * @return the entity.
-     */
     @Override
     @Transactional(readOnly = true)
     public Optional<TicketAuditReportDTO> findOne(Long id) {
@@ -77,11 +60,6 @@ public class TicketAuditReportServiceImpl implements TicketAuditReportService {
             .map(ticketAuditReportMapper::toDto);
     }
 
-    /**
-     * Delete the ticketAuditReport by id.
-     *
-     * @param id the id of the entity.
-     */
     @Override
     public void delete(Long id) {
         log.debug("Request to delete TicketAuditReport : {}", id);

@@ -4,13 +4,13 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
     <!--
-        Added the constraints for entity TicketHistory.
+        Added the constraints for entity TicketAuditReport.
     -->
-    <changeSet id="20201005145027-2" author="jhipster">
+    <changeSet id="20201006090100-2" author="jhipster">
         
         <addForeignKeyConstraint baseColumnNames="ticket_id"
-                                 baseTableName="ticket_history"
-                                 constraintName="fk_ticket_history_ticket_id"
+                                 baseTableName="ticket_audit_report"
+                                 constraintName="fk_ticket_audit_report_ticket_id"
                                  referencedColumnNames="id"
                                  referencedTableName="ticket"/>
 

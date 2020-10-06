@@ -75,8 +75,17 @@ public class TicketResourceIT {
     private static final String DEFAULT_TAG = "AAAAAAAAAA";
     private static final String UPDATED_TAG = "BBBBBBBBBB";
 
-    private static final String DEFAULT_ASSIGNED_USER_TYPE = "AAAAAAAAAA";
-    private static final String UPDATED_ASSIGNED_USER_TYPE = "BBBBBBBBBB";
+    private static final String DEFAULT_ASSIGNED_TO_USER_TYPE = "AAAAAAAAAA";
+    private static final String UPDATED_ASSIGNED_TO_USER_TYPE = "BBBBBBBBBB";
+
+    private static final String DEFAULT_REQUESTER_USER_TYPE = "AAAAAAAAAA";
+    private static final String UPDATED_REQUESTER_USER_TYPE = "BBBBBBBBBB";
+
+    private static final Long DEFAULT_ASSIGNED_TO_ID = 1L;
+    private static final Long UPDATED_ASSIGNED_TO_ID = 2L;
+
+    private static final Long DEFAULT_REQUESTER_ID = 1L;
+    private static final Long UPDATED_REQUESTER_ID = 2L;
 
     private static final String DEFAULT_ASSOCIATED_ENTITY_NAME = "AAAAAAAAAA";
     private static final String UPDATED_ASSOCIATED_ENTITY_NAME = "BBBBBBBBBB";
@@ -122,7 +131,10 @@ public class TicketResourceIT {
             .expectedDateOfCompletion(DEFAULT_EXPECTED_DATE_OF_COMPLETION)
             .actualDateOfCompletion(DEFAULT_ACTUAL_DATE_OF_COMPLETION)
             .tag(DEFAULT_TAG)
-            .assignedUserType(DEFAULT_ASSIGNED_USER_TYPE)
+            .assignedToUserType(DEFAULT_ASSIGNED_TO_USER_TYPE)
+            .requesterUserType(DEFAULT_REQUESTER_USER_TYPE)
+            .assignedToId(DEFAULT_ASSIGNED_TO_ID)
+            .requesterId(DEFAULT_REQUESTER_ID)
             .associatedEntityName(DEFAULT_ASSOCIATED_ENTITY_NAME)
             .associatedEntityId(DEFAULT_ASSOCIATED_ENTITY_ID);
         return ticket;
@@ -148,7 +160,10 @@ public class TicketResourceIT {
             .expectedDateOfCompletion(UPDATED_EXPECTED_DATE_OF_COMPLETION)
             .actualDateOfCompletion(UPDATED_ACTUAL_DATE_OF_COMPLETION)
             .tag(UPDATED_TAG)
-            .assignedUserType(UPDATED_ASSIGNED_USER_TYPE)
+            .assignedToUserType(UPDATED_ASSIGNED_TO_USER_TYPE)
+            .requesterUserType(UPDATED_REQUESTER_USER_TYPE)
+            .assignedToId(UPDATED_ASSIGNED_TO_ID)
+            .requesterId(UPDATED_REQUESTER_ID)
             .associatedEntityName(UPDATED_ASSOCIATED_ENTITY_NAME)
             .associatedEntityId(UPDATED_ASSOCIATED_ENTITY_ID);
         return ticket;
@@ -187,7 +202,10 @@ public class TicketResourceIT {
         assertThat(testTicket.getExpectedDateOfCompletion()).isEqualTo(DEFAULT_EXPECTED_DATE_OF_COMPLETION);
         assertThat(testTicket.getActualDateOfCompletion()).isEqualTo(DEFAULT_ACTUAL_DATE_OF_COMPLETION);
         assertThat(testTicket.getTag()).isEqualTo(DEFAULT_TAG);
-        assertThat(testTicket.getAssignedUserType()).isEqualTo(DEFAULT_ASSIGNED_USER_TYPE);
+        assertThat(testTicket.getAssignedToUserType()).isEqualTo(DEFAULT_ASSIGNED_TO_USER_TYPE);
+        assertThat(testTicket.getRequesterUserType()).isEqualTo(DEFAULT_REQUESTER_USER_TYPE);
+        assertThat(testTicket.getAssignedToId()).isEqualTo(DEFAULT_ASSIGNED_TO_ID);
+        assertThat(testTicket.getRequesterId()).isEqualTo(DEFAULT_REQUESTER_ID);
         assertThat(testTicket.getAssociatedEntityName()).isEqualTo(DEFAULT_ASSOCIATED_ENTITY_NAME);
         assertThat(testTicket.getAssociatedEntityId()).isEqualTo(DEFAULT_ASSOCIATED_ENTITY_ID);
     }
@@ -237,7 +255,10 @@ public class TicketResourceIT {
             .andExpect(jsonPath("$.[*].expectedDateOfCompletion").value(hasItem(DEFAULT_EXPECTED_DATE_OF_COMPLETION.toString())))
             .andExpect(jsonPath("$.[*].actualDateOfCompletion").value(hasItem(DEFAULT_ACTUAL_DATE_OF_COMPLETION.toString())))
             .andExpect(jsonPath("$.[*].tag").value(hasItem(DEFAULT_TAG)))
-            .andExpect(jsonPath("$.[*].assignedUserType").value(hasItem(DEFAULT_ASSIGNED_USER_TYPE)))
+            .andExpect(jsonPath("$.[*].assignedToUserType").value(hasItem(DEFAULT_ASSIGNED_TO_USER_TYPE)))
+            .andExpect(jsonPath("$.[*].requesterUserType").value(hasItem(DEFAULT_REQUESTER_USER_TYPE)))
+            .andExpect(jsonPath("$.[*].assignedToId").value(hasItem(DEFAULT_ASSIGNED_TO_ID.intValue())))
+            .andExpect(jsonPath("$.[*].requesterId").value(hasItem(DEFAULT_REQUESTER_ID.intValue())))
             .andExpect(jsonPath("$.[*].associatedEntityName").value(hasItem(DEFAULT_ASSOCIATED_ENTITY_NAME)))
             .andExpect(jsonPath("$.[*].associatedEntityId").value(hasItem(DEFAULT_ASSOCIATED_ENTITY_ID)));
     }
@@ -266,7 +287,10 @@ public class TicketResourceIT {
             .andExpect(jsonPath("$.expectedDateOfCompletion").value(DEFAULT_EXPECTED_DATE_OF_COMPLETION.toString()))
             .andExpect(jsonPath("$.actualDateOfCompletion").value(DEFAULT_ACTUAL_DATE_OF_COMPLETION.toString()))
             .andExpect(jsonPath("$.tag").value(DEFAULT_TAG))
-            .andExpect(jsonPath("$.assignedUserType").value(DEFAULT_ASSIGNED_USER_TYPE))
+            .andExpect(jsonPath("$.assignedToUserType").value(DEFAULT_ASSIGNED_TO_USER_TYPE))
+            .andExpect(jsonPath("$.requesterUserType").value(DEFAULT_REQUESTER_USER_TYPE))
+            .andExpect(jsonPath("$.assignedToId").value(DEFAULT_ASSIGNED_TO_ID.intValue()))
+            .andExpect(jsonPath("$.requesterId").value(DEFAULT_REQUESTER_ID.intValue()))
             .andExpect(jsonPath("$.associatedEntityName").value(DEFAULT_ASSOCIATED_ENTITY_NAME))
             .andExpect(jsonPath("$.associatedEntityId").value(DEFAULT_ASSOCIATED_ENTITY_ID));
     }
@@ -304,7 +328,10 @@ public class TicketResourceIT {
             .expectedDateOfCompletion(UPDATED_EXPECTED_DATE_OF_COMPLETION)
             .actualDateOfCompletion(UPDATED_ACTUAL_DATE_OF_COMPLETION)
             .tag(UPDATED_TAG)
-            .assignedUserType(UPDATED_ASSIGNED_USER_TYPE)
+            .assignedToUserType(UPDATED_ASSIGNED_TO_USER_TYPE)
+            .requesterUserType(UPDATED_REQUESTER_USER_TYPE)
+            .assignedToId(UPDATED_ASSIGNED_TO_ID)
+            .requesterId(UPDATED_REQUESTER_ID)
             .associatedEntityName(UPDATED_ASSOCIATED_ENTITY_NAME)
             .associatedEntityId(UPDATED_ASSOCIATED_ENTITY_ID);
         TicketDTO ticketDTO = ticketMapper.toDto(updatedTicket);
@@ -331,7 +358,10 @@ public class TicketResourceIT {
         assertThat(testTicket.getExpectedDateOfCompletion()).isEqualTo(UPDATED_EXPECTED_DATE_OF_COMPLETION);
         assertThat(testTicket.getActualDateOfCompletion()).isEqualTo(UPDATED_ACTUAL_DATE_OF_COMPLETION);
         assertThat(testTicket.getTag()).isEqualTo(UPDATED_TAG);
-        assertThat(testTicket.getAssignedUserType()).isEqualTo(UPDATED_ASSIGNED_USER_TYPE);
+        assertThat(testTicket.getAssignedToUserType()).isEqualTo(UPDATED_ASSIGNED_TO_USER_TYPE);
+        assertThat(testTicket.getRequesterUserType()).isEqualTo(UPDATED_REQUESTER_USER_TYPE);
+        assertThat(testTicket.getAssignedToId()).isEqualTo(UPDATED_ASSIGNED_TO_ID);
+        assertThat(testTicket.getRequesterId()).isEqualTo(UPDATED_REQUESTER_ID);
         assertThat(testTicket.getAssociatedEntityName()).isEqualTo(UPDATED_ASSOCIATED_ENTITY_NAME);
         assertThat(testTicket.getAssociatedEntityId()).isEqualTo(UPDATED_ASSOCIATED_ENTITY_ID);
     }

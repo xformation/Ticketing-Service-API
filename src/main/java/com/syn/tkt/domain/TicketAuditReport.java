@@ -31,11 +31,15 @@ public class TicketAuditReport implements Serializable {
     @Column(name = "new_value")
     private String newValue;
 
-    @Column(name = "jhi_user")
-    private String user;
+    @Column(name = "updated_by")
+    private String updatedBy;
 
     @Column(name = "action_time")
     private Instant actionTime;
+
+    @Size(max = 5000)
+    @Column(name = "comments", length = 5000)
+    private String comments;
 
     @ManyToOne(optional = false)
     @NotNull
@@ -90,17 +94,17 @@ public class TicketAuditReport implements Serializable {
         this.newValue = newValue;
     }
 
-    public String getUser() {
-        return user;
+    public String getUpdatedBy() {
+        return updatedBy;
     }
 
-    public TicketAuditReport user(String user) {
-        this.user = user;
+    public TicketAuditReport updatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
         return this;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
     }
 
     public Instant getActionTime() {
@@ -114,6 +118,19 @@ public class TicketAuditReport implements Serializable {
 
     public void setActionTime(Instant actionTime) {
         this.actionTime = actionTime;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public TicketAuditReport comments(String comments) {
+        this.comments = comments;
+        return this;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     public Ticket getTicket() {
@@ -154,8 +171,9 @@ public class TicketAuditReport implements Serializable {
             ", property='" + getProperty() + "'" +
             ", oldValue='" + getOldValue() + "'" +
             ", newValue='" + getNewValue() + "'" +
-            ", user='" + getUser() + "'" +
+            ", updatedBy='" + getUpdatedBy() + "'" +
             ", actionTime='" + getActionTime() + "'" +
+            ", comments='" + getComments() + "'" +
             "}";
     }
 }

@@ -11,10 +11,11 @@ public class EmailDTO implements Serializable {
     
     private Long id;
 
-    private String from;
+    private String mailFrom;
 
-    private String to;
+    private String mailTo;
 
+    @Size(max = 500)
     private String subject;
 
     @Size(max = 5000)
@@ -39,20 +40,20 @@ public class EmailDTO implements Serializable {
         this.id = id;
     }
 
-    public String getFrom() {
-        return from;
+    public String getMailFrom() {
+        return mailFrom;
     }
 
-    public void setFrom(String from) {
-        this.from = from;
+    public void setMailFrom(String mailFrom) {
+        this.mailFrom = mailFrom;
     }
 
-    public String getTo() {
-        return to;
+    public String getMailTo() {
+        return mailTo;
     }
 
-    public void setTo(String to) {
-        this.to = to;
+    public void setMailTo(String mailTo) {
+        this.mailTo = mailTo;
     }
 
     public String getSubject() {
@@ -133,8 +134,8 @@ public class EmailDTO implements Serializable {
     public String toString() {
         return "EmailDTO{" +
             "id=" + getId() +
-            ", from='" + getFrom() + "'" +
-            ", to='" + getTo() + "'" +
+            ", mailFrom='" + getMailFrom() + "'" +
+            ", mailTo='" + getMailTo() + "'" +
             ", subject='" + getSubject() + "'" +
             ", description='" + getDescription() + "'" +
             ", priority='" + getPriority() + "'" +

@@ -17,9 +17,12 @@ public class TicketAuditReportDTO implements Serializable {
 
     private String newValue;
 
-    private String user;
+    private String updatedBy;
 
     private Instant actionTime;
+
+    @Size(max = 5000)
+    private String comments;
 
 
     private Long ticketId;
@@ -56,12 +59,12 @@ public class TicketAuditReportDTO implements Serializable {
         this.newValue = newValue;
     }
 
-    public String getUser() {
-        return user;
+    public String getUpdatedBy() {
+        return updatedBy;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
     }
 
     public Instant getActionTime() {
@@ -70,6 +73,14 @@ public class TicketAuditReportDTO implements Serializable {
 
     public void setActionTime(Instant actionTime) {
         this.actionTime = actionTime;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     public Long getTicketId() {
@@ -105,8 +116,9 @@ public class TicketAuditReportDTO implements Serializable {
             ", property='" + getProperty() + "'" +
             ", oldValue='" + getOldValue() + "'" +
             ", newValue='" + getNewValue() + "'" +
-            ", user='" + getUser() + "'" +
+            ", updatedBy='" + getUpdatedBy() + "'" +
             ", actionTime='" + getActionTime() + "'" +
+            ", comments='" + getComments() + "'" +
             ", ticketId=" + getTicketId() +
             "}";
     }

@@ -2,6 +2,7 @@ package com.syn.tkt.controller;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class TicketController {
             throw new BadRequestAlertException("A new ticket cannot already have an ID", ENTITY_NAME, "idexists");
         }
         LocalDate date=LocalDate.now();
-//        ticket.createdOn(date);
+        ticket.setCreatedOn(Instant.now());
         ticket.expectedDateOfCompletion(LocalDate.of(date.getYear(), date.getMonth(),date.getDayOfMonth()+10));
         ticket.setStatus("Open");
         Ticket result = ticketRepository.save(ticket);

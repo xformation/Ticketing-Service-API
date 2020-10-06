@@ -1,6 +1,5 @@
 package com.syn.tkt.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -26,8 +25,8 @@ public class Ticket implements Serializable {
     @Column(name = "subject")
     private String subject;
 
-    @Size(max = 5000)
-    @Column(name = "description", length = 5000)
+    @Size(max = 6000)
+    @Column(name = "description", length = 6000)
     private String description;
 
     @Column(name = "type")
@@ -64,22 +63,23 @@ public class Ticket implements Serializable {
     @Column(name = "tag")
     private String tag;
 
-    @Column(name = "assigned_user_type")
-    private String assignedUserType;
+    @Column(name = "assigned_to_user_type")
+    private String assignedToUserType;
+
+    @Column(name = "requester_user_type")
+    private String requesterUserType;
+
+    @Column(name = "assigned_to_id")
+    private Long assignedToId;
+
+    @Column(name = "requester_id")
+    private Long requesterId;
 
     @Column(name = "associated_entity_name")
     private String associatedEntityName;
 
     @Column(name = "associated_entity_id")
     private String associatedEntityId;
-
-    @ManyToOne
-    @JsonIgnoreProperties(value = "tickets", allowSetters = true)
-    private Contact contact;
-
-    @ManyToOne
-    @JsonIgnoreProperties(value = "tickets", allowSetters = true)
-    private Agent agent;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -259,17 +259,56 @@ public class Ticket implements Serializable {
         this.tag = tag;
     }
 
-    public String getAssignedUserType() {
-        return assignedUserType;
+    public String getAssignedToUserType() {
+        return assignedToUserType;
     }
 
-    public Ticket assignedUserType(String assignedUserType) {
-        this.assignedUserType = assignedUserType;
+    public Ticket assignedToUserType(String assignedToUserType) {
+        this.assignedToUserType = assignedToUserType;
         return this;
     }
 
-    public void setAssignedUserType(String assignedUserType) {
-        this.assignedUserType = assignedUserType;
+    public void setAssignedToUserType(String assignedToUserType) {
+        this.assignedToUserType = assignedToUserType;
+    }
+
+    public String getRequesterUserType() {
+        return requesterUserType;
+    }
+
+    public Ticket requesterUserType(String requesterUserType) {
+        this.requesterUserType = requesterUserType;
+        return this;
+    }
+
+    public void setRequesterUserType(String requesterUserType) {
+        this.requesterUserType = requesterUserType;
+    }
+
+    public Long getAssignedToId() {
+        return assignedToId;
+    }
+
+    public Ticket assignedToId(Long assignedToId) {
+        this.assignedToId = assignedToId;
+        return this;
+    }
+
+    public void setAssignedToId(Long assignedToId) {
+        this.assignedToId = assignedToId;
+    }
+
+    public Long getRequesterId() {
+        return requesterId;
+    }
+
+    public Ticket requesterId(Long requesterId) {
+        this.requesterId = requesterId;
+        return this;
+    }
+
+    public void setRequesterId(Long requesterId) {
+        this.requesterId = requesterId;
     }
 
     public String getAssociatedEntityName() {
@@ -296,32 +335,6 @@ public class Ticket implements Serializable {
 
     public void setAssociatedEntityId(String associatedEntityId) {
         this.associatedEntityId = associatedEntityId;
-    }
-
-    public Contact getContact() {
-        return contact;
-    }
-
-    public Ticket contact(Contact contact) {
-        this.contact = contact;
-        return this;
-    }
-
-    public void setContact(Contact contact) {
-        this.contact = contact;
-    }
-
-    public Agent getAgent() {
-        return agent;
-    }
-
-    public Ticket agent(Agent agent) {
-        this.agent = agent;
-        return this;
-    }
-
-    public void setAgent(Agent agent) {
-        this.agent = agent;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
@@ -359,7 +372,10 @@ public class Ticket implements Serializable {
             ", expectedDateOfCompletion='" + getExpectedDateOfCompletion() + "'" +
             ", actualDateOfCompletion='" + getActualDateOfCompletion() + "'" +
             ", tag='" + getTag() + "'" +
-            ", assignedUserType='" + getAssignedUserType() + "'" +
+            ", assignedToUserType='" + getAssignedToUserType() + "'" +
+            ", requesterUserType='" + getRequesterUserType() + "'" +
+            ", assignedToId=" + getAssignedToId() +
+            ", requesterId=" + getRequesterId() +
             ", associatedEntityName='" + getAssociatedEntityName() + "'" +
             ", associatedEntityId='" + getAssociatedEntityId() + "'" +
             "}";

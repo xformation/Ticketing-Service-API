@@ -18,7 +18,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
+import java.time.Instant;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,6 +66,18 @@ public class CompanyResourceIT {
     private static final String DEFAULT_DOMAIN = "AAAAAAAAAA";
     private static final String UPDATED_DOMAIN = "BBBBBBBBBB";
 
+    private static final Instant DEFAULT_CREATED_ON = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_CREATED_ON = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
+    private static final String DEFAULT_CREATED_BY = "AAAAAAAAAA";
+    private static final String UPDATED_CREATED_BY = "BBBBBBBBBB";
+
+    private static final String DEFAULT_UPDATED_BY = "AAAAAAAAAA";
+    private static final String UPDATED_UPDATED_BY = "BBBBBBBBBB";
+
+    private static final Instant DEFAULT_UPDATED_ON = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_UPDATED_ON = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
     @Autowired
     private CompanyRepository companyRepository;
 
@@ -98,7 +112,11 @@ public class CompanyResourceIT {
             .industry(DEFAULT_INDUSTRY)
             .companyLogoFileName(DEFAULT_COMPANY_LOGO_FILE_NAME)
             .companyLogoFileLocation(DEFAULT_COMPANY_LOGO_FILE_LOCATION)
-            .domain(DEFAULT_DOMAIN);
+            .domain(DEFAULT_DOMAIN)
+            .createdOn(DEFAULT_CREATED_ON)
+            .createdBy(DEFAULT_CREATED_BY)
+            .updatedBy(DEFAULT_UPDATED_BY)
+            .updatedOn(DEFAULT_UPDATED_ON);
         return company;
     }
     /**
@@ -118,7 +136,11 @@ public class CompanyResourceIT {
             .industry(UPDATED_INDUSTRY)
             .companyLogoFileName(UPDATED_COMPANY_LOGO_FILE_NAME)
             .companyLogoFileLocation(UPDATED_COMPANY_LOGO_FILE_LOCATION)
-            .domain(UPDATED_DOMAIN);
+            .domain(UPDATED_DOMAIN)
+            .createdOn(UPDATED_CREATED_ON)
+            .createdBy(UPDATED_CREATED_BY)
+            .updatedBy(UPDATED_UPDATED_BY)
+            .updatedOn(UPDATED_UPDATED_ON);
         return company;
     }
 
@@ -152,6 +174,10 @@ public class CompanyResourceIT {
         assertThat(testCompany.getCompanyLogoFileName()).isEqualTo(DEFAULT_COMPANY_LOGO_FILE_NAME);
         assertThat(testCompany.getCompanyLogoFileLocation()).isEqualTo(DEFAULT_COMPANY_LOGO_FILE_LOCATION);
         assertThat(testCompany.getDomain()).isEqualTo(DEFAULT_DOMAIN);
+        assertThat(testCompany.getCreatedOn()).isEqualTo(DEFAULT_CREATED_ON);
+        assertThat(testCompany.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
+        assertThat(testCompany.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
+        assertThat(testCompany.getUpdatedOn()).isEqualTo(DEFAULT_UPDATED_ON);
     }
 
     @Test
@@ -195,7 +221,11 @@ public class CompanyResourceIT {
             .andExpect(jsonPath("$.[*].industry").value(hasItem(DEFAULT_INDUSTRY)))
             .andExpect(jsonPath("$.[*].companyLogoFileName").value(hasItem(DEFAULT_COMPANY_LOGO_FILE_NAME)))
             .andExpect(jsonPath("$.[*].companyLogoFileLocation").value(hasItem(DEFAULT_COMPANY_LOGO_FILE_LOCATION)))
-            .andExpect(jsonPath("$.[*].domain").value(hasItem(DEFAULT_DOMAIN)));
+            .andExpect(jsonPath("$.[*].domain").value(hasItem(DEFAULT_DOMAIN)))
+            .andExpect(jsonPath("$.[*].createdOn").value(hasItem(DEFAULT_CREATED_ON.toString())))
+            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
+            .andExpect(jsonPath("$.[*].updatedBy").value(hasItem(DEFAULT_UPDATED_BY)))
+            .andExpect(jsonPath("$.[*].updatedOn").value(hasItem(DEFAULT_UPDATED_ON.toString())));
     }
     
     @Test
@@ -218,7 +248,11 @@ public class CompanyResourceIT {
             .andExpect(jsonPath("$.industry").value(DEFAULT_INDUSTRY))
             .andExpect(jsonPath("$.companyLogoFileName").value(DEFAULT_COMPANY_LOGO_FILE_NAME))
             .andExpect(jsonPath("$.companyLogoFileLocation").value(DEFAULT_COMPANY_LOGO_FILE_LOCATION))
-            .andExpect(jsonPath("$.domain").value(DEFAULT_DOMAIN));
+            .andExpect(jsonPath("$.domain").value(DEFAULT_DOMAIN))
+            .andExpect(jsonPath("$.createdOn").value(DEFAULT_CREATED_ON.toString()))
+            .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY))
+            .andExpect(jsonPath("$.updatedBy").value(DEFAULT_UPDATED_BY))
+            .andExpect(jsonPath("$.updatedOn").value(DEFAULT_UPDATED_ON.toString()));
     }
     @Test
     @Transactional
@@ -250,7 +284,11 @@ public class CompanyResourceIT {
             .industry(UPDATED_INDUSTRY)
             .companyLogoFileName(UPDATED_COMPANY_LOGO_FILE_NAME)
             .companyLogoFileLocation(UPDATED_COMPANY_LOGO_FILE_LOCATION)
-            .domain(UPDATED_DOMAIN);
+            .domain(UPDATED_DOMAIN)
+            .createdOn(UPDATED_CREATED_ON)
+            .createdBy(UPDATED_CREATED_BY)
+            .updatedBy(UPDATED_UPDATED_BY)
+            .updatedOn(UPDATED_UPDATED_ON);
         CompanyDTO companyDTO = companyMapper.toDto(updatedCompany);
 
         restCompanyMockMvc.perform(put("/api/companies")
@@ -272,6 +310,10 @@ public class CompanyResourceIT {
         assertThat(testCompany.getCompanyLogoFileName()).isEqualTo(UPDATED_COMPANY_LOGO_FILE_NAME);
         assertThat(testCompany.getCompanyLogoFileLocation()).isEqualTo(UPDATED_COMPANY_LOGO_FILE_LOCATION);
         assertThat(testCompany.getDomain()).isEqualTo(UPDATED_DOMAIN);
+        assertThat(testCompany.getCreatedOn()).isEqualTo(UPDATED_CREATED_ON);
+        assertThat(testCompany.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
+        assertThat(testCompany.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
+        assertThat(testCompany.getUpdatedOn()).isEqualTo(UPDATED_UPDATED_ON);
     }
 
     @Test

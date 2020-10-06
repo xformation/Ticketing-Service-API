@@ -8,26 +8,41 @@
 
     
     <!--
-        Added the entity Ticket.
+        Added the entity Contact.
     -->
-    <changeSet id="20201005144927-1" author="jhipster">
-        <createTable tableName="ticket">
+    <changeSet id="20201006090400-1" author="jhipster">
+        <createTable tableName="contact">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="subject" type="varchar(255)">
+            <column name="user_name" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="description" type="varchar(5000)">
+            <column name="title" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="type" type="varchar(255)">
+            <column name="primary_email" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="status" type="varchar(255)">
+            <column name="alternate_email" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="priority" type="varchar(255)">
+            <column name="work_phone" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="mobile_phone" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="twitter_handle" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="unique_external_id" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="image_location" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="image_file_name" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
             <column name="created_on" type="datetime">
@@ -42,40 +57,13 @@
             <column name="updated_on" type="datetime">
                 <constraints nullable="true" />
             </column>
-            <column name="comments" type="varchar(5000)">
-                <constraints nullable="true" />
-            </column>
-            <column name="expected_date_of_completion" type="date">
-                <constraints nullable="true" />
-            </column>
-            <column name="actual_date_of_completion" type="date">
-                <constraints nullable="true" />
-            </column>
-            <column name="tag" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="assigned_to_user_type" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="requester_user_type" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="assigned_to_id" type="bigint">
-                <constraints nullable="true" />
-            </column>
-            <column name="requester_id" type="bigint">
-                <constraints nullable="true" />
-            </column>
-            <column name="associated_entity_name" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="associated_entity_id" type="varchar(255)">
+            <column name="company_id" type="bigint">
                 <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
-        <dropDefaultValue tableName="ticket" columnName="created_on" columnDataType="datetime"/>
-        <dropDefaultValue tableName="ticket" columnName="updated_on" columnDataType="datetime"/>
+        <dropDefaultValue tableName="contact" columnName="created_on" columnDataType="datetime"/>
+        <dropDefaultValue tableName="contact" columnName="updated_on" columnDataType="datetime"/>
     </changeSet>
 
 </databaseChangeLog>

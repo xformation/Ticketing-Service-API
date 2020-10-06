@@ -34,12 +34,6 @@ public class AgentServiceImpl implements AgentService {
         this.agentMapper = agentMapper;
     }
 
-    /**
-     * Save a agent.
-     *
-     * @param agentDTO the entity to save.
-     * @return the persisted entity.
-     */
     @Override
     public AgentDTO save(AgentDTO agentDTO) {
         log.debug("Request to save Agent : {}", agentDTO);
@@ -48,11 +42,6 @@ public class AgentServiceImpl implements AgentService {
         return agentMapper.toDto(agent);
     }
 
-    /**
-     * Get all the agents.
-     *
-     * @return the list of entities.
-     */
     @Override
     @Transactional(readOnly = true)
     public List<AgentDTO> findAll() {
@@ -63,12 +52,6 @@ public class AgentServiceImpl implements AgentService {
     }
 
 
-    /**
-     * Get one agent by id.
-     *
-     * @param id the id of the entity.
-     * @return the entity.
-     */
     @Override
     @Transactional(readOnly = true)
     public Optional<AgentDTO> findOne(Long id) {
@@ -77,11 +60,6 @@ public class AgentServiceImpl implements AgentService {
             .map(agentMapper::toDto);
     }
 
-    /**
-     * Delete the agent by id.
-     *
-     * @param id the id of the entity.
-     */
     @Override
     public void delete(Long id) {
         log.debug("Request to delete Agent : {}", id);

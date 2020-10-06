@@ -17,6 +17,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,6 +33,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @WithMockUser
 public class EmailTicketAssociationResourceIT {
+
+    private static final String DEFAULT_UPDATED_BY = "AAAAAAAAAA";
+    private static final String UPDATED_UPDATED_BY = "BBBBBBBBBB";
+
+    private static final Instant DEFAULT_UPDATED_ON = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_UPDATED_ON = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
     @Autowired
     private EmailTicketAssociationRepository emailTicketAssociationRepository;
@@ -56,7 +64,9 @@ public class EmailTicketAssociationResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static EmailTicketAssociation createEntity(EntityManager em) {
-        EmailTicketAssociation emailTicketAssociation = new EmailTicketAssociation();
+        EmailTicketAssociation emailTicketAssociation = new EmailTicketAssociation()
+            .updatedBy(DEFAULT_UPDATED_BY)
+            .updatedOn(DEFAULT_UPDATED_ON);
         return emailTicketAssociation;
     }
     /**
@@ -66,7 +76,9 @@ public class EmailTicketAssociationResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static EmailTicketAssociation createUpdatedEntity(EntityManager em) {
-        EmailTicketAssociation emailTicketAssociation = new EmailTicketAssociation();
+        EmailTicketAssociation emailTicketAssociation = new EmailTicketAssociation()
+            .updatedBy(UPDATED_UPDATED_BY)
+            .updatedOn(UPDATED_UPDATED_ON);
         return emailTicketAssociation;
     }
 
@@ -90,6 +102,8 @@ public class EmailTicketAssociationResourceIT {
         List<EmailTicketAssociation> emailTicketAssociationList = emailTicketAssociationRepository.findAll();
         assertThat(emailTicketAssociationList).hasSize(databaseSizeBeforeCreate + 1);
         EmailTicketAssociation testEmailTicketAssociation = emailTicketAssociationList.get(emailTicketAssociationList.size() - 1);
+        assertThat(testEmailTicketAssociation.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
+        assertThat(testEmailTicketAssociation.getUpdatedOn()).isEqualTo(DEFAULT_UPDATED_ON);
     }
 
     @Test
@@ -123,7 +137,9 @@ public class EmailTicketAssociationResourceIT {
         restEmailTicketAssociationMockMvc.perform(get("/api/email-ticket-associations?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(emailTicketAssociation.getId().intValue())));
+            .andExpect(jsonPath("$.[*].id").value(hasItem(emailTicketAssociation.getId().intValue())))
+            .andExpect(jsonPath("$.[*].updatedBy").value(hasItem(DEFAULT_UPDATED_BY)))
+            .andExpect(jsonPath("$.[*].updatedOn").value(hasItem(DEFAULT_UPDATED_ON.toString())));
     }
     
     @Test
@@ -136,7 +152,9 @@ public class EmailTicketAssociationResourceIT {
         restEmailTicketAssociationMockMvc.perform(get("/api/email-ticket-associations/{id}", emailTicketAssociation.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(emailTicketAssociation.getId().intValue()));
+            .andExpect(jsonPath("$.id").value(emailTicketAssociation.getId().intValue()))
+            .andExpect(jsonPath("$.updatedBy").value(DEFAULT_UPDATED_BY))
+            .andExpect(jsonPath("$.updatedOn").value(DEFAULT_UPDATED_ON.toString()));
     }
     @Test
     @Transactional
@@ -158,6 +176,9 @@ public class EmailTicketAssociationResourceIT {
         EmailTicketAssociation updatedEmailTicketAssociation = emailTicketAssociationRepository.findById(emailTicketAssociation.getId()).get();
         // Disconnect from session so that the updates on updatedEmailTicketAssociation are not directly saved in db
         em.detach(updatedEmailTicketAssociation);
+        updatedEmailTicketAssociation
+            .updatedBy(UPDATED_UPDATED_BY)
+            .updatedOn(UPDATED_UPDATED_ON);
         EmailTicketAssociationDTO emailTicketAssociationDTO = emailTicketAssociationMapper.toDto(updatedEmailTicketAssociation);
 
         restEmailTicketAssociationMockMvc.perform(put("/api/email-ticket-associations")
@@ -169,6 +190,8 @@ public class EmailTicketAssociationResourceIT {
         List<EmailTicketAssociation> emailTicketAssociationList = emailTicketAssociationRepository.findAll();
         assertThat(emailTicketAssociationList).hasSize(databaseSizeBeforeUpdate);
         EmailTicketAssociation testEmailTicketAssociation = emailTicketAssociationList.get(emailTicketAssociationList.size() - 1);
+        assertThat(testEmailTicketAssociation.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
+        assertThat(testEmailTicketAssociation.getUpdatedOn()).isEqualTo(UPDATED_UPDATED_ON);
     }
 
     @Test
