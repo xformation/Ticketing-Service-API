@@ -174,6 +174,7 @@ public class ContactController {
 			obj.setUniqueExternalId(contact.getUniqueExternalId());
 			obj.setWorkPhone(contact.getWorkPhone());
 			obj.setTwitterHandle(contact.getTwitterHandle());
+			obj.setName(contact.getUserName());
 			jsonList.add(obj);
 		}
 		return jsonList;

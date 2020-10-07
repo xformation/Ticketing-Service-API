@@ -7,6 +7,7 @@ public class ContactCompanyVo implements Serializable {
     private static final long serialVersionUID = 1L;
     
     private String title;
+    private String name;
     private String company;
     private String primaryEmail;
     private String workPhone;
@@ -17,6 +18,13 @@ public class ContactCompanyVo implements Serializable {
 	}
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 	public String getCompany() {
 		return company;
@@ -53,9 +61,9 @@ public class ContactCompanyVo implements Serializable {
 	}
 	@Override
 	public String toString() {
-		return "ContactCompany [title=" + title + ", company=" + company + ", primaryEmail=" + primaryEmail
-				+ ", workPhone=" + workPhone + ", uniqueExternalId=" + uniqueExternalId + ", twitterHandle="
-				+ twitterHandle + "]";
+		return "ContactCompanyVo [title=" + title + ", name=" + name + ", company=" + company + ", primaryEmail="
+				+ primaryEmail + ", workPhone=" + workPhone + ", uniqueExternalId=" + uniqueExternalId
+				+ ", twitterHandle=" + twitterHandle + "]";
 	}
     
 
