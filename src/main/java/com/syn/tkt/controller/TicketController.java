@@ -13,14 +13,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.websocket.server.PathParam;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -119,11 +123,11 @@ public class TicketController {
 			String requesterName = contactRepository.findById(requesterId).get().getUserName();
 			Long assignedToId = ticket.getAssignedToId();
 			String assignedToName = null;
-			if (ticket.getAssignedToUserType() != null && ticket.getAssignedToUserType() == null) {
+			if (ticket.getAssignedToUserType() != null && ticket.getAssignedToId() != null) {
 				if (ticket.getAssignedToUserType().equals("agent")) {
 					assignedToName = agentRepository.findById(assignedToId).get().getName();
 				} else if (ticket.getAssignedToUserType().equals("contact")) {
-					assignedToName = contactRepository.findById(requesterId).get().getUserName();
+					assignedToName = contactRepository.findById(assignedToId).get().getUserName();
 				}
 			}
 			if (pageType.equalsIgnoreCase("all")) {
@@ -265,6 +269,35 @@ public class TicketController {
 		overDueMap.put("ticketingname", "Overdue");
 		list.add(overDueMap);
 		return list;
+	}
+	
+	@GetMapping("/alertTicketsByGuid/{guid}")
+	public List<Map<String, Object>> alertTicketsByGuid(@PathVariable String guid){
+		Ticket ticket=new Ticket();
+		ticket.setAssociatedEntityId(guid);
+		ticket.setAssociatedEntityName("alert");
+		List<Ticket> tickets=ticketRepository.findAll(Example.of(ticket));
+		List<Map<String, Object>> list=new ArrayList<Map<String,Object>>();
+		for(Ticket ticket2 : tickets) {
+			Long assignedToId = ticket.getAssignedToId();
+			String assignedToName = null;
+			if (ticket.getAssignedToUserType() != null && ticket.getAssignedToId() != null) {
+				if (ticket.getAssignedToUserType().equals("agent")) {
+					assignedToName = agentRepository.findById(assignedToId).get().getName();
+				} else if (ticket.getAssignedToUserType().equals("contact")) {
+					assignedToName = contactRepository.findById(assignedToId).get().getUserName();
+				}
+			}
+			Map<String, Object> map=new HashMap<String, Object>();
+			map.put("id", ticket2.getId());
+			map.put("subject", ticket2.getSubject());
+			map.put("priority", ticket2.getPriority());
+			map.put("createdAt", ticket2.getCreatedOn());
+			map.put("assignedToName", assignedToName);
+			list.add(map);
+		}
+		return list;
+		
 	}
 
 }

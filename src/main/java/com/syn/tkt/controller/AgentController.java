@@ -215,7 +215,6 @@ public class AgentController {
 					}
 					totalNumberOfTicket++;
 				}
-				System.out.println((totalNumberOfClosedTicket * 100 / totalNumberOfTicket));
 				long responseRate =totalNumberOfClosedTicket * 100/ totalNumberOfTicket ;
 
 				Map<String, Object> map = new HashMap<String, Object>();
