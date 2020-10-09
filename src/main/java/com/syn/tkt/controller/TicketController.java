@@ -5,8 +5,10 @@ import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,6 +40,7 @@ import com.syn.tkt.repository.AgentRepository;
 import com.syn.tkt.repository.ContactRepository;
 import com.syn.tkt.repository.TicketHistoryRepository;
 import com.syn.tkt.repository.TicketRepository;
+import com.syn.tkt.service.TicketService;
 import com.syn.tkt.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -270,25 +273,25 @@ public class TicketController {
 		list.add(overDueMap);
 		return list;
 	}
-	
+
 	@GetMapping("/alertTicketsByGuid/{guid}")
-	public List<Map<String, Object>> alertTicketsByGuid(@PathVariable String guid){
-		Ticket ticket=new Ticket();
+	public List<Map<String, Object>> alertTicketsByGuid(@PathVariable String guid) {
+		Ticket ticket = new Ticket();
 		ticket.setAssociatedEntityId(guid);
 		ticket.setAssociatedEntityName("alert");
-		List<Ticket> tickets=ticketRepository.findAll(Example.of(ticket));
-		List<Map<String, Object>> list=new ArrayList<Map<String,Object>>();
-		for(Ticket ticket2 : tickets) {
-			Long assignedToId = ticket.getAssignedToId();
+		List<Ticket> tickets = ticketRepository.findAll(Example.of(ticket));
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		for (Ticket ticket2 : tickets) {
+			Long assignedToId = ticket2.getAssignedToId();
 			String assignedToName = null;
-			if (ticket.getAssignedToUserType() != null && ticket.getAssignedToId() != null) {
-				if (ticket.getAssignedToUserType().equals("agent")) {
+			if (ticket2.getAssignedToUserType() != null && ticket2.getAssignedToId() != null) {
+				if (ticket2.getAssignedToUserType().equals("agent")) {
 					assignedToName = agentRepository.findById(assignedToId).get().getName();
-				} else if (ticket.getAssignedToUserType().equals("contact")) {
+				} else if (ticket2.getAssignedToUserType().equals("contact")) {
 					assignedToName = contactRepository.findById(assignedToId).get().getUserName();
 				}
 			}
-			Map<String, Object> map=new HashMap<String, Object>();
+			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("id", ticket2.getId());
 			map.put("subject", ticket2.getSubject());
 			map.put("priority", ticket2.getPriority());
@@ -297,7 +300,100 @@ public class TicketController {
 			list.add(map);
 		}
 		return list;
-		
+
 	}
 
+	@GetMapping("/reportQuicStatistics")
+	public Map<String, Object> reportQuicStatistics() {
+		List<Ticket> tickets = ticketRepository.findAll();
+		long totalTickets = 0;
+		long numberOfOpenTicket = 0;
+		long numberOfUnresolvedTicket = 0;
+		long numberOfClosedTicket = 0;
+		for (Ticket ticket : tickets) {
+			if (ticket.getStatus().equals("Open")) {
+				numberOfOpenTicket++;
+			}
+			if (!ticket.getStatus().equals("Closed")) {
+				numberOfUnresolvedTicket++;
+			}
+			if (ticket.getStatus().equalsIgnoreCase("Closed")) {
+				numberOfClosedTicket++;
+			}
+			totalTickets++;
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("totalTickets", totalTickets);
+		map.put("opentTicketsPercentage", (numberOfOpenTicket * 100) / totalTickets);
+		map.put("unresolvedTicketsPercentage", (numberOfUnresolvedTicket * 100) / totalTickets);
+		map.put("closedTicktsPercentage", (numberOfClosedTicket * 100) / totalTickets);
+		return map;
+	}
+
+	@GetMapping("/getBarGraphStatData")
+	public Map<String, List<Object>> getGraphStat() {
+		List<Ticket> tickets = ticketRepository.findAll();
+		List<Object> daysList = new ArrayList<Object>();
+		List<Object> numberOfTicketsList = new ArrayList<Object>();
+		List<Ticket> last40daysData = new ArrayList<Ticket>();
+		for (Ticket ticket : tickets) {
+			if (ticket.getCreatedOn().isAfter(Instant.now().minus(40, ChronoUnit.DAYS))) {
+				last40daysData.add(ticket);
+			}
+		}
+
+		for (int i = 1; i <= 40; i++) {
+			int numberOfTicketOnTheDay = 0;
+			for (Ticket ticket : last40daysData) {
+				Instant createInstant = ticket.getCreatedOn();
+				Instant matchInstant = Instant.now().minus(40 - i, ChronoUnit.DAYS);
+				LocalDate createLocalDate = createInstant.atZone(ZoneId.systemDefault()).toLocalDate();
+				LocalDate matchLocalDate = matchInstant.atZone(ZoneId.systemDefault()).toLocalDate();
+				if (createLocalDate.equals(matchLocalDate)) {
+					numberOfTicketOnTheDay++;
+				}
+			}
+			Instant instant = Instant.now().minus(40 - i, ChronoUnit.DAYS);
+			daysList.add(instant.atZone(ZoneId.systemDefault()).getDayOfMonth());
+			numberOfTicketsList.add(numberOfTicketOnTheDay);
+		}
+		Map<String, List<Object>> map = new HashMap<String, List<Object>>();
+		map.put("daysList", daysList);
+		map.put("numberOfTicketsList", numberOfTicketsList);
+		return map;
+
+	}
+
+	@GetMapping("/getTodaysTicketTrendsData")
+	public Map<String, List<Object>> getTodaysTicketTrendsData() {
+		List<Ticket> tickets = ticketRepository.findAll();
+		List<Object> hoursList = new ArrayList<Object>();
+		List<Object> numberOfTicketsList = new ArrayList<Object>();
+		List<Ticket> last24HoursData = new ArrayList<Ticket>();
+		for (Ticket ticket : tickets) {
+			if (ticket.getCreatedOn().isAfter(Instant.now().minus(24, ChronoUnit.HOURS))) {
+				last24HoursData.add(ticket);
+			}
+		}
+
+		for (int i = 1; i <= 24; i++) {
+			int numberOfTicketOnTheHour = 0;
+			for (Ticket ticket : last24HoursData) {
+				Instant createInstant = ticket.getCreatedOn();
+				Instant matchInstant = Instant.now().minus(24 - i, ChronoUnit.HOURS);
+				int createHour = createInstant.atZone(ZoneId.systemDefault()).getHour();
+				int matchHour = matchInstant.atZone(ZoneId.systemDefault()).getHour();
+				if (createHour==matchHour) {
+					numberOfTicketOnTheHour++;
+				}
+			}
+			Instant instant = Instant.now().minus(24 - i, ChronoUnit.HOURS);
+			hoursList.add(instant.atZone(ZoneId.systemDefault()).getHour());
+			numberOfTicketsList.add(numberOfTicketOnTheHour);
+		}
+		Map<String, List<Object>> map = new HashMap<String, List<Object>>();
+		map.put("hoursList", hoursList);
+		map.put("numberOfTicketsList", numberOfTicketsList);
+		return map;
+	}
 }
