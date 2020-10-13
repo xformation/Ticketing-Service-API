@@ -33,6 +33,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.syn.tkt.domain.Agent;
+import com.syn.tkt.domain.Contact;
 import com.syn.tkt.domain.Ticket;
 import com.syn.tkt.domain.TicketHistory;
 import com.syn.tkt.domain.TicketUIObject;
@@ -123,14 +125,21 @@ public class TicketController {
 		List<TicketUIObject> list = new ArrayList<TicketUIObject>();
 		for (Ticket ticket : tickets) {
 			Long requesterId = ticket.getRequesterId();
-			String requesterName = contactRepository.findById(requesterId).get().getUserName();
+			Contact requester=contactRepository.findById(requesterId).get();
+			String requesterName = requester.getUserName();
+			String requesterCompanyName=requester.getCompany().getCompanyName();
 			Long assignedToId = ticket.getAssignedToId();
 			String assignedToName = null;
+			String assignedToCompanyName=null;
 			if (ticket.getAssignedToUserType() != null && ticket.getAssignedToId() != null) {
 				if (ticket.getAssignedToUserType().equals("agent")) {
-					assignedToName = agentRepository.findById(assignedToId).get().getName();
+					Agent agent=agentRepository.findById(assignedToId).get();
+					assignedToName = agent.getName();
+					assignedToCompanyName=agent.getCompany().getCompanyName();
 				} else if (ticket.getAssignedToUserType().equals("contact")) {
-					assignedToName = contactRepository.findById(assignedToId).get().getUserName();
+					Contact contact=contactRepository.findById(assignedToId).get();
+					assignedToName = contact.getUserName();
+					assignedToCompanyName=contact.getCompany().getCompanyName();
 				}
 			}
 			if (pageType.equalsIgnoreCase("all")) {
@@ -141,9 +150,13 @@ public class TicketController {
 				obj.setAssignedToName(assignedToName);
 				obj.setPriority(ticket.getPriority());
 				obj.setSubject(ticket.getSubject());
-				LocalDateTime datetime = LocalDateTime.ofInstant(ticket.getCreatedOn(), ZoneOffset.UTC);
-				String formattedCreateDate = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(datetime);
-				obj.setCreateDate(formattedCreateDate);
+				LocalDate createLocalDate = ticket.getCreatedOn().atZone(ZoneId.systemDefault()).toLocalDate();
+				obj.setCreateDate(createLocalDate);
+				obj.setExpectedDateOfCompletion(ticket.getExpectedDateOfCompletion());
+				obj.setType(ticket.getType());
+				obj.setTags(ticket.getTag());
+				obj.setRequesterCompanyName(requesterCompanyName);
+				obj.setAssignedToCompanyName(assignedToCompanyName);
 				list.add(obj);
 			} else if (pageType.equalsIgnoreCase("Open Tickets")) {
 				if (ticket.getStatus().equals("Open")) {
@@ -154,9 +167,13 @@ public class TicketController {
 					obj.setAssignedToName(assignedToName);
 					obj.setPriority(ticket.getPriority());
 					obj.setSubject(ticket.getSubject());
-					LocalDateTime datetime = LocalDateTime.ofInstant(ticket.getCreatedOn(), ZoneOffset.UTC);
-					String formattedCreateDate = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(datetime);
-					obj.setCreateDate(formattedCreateDate);
+					LocalDate createLocalDate = ticket.getCreatedOn().atZone(ZoneId.systemDefault()).toLocalDate();
+					obj.setCreateDate(createLocalDate);
+					obj.setExpectedDateOfCompletion(ticket.getExpectedDateOfCompletion());
+					obj.setType(ticket.getType());
+					obj.setTags(ticket.getTag());
+					obj.setRequesterCompanyName(requesterCompanyName);
+					obj.setAssignedToCompanyName(assignedToCompanyName);
 					list.add(obj);
 				}
 			} else if (pageType.equalsIgnoreCase("Due Today")) {
@@ -169,9 +186,13 @@ public class TicketController {
 					obj.setAssignedToName(assignedToName);
 					obj.setPriority(ticket.getPriority());
 					obj.setSubject(ticket.getSubject());
-					LocalDateTime datetime = LocalDateTime.ofInstant(ticket.getCreatedOn(), ZoneOffset.UTC);
-					String formattedCreateDate = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(datetime);
-					obj.setCreateDate(formattedCreateDate);
+					LocalDate createLocalDate = ticket.getCreatedOn().atZone(ZoneId.systemDefault()).toLocalDate();
+					obj.setCreateDate(createLocalDate);
+					obj.setExpectedDateOfCompletion(ticket.getExpectedDateOfCompletion());
+					obj.setType(ticket.getType());
+					obj.setTags(ticket.getTag());
+					obj.setRequesterCompanyName(requesterCompanyName);
+					obj.setAssignedToCompanyName(assignedToCompanyName);
 					list.add(obj);
 				}
 			} else if (pageType.equalsIgnoreCase("Unassigned") && !ticket.getStatus().equalsIgnoreCase("Closed")) {
@@ -183,9 +204,13 @@ public class TicketController {
 					obj.setAssignedToName(assignedToName);
 					obj.setPriority(ticket.getPriority());
 					obj.setSubject(ticket.getSubject());
-					LocalDateTime datetime = LocalDateTime.ofInstant(ticket.getCreatedOn(), ZoneOffset.UTC);
-					String formattedCreateDate = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(datetime);
-					obj.setCreateDate(formattedCreateDate);
+					LocalDate createLocalDate = ticket.getCreatedOn().atZone(ZoneId.systemDefault()).toLocalDate();
+					obj.setCreateDate(createLocalDate);
+					obj.setExpectedDateOfCompletion(ticket.getExpectedDateOfCompletion());
+					obj.setType(ticket.getType());
+					obj.setTags(ticket.getTag());
+					obj.setRequesterCompanyName(requesterCompanyName);
+					obj.setAssignedToCompanyName(assignedToCompanyName);
 					list.add(obj);
 				}
 			} else if (pageType.equalsIgnoreCase("Unresolved") && !ticket.getStatus().equalsIgnoreCase("Closed")) {
@@ -197,9 +222,13 @@ public class TicketController {
 					obj.setAssignedToName(assignedToName);
 					obj.setPriority(ticket.getPriority());
 					obj.setSubject(ticket.getSubject());
-					LocalDateTime datetime = LocalDateTime.ofInstant(ticket.getCreatedOn(), ZoneOffset.UTC);
-					String formattedCreateDate = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(datetime);
-					obj.setCreateDate(formattedCreateDate);
+					LocalDate createLocalDate = ticket.getCreatedOn().atZone(ZoneId.systemDefault()).toLocalDate();
+					obj.setCreateDate(createLocalDate);
+					obj.setExpectedDateOfCompletion(ticket.getExpectedDateOfCompletion());
+					obj.setType(ticket.getType());
+					obj.setTags(ticket.getTag());
+					obj.setRequesterCompanyName(requesterCompanyName);
+					obj.setAssignedToCompanyName(assignedToCompanyName);
 					list.add(obj);
 				}
 			} else if (pageType.equalsIgnoreCase("Overdue") && !ticket.getStatus().equalsIgnoreCase("Closed")) {
@@ -211,9 +240,13 @@ public class TicketController {
 					obj.setAssignedToName(assignedToName);
 					obj.setPriority(ticket.getPriority());
 					obj.setSubject(ticket.getSubject());
-					LocalDateTime datetime = LocalDateTime.ofInstant(ticket.getCreatedOn(), ZoneOffset.UTC);
-					String formattedCreateDate = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(datetime);
-					obj.setCreateDate(formattedCreateDate);
+					LocalDate createLocalDate = ticket.getCreatedOn().atZone(ZoneId.systemDefault()).toLocalDate();
+					obj.setCreateDate(createLocalDate);
+					obj.setExpectedDateOfCompletion(ticket.getExpectedDateOfCompletion());
+					obj.setType(ticket.getType());
+					obj.setTags(ticket.getTag());
+					obj.setRequesterCompanyName(requesterCompanyName);
+					obj.setAssignedToCompanyName(assignedToCompanyName);
 					list.add(obj);
 				}
 			}
