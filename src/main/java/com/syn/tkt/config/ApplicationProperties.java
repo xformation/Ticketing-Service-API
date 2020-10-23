@@ -10,4 +10,26 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @ConfigurationProperties(prefix = "application", ignoreUnknownFields = false)
 public class ApplicationProperties {
+	private String kafkaSendDataUrl;
+	private String host;
+
+	public String getKafkaSendDataUrl() {
+		return kafkaSendDataUrl;
+	}
+
+	public void setKafkaSendDataUrl(String kafkaSendDataUrl) {
+		this.kafkaSendDataUrl = kafkaSendDataUrl;
+	}
+
+	public String getHost() {
+		return host;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
+	}
+	
+	
+	
 }
+

@@ -12,6 +12,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 
 import javax.annotation.PostConstruct;
@@ -27,6 +28,8 @@ public class ServicedeskApp {
     private static final Logger log = LoggerFactory.getLogger(ServicedeskApp.class);
 
     private final Environment env;
+    
+    private static ConfigurableApplicationContext ctx = null;
 
     public ServicedeskApp(Environment env) {
         this.env = env;
@@ -60,7 +63,8 @@ public class ServicedeskApp {
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(ServicedeskApp.class);
         DefaultProfileUtil.addDefaultProfile(app);
-        Environment env = app.run(args).getEnvironment();
+        ctx  = app.run(args);
+        Environment env = ctx.getEnvironment();
         logApplicationStartup(env);
     }
 
@@ -95,4 +99,7 @@ public class ServicedeskApp {
             contextPath,
             env.getActiveProfiles());
     }
+    public static <T> T getBean(Class<T> cls) {
+		return ctx.getBean(cls);
+	}
 }

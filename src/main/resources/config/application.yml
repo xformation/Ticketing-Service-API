@@ -124,5 +124,8 @@ jhipster:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-# application:
+application:
+#    host: http://100.64.108.25
+    host: http://localhost
+    kafkaSendDataUrl: "http://100.64.108.25:8190/kafka/send"
 

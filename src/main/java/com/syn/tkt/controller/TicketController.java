@@ -4,35 +4,37 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.websocket.server.PathParam;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import com.syn.tkt.ServicedeskApp;
+import com.syn.tkt.config.ApplicationProperties;
 import com.syn.tkt.domain.Agent;
 import com.syn.tkt.domain.Contact;
 import com.syn.tkt.domain.Ticket;
@@ -42,8 +44,6 @@ import com.syn.tkt.repository.AgentRepository;
 import com.syn.tkt.repository.ContactRepository;
 import com.syn.tkt.repository.TicketHistoryRepository;
 import com.syn.tkt.repository.TicketRepository;
-import com.syn.tkt.service.TicketService;
-import com.syn.tkt.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
 
@@ -69,6 +69,10 @@ public class TicketController {
 
 	@Autowired
 	private AgentRepository agentRepository;
+	
+	@Autowired
+	RestTemplate restTemplate;
+
 
 	/**
 	 * {@code POST  /tickets} : Create a new ticket.
@@ -80,15 +84,29 @@ public class TicketController {
 	 * @throws URISyntaxException if the Location URI syntax is incorrect.
 	 */
 	@PostMapping("/addTicket")
-	public ResponseEntity<Ticket> createTicket(@RequestBody Ticket ticket) throws URISyntaxException {
-		logger.debug("REST request to save Ticket : {}", ticket);
-		if (ticket.getId() != null) {
-			throw new BadRequestAlertException("A new ticket cannot already have an ID", ENTITY_NAME, "idexists");
-		}
+	public ResponseEntity<Ticket> createTicket(@RequestParam String type,@RequestParam String subject,@RequestParam String priority,@RequestParam String description,@RequestParam String tag,@RequestParam String assignedToUserType,@RequestParam String requesterUserType,@RequestParam Long requesterId,@RequestParam Long assignedToId,@RequestParam String associatedEntityName,@RequestParam String associatedEntityId,@RequestParam String alertName) throws URISyntaxException {
+//		logger.debug("REST request to save Ticket : {}", ticket);
+//		if (ticket.getId() != null) {
+//			throw new BadRequestAlertException("A new ticket cannot already have an ID", ENTITY_NAME, "idexists");
+//		}
+		ApplicationProperties applicationProperties=ServicedeskApp.getBean(ApplicationProperties.class );
+		Ticket ticket=new Ticket();
+		ticket.setType(type);
+		ticket.setSubject(subject);
+		ticket.setDescription(description);
+		ticket.setPriority(priority);
+		ticket.setTag(tag);
+		ticket.setAssignedToUserType(assignedToUserType);
+		ticket.setRequesterUserType(requesterUserType);
+		ticket.setRequesterId(requesterId);
+		ticket.setAssignedToUserType(assignedToUserType);
+		ticket.setAssociatedEntityName(associatedEntityName);
+		ticket.setAssociatedEntityId(associatedEntityId);
 		LocalDate date = LocalDate.now();
 		ticket.setCreatedOn(Instant.now());
-		ticket.expectedDateOfCompletion(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth() + 10));
+		ticket.expectedDateOfCompletion(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()).plusDays(10));
 		ticket.setStatus("Open");
+		logger.debug("REST request to save Ticket : {}", ticket);
 		Ticket result = ticketRepository.save(ticket);
 		TicketHistory ticketHistory = new TicketHistory();
 		ticketHistory.setSubject(ticket.getSubject());
@@ -107,6 +125,30 @@ public class TicketController {
 		logger.debug(" save TicketHistory : {}", ticketHistory);
 		ticketHistory.setTicket(ticket);
 		ticketHistoryRepository.save(ticketHistory);
+		if(ticket.getAssociatedEntityName().equalsIgnoreCase("alert")) {
+			try {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("guid", ticket.getAssociatedEntityId());
+			jsonObject.put("name",alertName);
+			jsonObject.put("action","New Ticket Created For Alert");
+			jsonObject.put("action_description", "New Ticket Created For Alert. Ticket Id :: "+result.getId());
+			jsonObject.put("action_time", Instant.now());
+			jsonObject.put("ticket", result.getId());
+			jsonObject.put("ticket_description", "New Ticket Created for "+alertName+"");
+			jsonObject.put("user", "ADMIN");
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			HttpEntity<Object> requestEntity = new HttpEntity<Object>(headers);
+			UriComponentsBuilder builder = UriComponentsBuilder
+					.fromUriString(applicationProperties.getKafkaSendDataUrl())
+					.queryParam("topic", "alert_activity").queryParam("msg", jsonObject.toString());
+			restTemplate.exchange(builder.toUriString(), HttpMethod.GET, requestEntity, String.class);
+			logger.debug("a alert is send to kafka topic alert_activity "+jsonObject);
+			}catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+		}
 		return ResponseEntity
 				.created(new URI("/api/tickets/" + result.getId())).headers(HeaderUtil
 						.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
