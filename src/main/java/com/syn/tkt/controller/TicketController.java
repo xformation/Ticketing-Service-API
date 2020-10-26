@@ -130,20 +130,20 @@ public class TicketController {
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put("guid", ticket.getAssociatedEntityId());
 			jsonObject.put("name",alertName);
-			jsonObject.put("action","New Ticket Created For Alert");
-			jsonObject.put("action_description", "New Ticket Created For Alert. Ticket Id :: "+result.getId());
+			jsonObject.put("action","New ticket created");
+			jsonObject.put("action_description", "New ticket created. Ticket Id - "+result.getId());
 			jsonObject.put("action_time", Instant.now());
 			jsonObject.put("ticket", result.getId());
-			jsonObject.put("ticket_description", "New Ticket Created for "+alertName+"");
-			jsonObject.put("user", "ADMIN");
+			jsonObject.put("ticket_description", "New ticket created for alert - "+alertName+"");
+			jsonObject.put("user", "Admin");
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<Object> requestEntity = new HttpEntity<Object>(headers);
 			UriComponentsBuilder builder = UriComponentsBuilder
 					.fromUriString(applicationProperties.getKafkaSendDataUrl())
-					.queryParam("topic", "alert_activity").queryParam("msg", jsonObject.toString());
+					.queryParam("topic", "alert_activity2").queryParam("msg", jsonObject.toString());
 			restTemplate.exchange(builder.toUriString(), HttpMethod.GET, requestEntity, String.class);
-			logger.debug("a alert is send to kafka topic alert_activity "+jsonObject);
+			logger.debug("a alert is send to kafka topic alert_activity2 "+jsonObject);
 			}catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();
