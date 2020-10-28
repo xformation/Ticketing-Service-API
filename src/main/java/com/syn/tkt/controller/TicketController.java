@@ -141,12 +141,13 @@ public class TicketController {
 			HttpEntity<Object> requestEntity = new HttpEntity<Object>(headers);
 			UriComponentsBuilder builder = UriComponentsBuilder
 					.fromUriString(applicationProperties.getKafkaSendDataUrl())
-					.queryParam("topic", "alert_activity_final").queryParam("msg", jsonObject.toString());
+					.queryParam("topic", "alert_activity").queryParam("msg", jsonObject.toString());
 			restTemplate.exchange(builder.toUriString(), HttpMethod.GET, requestEntity, String.class);
 			logger.debug("a alert is send to kafka topic alert_activity_final "+jsonObject);
 			}catch (Exception e) {
 				// TODO: handle exception
-				e.printStackTrace();
+//				e.printStackTrace();
+				logger.error("Exception in sending alert activity  : ",e);
 			}
 		}
 		return ResponseEntity
