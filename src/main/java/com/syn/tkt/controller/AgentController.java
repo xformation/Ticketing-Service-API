@@ -9,8 +9,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -25,6 +25,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,7 +42,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.syn.tkt.config.Constants;
 import com.syn.tkt.domain.Agent;
 import com.syn.tkt.domain.Company;
-import com.syn.tkt.domain.Contact;
 import com.syn.tkt.domain.Ticket;
 import com.syn.tkt.repository.AgentRepository;
 import com.syn.tkt.repository.CompanyRepository;
@@ -301,5 +302,47 @@ public class AgentController {
 		return ResponseEntity.noContent()
 				.headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
 				.build();
+	}
+	
+	@GetMapping("/getTeamMatricsData")
+	public List<Map<String,Object>> getTeamMatricsData(){
+		List<Agent> agents=agentRepository.findAll();
+		List<Map<String, Object>> listMap = new ArrayList<Map<String, Object>>();
+		for (Agent agent : agents) {
+			System.out.println(agent);
+			Ticket ticket = new Ticket();
+			ticket.setAssignedToUserType("agent");
+			ticket.setAssignedToId(agent.getId());
+			ticket.setAssociatedEntityName("alert");
+			List<Ticket> tickets = ticketRepository.findAll(Example.of(ticket),Sort.by(Direction.DESC, "createdOn"));
+			if (tickets.size() >0) {
+				Map<String, Object> map=new HashMap<String, Object>();
+				map.put("agentName", agent.getName());
+				map.put("totalAlert", tickets.size());
+				try {
+					map.put("timeSinceLastTicketCreated", ChronoUnit.MINUTES.between(tickets.get(0).getCreatedOn(),Instant.now()));
+				}catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+				
+				listMap.add(map);			
+				}
+		}
+		Comparator<Map<String, Object>> mapComparator = new Comparator<Map<String, Object>>() {
+			@Override
+			public int compare(Map<String, Object> m1, Map<String, Object> m2) {
+				// TODO Auto-generated method stub
+				Integer val1 = (Integer) m1.get("totalAlert");
+				Integer val2 = (Integer) m2.get("totalAlert");
+				return val2.compareTo(val1);
+			}
+		};
+		Collections.sort(listMap, mapComparator);
+		Stream<Map<String, Object>> stream = listMap.stream();
+		Stream<Map<String, Object>> lm = stream.limit(4); 
+		List<Map<String, Object>> list2 = lm.collect(Collectors.toList());
+		return list2;
+		
 	}
 }

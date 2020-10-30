@@ -100,6 +100,7 @@ public class TicketController {
 		ticket.setRequesterUserType(requesterUserType);
 		ticket.setRequesterId(requesterId);
 		ticket.setAssignedToUserType(assignedToUserType);
+		ticket.setAssignedToId(assignedToId);
 		ticket.setAssociatedEntityName(associatedEntityName);
 		ticket.setAssociatedEntityId(associatedEntityId);
 		LocalDate date = LocalDate.now();
@@ -371,7 +372,7 @@ public class TicketController {
 			map.put("id", ticket2.getId());
 			map.put("subject", ticket2.getSubject());
 			map.put("priority", ticket2.getPriority());
-			map.put("createdAt", ticket2.getCreatedOn());
+			map.put("createdAt", ticket2.getCreatedOn().atZone(ZoneId.systemDefault()).toLocalDateTime());
 			map.put("assignedToName", assignedToName);
 			list.add(map);
 		}
