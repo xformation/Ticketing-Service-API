@@ -175,6 +175,7 @@ public class TicketController {
 			Long assignedToId = ticket.getAssignedToId();
 			String assignedToName = null;
 			String assignedToCompanyName=null;
+			try {
 			if (ticket.getAssignedToUserType() != null && ticket.getAssignedToId() != null) {
 				if (ticket.getAssignedToUserType().equals("agent")) {
 					Agent agent=agentRepository.findById(assignedToId).get();
@@ -185,6 +186,10 @@ public class TicketController {
 					assignedToName = contact.getUserName();
 					assignedToCompanyName=contact.getCompany().getCompanyName();
 				}
+			}
+			}catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
 			}
 			if (pageType.equalsIgnoreCase("all")) {
 				TicketUIObject obj = new TicketUIObject();
