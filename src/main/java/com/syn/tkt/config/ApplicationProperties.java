@@ -12,7 +12,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ApplicationProperties {
 	private String kafkaSendDataUrl;
 	private String host;
-
+	private String alertSrvUrl;
+	private String alertActivityKafaTopic;
+	
 	public String getKafkaSendDataUrl() {
 		return kafkaSendDataUrl;
 	}
@@ -28,6 +30,24 @@ public class ApplicationProperties {
 	public void setHost(String host) {
 		this.host = host;
 	}
+
+	public String getAlertSrvUrl() {
+		return alertSrvUrl;
+	}
+
+	public void setAlertSrvUrl(String alertSrvUrl) {
+		this.alertSrvUrl = alertSrvUrl;
+	}
+
+	public String getAlertActivityKafaTopic() {
+		return alertActivityKafaTopic;
+	}
+
+	public void setAlertActivityKafaTopic(String alertActivityKafaTopic) {
+		this.alertActivityKafaTopic = alertActivityKafaTopic;
+	}
+
+	
 	
 	
 	

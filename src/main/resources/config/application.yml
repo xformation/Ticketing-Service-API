@@ -128,4 +128,5 @@ application:
 #    host: http://100.64.108.25
     host: http://localhost
     kafkaSendDataUrl: "http://100.64.108.25:8190/kafka/send"
-
+    alertSrvUrl: http://100.64.108.25:5055
+    alertActivityKafaTopic: alert_activity

@@ -13,8 +13,10 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
@@ -36,6 +38,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.syn.tkt.ServicedeskApp;
 import com.syn.tkt.config.ApplicationProperties;
 import com.syn.tkt.domain.Agent;
+import com.syn.tkt.domain.Alert;
 import com.syn.tkt.domain.Contact;
 import com.syn.tkt.domain.Ticket;
 import com.syn.tkt.domain.TicketHistory;
@@ -73,7 +76,6 @@ public class TicketController {
 	@Autowired
 	RestTemplate restTemplate;
 
-
 	/**
 	 * {@code POST  /tickets} : Create a new ticket.
 	 *
@@ -85,76 +87,31 @@ public class TicketController {
 	 */
 	@PostMapping("/addTicket")
 	public ResponseEntity<Ticket> createTicket(@RequestParam String type,@RequestParam String subject,@RequestParam String priority,@RequestParam String description,@RequestParam String tag,@RequestParam String assignedToUserType,@RequestParam String requesterUserType,@RequestParam Long requesterId,@RequestParam Long assignedToId,@RequestParam String associatedEntityName,@RequestParam String associatedEntityId,@RequestParam String alertName) throws URISyntaxException {
-//		logger.debug("REST request to save Ticket : {}", ticket);
-//		if (ticket.getId() != null) {
-//			throw new BadRequestAlertException("A new ticket cannot already have an ID", ENTITY_NAME, "idexists");
-//		}
+
 		ApplicationProperties applicationProperties=ServicedeskApp.getBean(ApplicationProperties.class );
-		Ticket ticket=new Ticket();
-		ticket.setType(type);
-		ticket.setSubject(subject);
-		ticket.setDescription(description);
-		ticket.setPriority(priority);
-		ticket.setTag(tag);
-		ticket.setAssignedToUserType(assignedToUserType);
-		ticket.setRequesterUserType(requesterUserType);
-		ticket.setRequesterId(requesterId);
-		ticket.setAssignedToUserType(assignedToUserType);
-		ticket.setAssignedToId(assignedToId);
-		ticket.setAssociatedEntityName(associatedEntityName);
-		ticket.setAssociatedEntityId(associatedEntityId);
-		LocalDate date = LocalDate.now();
-		ticket.setCreatedOn(Instant.now());
-		ticket.expectedDateOfCompletion(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()).plusDays(10));
-		ticket.setStatus("Open");
-		logger.debug("REST request to save Ticket : {}", ticket);
-		Ticket result = ticketRepository.save(ticket);
-		TicketHistory ticketHistory = new TicketHistory();
-		ticketHistory.setSubject(ticket.getSubject());
-		ticketHistory.setDescription(ticket.getDescription());
-		ticketHistory.setType(ticket.getType());
-		ticketHistory.setStatus(ticket.getStatus());
-		ticketHistory.setPriority(ticket.getPriority());
-		ticketHistory.setCreatedOn(ticket.getCreatedOn());
-		ticketHistory.setExpectedDateOfCompletion(ticket.getExpectedDateOfCompletion());
-		ticketHistory.setTag(ticket.getTag());
-		ticketHistory.setAssignedToUserType(ticket.getAssignedToUserType());
-		ticketHistory.setAssignedToId(ticket.getAssignedToId());
-		ticketHistory.setRequesterUserType(ticket.getRequesterUserType());
-		ticketHistory.setRequesterId(ticket.getRequesterId());
-		ticketHistory.setOperationType("insert");
-		logger.debug(" save TicketHistory : {}", ticketHistory);
-		ticketHistory.setTicket(ticket);
-		ticketHistoryRepository.save(ticketHistory);
+		logger.info("Begin saving ticket ");
+		Ticket ticket = saveTicket(type, subject, priority, description, tag, assignedToUserType, requesterUserType, 
+				requesterId, assignedToId, associatedEntityName, associatedEntityId, alertName);
+		logger.info("End saving ticket ");
+		
+		logger.info("Begin saving ticket history");
+		saveTicketHistory(ticket);
+		logger.info("End saving ticket history");
+		
 		if(ticket.getAssociatedEntityName().equalsIgnoreCase("alert")) {
+			logger.info("Begin alert activity push to kafka");
 			try {
-			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("guid", ticket.getAssociatedEntityId());
-			jsonObject.put("name",alertName);
-			jsonObject.put("action","New ticket created");
-			jsonObject.put("action_description", "New ticket created. Ticket Id - "+result.getId());
-			jsonObject.put("action_time", Instant.now());
-			jsonObject.put("ticket", result.getId());
-			jsonObject.put("ticket_description", "New ticket created for alert - "+alertName+"");
-			jsonObject.put("user", "Admin");
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			HttpEntity<Object> requestEntity = new HttpEntity<Object>(headers);
-			UriComponentsBuilder builder = UriComponentsBuilder
-					.fromUriString(applicationProperties.getKafkaSendDataUrl())
-					.queryParam("topic", "alert_activity").queryParam("msg", jsonObject.toString());
-			restTemplate.exchange(builder.toUriString(), HttpMethod.GET, requestEntity, String.class);
-			logger.debug("a alert is send to kafka topic alert_activity_final "+jsonObject);
+				sendAlertActivity(alertName, applicationProperties, ticket);
 			}catch (Exception e) {
-				// TODO: handle exception
-//				e.printStackTrace();
-				logger.error("Exception in sending alert activity  : ",e);
+				logger.error("Exception in sending alert activity to kafka : ",e);
 			}
+			logger.info("End alert activity push to kafka");
 		}
+		
 		return ResponseEntity
-				.created(new URI("/api/tickets/" + result.getId())).headers(HeaderUtil
-						.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-				.body(result);
+				.created(new URI("/api/tickets/" + ticket.getId())).headers(HeaderUtil
+				.createEntityCreationAlert(applicationName, false, ENTITY_NAME, ticket.getId().toString()))
+				.body(ticket);
 	}
 
 	@GetMapping("/listAllTickets")
@@ -477,5 +434,71 @@ public class TicketController {
 		map.put("hoursList", hoursList);
 		map.put("numberOfTicketsList", numberOfTicketsList);
 		return map;
+	}
+	
+	private Ticket saveTicket(String type, String subject, String priority, String description, 
+			String tag, String assignedToUserType, String requesterUserType, Long requesterId, Long assignedToId,
+			String associatedEntityName, String associatedEntityId, String alertName) {
+		Ticket ticket=new Ticket();
+		ticket.setType(type);
+		ticket.setSubject(subject);
+		ticket.setDescription(description);
+		ticket.setPriority(priority);
+		ticket.setTag(tag);
+		ticket.setAssignedToUserType(assignedToUserType);
+		ticket.setRequesterUserType(requesterUserType);
+		ticket.setRequesterId(requesterId);
+		ticket.setAssignedToUserType(assignedToUserType);
+		ticket.setAssignedToId(assignedToId);
+		ticket.setAssociatedEntityName(associatedEntityName);
+		ticket.setAssociatedEntityId(associatedEntityId);
+		LocalDate date = LocalDate.now();
+		ticket.setCreatedOn(Instant.now());
+		ticket.expectedDateOfCompletion(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()).plusDays(10));
+		ticket.setStatus("Open");
+		ticket = ticketRepository.save(ticket);
+		logger.debug("Ticket saved successfully: "+ticket.toString());
+		return ticket;
+	}
+	
+	private TicketHistory saveTicketHistory(Ticket ticket) {
+		TicketHistory ticketHistory = new TicketHistory();
+		BeanUtils.copyProperties(ticket, ticketHistory);
+		ticketHistory.setOperationType("insert");
+		ticketHistory.setTicket(ticket);
+		ticketHistory = ticketHistoryRepository.save(ticketHistory);
+		logger.debug("TicketHistory saved successfully : " + ticketHistory.toString());
+		return ticketHistory;
+	}
+
+	
+	private void sendAlertActivity(String alertName, ApplicationProperties applicationProperties, Ticket ticket) throws JSONException {
+		String url = applicationProperties.getAlertSrvUrl()+"/api/getAlert/"+ticket.getAssociatedEntityId();
+		Alert alert = restTemplate.getForObject(url, Alert.class);
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("guid", ticket.getAssociatedEntityId());
+		jsonObject.put("name", alertName);
+		jsonObject.put("action","New ticket created");
+		jsonObject.put("action_description", "New ticket created. Ticket Id - "+ticket.getId());
+		jsonObject.put("created_on", alert.getCreatedOn().toEpochMilli());
+		jsonObject.put("updated_on", Instant.now().toEpochMilli());
+		jsonObject.put("alert_state", alert.getAlertState());
+		jsonObject.put("ticket_id", ticket.getId());
+		jsonObject.put("ticket_name", ticket.getSubject());
+		jsonObject.put("ticket_url", null);
+		jsonObject.put("ticket_description", "New ticket created for alert - "+alertName+"");
+		jsonObject.put("user_name", "Automated");
+		jsonObject.put("event_type", "update");
+		jsonObject.put("change_log", null);
+		jsonObject.put("fired_time", Instant.now().toEpochMilli());
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<Object> requestEntity = new HttpEntity<Object>(headers);
+		UriComponentsBuilder builder = UriComponentsBuilder
+				.fromUriString(applicationProperties.getKafkaSendDataUrl())
+				.queryParam("topic", applicationProperties.getAlertActivityKafaTopic()).queryParam("msg", jsonObject.toString());
+		restTemplate.exchange(builder.toUriString(), HttpMethod.GET, requestEntity, String.class);
+		logger.debug("Alert activity sent to kafka topic  "+applicationProperties.getAlertActivityKafaTopic()+". Alert activity: "+jsonObject);
 	}
 }
