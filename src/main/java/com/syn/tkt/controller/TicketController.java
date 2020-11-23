@@ -485,11 +485,11 @@ public class TicketController {
 		jsonObject.put("alert_state", alert.getAlertState());
 		jsonObject.put("ticket_id", ticket.getId());
 		jsonObject.put("ticket_name", ticket.getSubject());
-		jsonObject.put("ticket_url", null);
+		jsonObject.put("ticket_url", "");
 		jsonObject.put("ticket_description", "New ticket created for alert - "+alertName+"");
 		jsonObject.put("user_name", "Automated");
 		jsonObject.put("event_type", "update");
-		jsonObject.put("change_log", null);
+		jsonObject.put("change_log", "");
 		jsonObject.put("fired_time", Instant.now().toEpochMilli());
 		
 		HttpHeaders headers = new HttpHeaders();
