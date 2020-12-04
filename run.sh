@@ -1,1 +1,1 @@
-java -jar target/servicedesk-0.0.1-SNAPSHOT.jar > console.log &
+java -jar target/servicedesk-1.0.0-SNAPSHOT.jar > console.log &
