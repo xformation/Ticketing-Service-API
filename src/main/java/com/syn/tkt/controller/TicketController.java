@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +48,10 @@ import com.syn.tkt.repository.AgentRepository;
 import com.syn.tkt.repository.ContactRepository;
 import com.syn.tkt.repository.TicketHistoryRepository;
 import com.syn.tkt.repository.TicketRepository;
+import com.syn.tkt.service.dto.TicketDTO;
 
 import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 
 @RestController
 @RequestMapping("/api")
@@ -85,8 +88,45 @@ public class TicketController {
 	 *         the ticket has already an ID.
 	 * @throws URISyntaxException if the Location URI syntax is incorrect.
 	 */
+	
+	@PostMapping("/updateTicket")
+	public List<TicketUIObject> updateTicket(@RequestParam Long id,@RequestParam String type, @RequestParam String subject,
+			@RequestParam String priority, @RequestParam String description, @RequestParam String tag,
+			@RequestParam String assignedToUserType, @RequestParam String requesterUserType,
+			@RequestParam Long requesterId, @RequestParam Long assignedToId, @RequestParam String associatedEntityName,
+			@RequestParam String associatedEntityId, @RequestParam String alertName) throws URISyntaxException {
+
+		ApplicationProperties applicationProperties = ServicedeskApp.getBean(ApplicationProperties.class);
+		logger.info("Begin updating ticket ");
+		Ticket ticket = updateTicketData(id,type, subject, priority, description, tag, assignedToUserType, requesterUserType,
+				requesterId, assignedToId, associatedEntityName, associatedEntityId, alertName);
+		logger.info("End updating ticket ");
+
+		logger.info("Begin saving ticket history");
+		saveTicketHistory(ticket);
+		logger.info("End saving ticket history");
+		if (ticket.getAssociatedEntityName().equalsIgnoreCase("alert")) {
+			logger.info("Begin alert activity push to kafka");
+			try {
+				sendAlertActivity(alertName, applicationProperties, ticket);
+			} catch (Exception e) {
+				logger.error("Exception in sending alert activity to kafka : ", e);
+			}
+			logger.info("End alert activity push to kafka");
+		}
+		List<TicketUIObject> lst=null;
+		try {
+			lst=getTicketForUI("all");
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		
+		return lst;
+	}
+
 	@PostMapping("/addTicket")
-	public ResponseEntity<Ticket> createTicket(@RequestParam String type, @RequestParam String subject,
+	public ResponseEntity<List<TicketUIObject>> createTicket(@RequestParam String type, @RequestParam String subject,
 			@RequestParam String priority, @RequestParam String description, @RequestParam String tag,
 			@RequestParam String assignedToUserType, @RequestParam String requesterUserType,
 			@RequestParam Long requesterId, @RequestParam Long assignedToId, @RequestParam String associatedEntityName,
@@ -101,7 +141,6 @@ public class TicketController {
 		logger.info("Begin saving ticket history");
 		saveTicketHistory(ticket);
 		logger.info("End saving ticket history");
-
 		if (ticket.getAssociatedEntityName().equalsIgnoreCase("alert")) {
 			logger.info("Begin alert activity push to kafka");
 			try {
@@ -115,7 +154,7 @@ public class TicketController {
 		return ResponseEntity
 				.created(new URI("/api/tickets/" + ticket.getId())).headers(HeaderUtil
 						.createEntityCreationAlert(applicationName, false, ENTITY_NAME, ticket.getId().toString()))
-				.body(ticket);
+				.body(getTicketForUI("all"));
 	}
 
 	@GetMapping("/listAllTickets")
@@ -481,6 +520,32 @@ public class TicketController {
 		logger.debug("Ticket saved successfully: " + ticket.toString());
 		return ticket;
 	}
+	private Ticket updateTicketData(Long id,String type, String subject, String priority, String description, String tag,
+			String assignedToUserType, String requesterUserType, Long requesterId, Long assignedToId,
+			String associatedEntityName, String associatedEntityId, String alertName) {
+		Ticket ticket = new Ticket();
+		ticket.setId(id);
+		ticket.setType(type);
+		ticket.setSubject(subject);
+		ticket.setDescription(description);
+		ticket.setPriority(priority);
+		ticket.setTag(tag);
+		ticket.setAssignedToUserType(assignedToUserType);
+		ticket.setRequesterUserType(requesterUserType);
+		ticket.setRequesterId(requesterId);
+		ticket.setAssignedToUserType(assignedToUserType);
+		ticket.setAssignedToId(assignedToId);
+		ticket.setAssociatedEntityName(associatedEntityName);
+		ticket.setAssociatedEntityId(associatedEntityId);
+		LocalDate date = LocalDate.now();
+		ticket.setCreatedOn(Instant.now());
+		ticket.expectedDateOfCompletion(
+				LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()).plusDays(10));
+		ticket.setStatus("Open");
+		ticket = ticketRepository.save(ticket);
+		logger.debug("Ticket updated successfully: " + ticket.toString());
+		return ticket;
+	}
 
 	private TicketHistory saveTicketHistory(Ticket ticket) {
 		TicketHistory ticketHistory = new TicketHistory();
@@ -523,4 +588,10 @@ public class TicketController {
 		logger.debug("Alert activity sent to kafka topic  " + applicationProperties.getAlertActivityKafaTopic()
 				+ ". Alert activity: " + jsonObject);
 	}
+	@GetMapping("/getTicketById/{id}")
+    public Ticket getTicket(@PathVariable Long id) {
+//        log.debug("REST request to get Ticket : {}", id);
+        Ticket ticket=ticketRepository.findById(id).get();
+        return ticket;
+    }
 }
