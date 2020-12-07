@@ -121,7 +121,6 @@ public class TicketController {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
-		
 		return lst;
 	}
 
