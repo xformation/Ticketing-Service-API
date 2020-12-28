@@ -383,9 +383,9 @@ public class TicketController {
 			String assignedToName = null;
 			if (ticket2.getAssignedToUserType() != null && ticket2.getAssignedToId() != null) {
 				if (ticket2.getAssignedToUserType().equals("agent")) {
-					assignedToName = agentRepository.findById(assignedToId).get().getName();
+					assignedToName = agentRepository.findById(assignedToId).get().getPrimaryEmail();
 				} else if (ticket2.getAssignedToUserType().equals("contact")) {
-					assignedToName = contactRepository.findById(assignedToId).get().getUserName();
+					assignedToName = contactRepository.findById(assignedToId).get().getPrimaryEmail();
 				}
 			}
 			Map<String, Object> map = new HashMap<String, Object>();
