@@ -72,10 +72,11 @@ public class ContactController {
 	 * @throws URISyntaxException if the Location URI syntax is incorrect.
 	 */
 	@PostMapping("/addContact")
-	public ResponseEntity<Contact> createContact(@RequestParam MultipartFile contactPhoto, @RequestParam String fullName,
-			@RequestParam String title, @RequestParam(required = false) String primaryEmail,
-			@RequestParam(required = false) String alternateEmail, @RequestParam(required = false) String workPhone,
-			@RequestParam(required = false) String mobilePhone, @RequestParam(required = false) String twitterHandle,
+	public ResponseEntity<Contact> createContact(@RequestParam(required = false) MultipartFile contactPhoto,
+			@RequestParam String fullName, @RequestParam String title,
+			@RequestParam(required = false) String primaryEmail, @RequestParam(required = false) String alternateEmail,
+			@RequestParam(required = false) String workPhone, @RequestParam(required = false) String mobilePhone,
+			@RequestParam(required = false) String twitterHandle,
 			@RequestParam(required = false) String uniqueExternalId, @RequestParam(required = false) Long companyId,
 			@RequestParam(required = false) MultipartFile logo, @RequestParam(required = false) String companyName,
 			@RequestParam(required = false) String description, @RequestParam(required = false) String notes,
@@ -83,32 +84,32 @@ public class ContactController {
 			@RequestParam(required = false) String accountTier, @RequestParam(required = false) LocalDate renewalDate,
 			@RequestParam(required = false) String industry) throws URISyntaxException {
 		log.debug("REST request to save Contact : {}", title);
-		Contact result=null;
-		if(companyId==-1) {
+		Contact result = null;
+		if (companyId == -1) {
 			log.debug("REST request to save Company : {}", companyName);
-	        File file=new File(Constants.COMPANY_LOGO_FILE_PATH);
-			if(!file.exists()) {
+			File file = new File(Constants.COMPANY_LOGO_FILE_PATH);
+			if (!file.exists()) {
 				file.mkdirs();
 			}
-			Path path=Paths.get(Constants.COMPANY_LOGO_FILE_PATH,logo.getOriginalFilename());
+			Path path = Paths.get(Constants.COMPANY_LOGO_FILE_PATH, logo.getOriginalFilename());
 			try {
 				Files.write(path, logo.getBytes());
 			} catch (IOException e) {
-				log.error("IOException while creating company logo file. ",e);
+				log.error("IOException while creating company logo file. ", e);
 			}
-			
-			Company company=new Company();
-	        company.setCompanyName(companyName);
-	        company.setDescription(description);
-	        company.setNotes(notes);
-	        company.setDomain(domain);
-	        company.setHealthScore(healthScore);
-	        company.setAccountTier(accountTier);
-	        company.setRenewalDate(renewalDate);
-	        company.setIndustry(industry);
-	        company.setCompanyLogoFileName(logo.getOriginalFilename());
-	        company.setCompanyLogoFileLocation(Constants.COMPANY_LOGO_FILE_PATH);
-	        company = companyRepository.save(company);
+
+			Company company = new Company();
+			company.setCompanyName(companyName);
+			company.setDescription(description);
+			company.setNotes(notes);
+			company.setDomain(domain);
+			company.setHealthScore(healthScore);
+			company.setAccountTier(accountTier);
+			company.setRenewalDate(renewalDate);
+			company.setIndustry(industry);
+			company.setCompanyLogoFileName(logo.getOriginalFilename());
+			company.setCompanyLogoFileLocation(Constants.COMPANY_LOGO_FILE_PATH);
+			company = companyRepository.save(company);
 			Contact contact = new Contact();
 			contact.setUserName(fullName);
 			contact.setTitle(title);
@@ -125,7 +126,7 @@ public class ContactController {
 				throw new BadRequestAlertException("A new contact cannot already have an ID", ENTITY_NAME, "idexists");
 			}
 			result = contactRepository.save(contact);
-		}else {
+		} else {
 			File file = new File(Constants.CONTACT_PHOTO_FILE_PATH);
 			if (!file.exists()) {
 				file.mkdirs();
@@ -137,8 +138,13 @@ public class ContactController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			Company company = companyRepository.findById(companyId).get();
-
+			Company company = null;
+			try {
+				company = companyRepository.findById(companyId).get();
+			} catch (Exception e) {
+				// TODO: handle exception
+				System.out.println(e);
+			}
 			Contact contact = new Contact();
 			contact.setUserName(fullName);
 			contact.setTitle(title);
@@ -161,13 +167,14 @@ public class ContactController {
 						.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
 				.body(result);
 	}
+
 	@GetMapping("/contactWithCompanyName")
-	public List<ContactCompanyVo> contactWithCompanyName(){
-		
-		List<Contact> listContacts=contactRepository.findAll();
-		List<ContactCompanyVo> jsonList=new ArrayList<ContactCompanyVo>();
-		for(Contact contact : listContacts) {
-			ContactCompanyVo obj=new ContactCompanyVo();
+	public List<ContactCompanyVo> contactWithCompanyName() {
+
+		List<Contact> listContacts = contactRepository.findAll();
+		List<ContactCompanyVo> jsonList = new ArrayList<ContactCompanyVo>();
+		for (Contact contact : listContacts) {
+			ContactCompanyVo obj = new ContactCompanyVo();
 			obj.setTitle(contact.getTitle());
 			obj.setCompany(contact.getCompany().getCompanyName());
 			obj.setPrimaryEmail(contact.getPrimaryEmail());
@@ -178,7 +185,7 @@ public class ContactController {
 			jsonList.add(obj);
 		}
 		return jsonList;
-		
+
 	}
 
 	/**

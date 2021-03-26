@@ -1,3 +1,15 @@
+
+
+
+
+
+
+
+
+
+
+
+
 package com.syn.tkt.controller;
 
 import java.io.File;
@@ -96,7 +108,7 @@ public class AgentController {
 	}
 
 	@PostMapping("/addAgent")
-	public ResponseEntity<Agent> createContact(@RequestParam MultipartFile contactPhoto, @RequestParam String fullName,
+	public ResponseEntity<Agent> createContact(@RequestParam(required = false) MultipartFile contactPhoto, @RequestParam String fullName,
 			@RequestParam String title, @RequestParam(required = false) String primaryEmail,
 			@RequestParam(required = false) String alternateEmail, @RequestParam(required = false) String workPhone,
 			@RequestParam(required = false) String mobilePhone, @RequestParam(required = false) String twitterHandle,

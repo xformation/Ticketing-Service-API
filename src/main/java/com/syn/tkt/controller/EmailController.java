@@ -62,7 +62,7 @@ public class EmailController {
 			@RequestParam String subject, @RequestParam String description, @RequestParam String priority,
 			@RequestParam String status, @RequestParam String tags, @RequestParam Long ticketId)
 			throws URISyntaxException {
-		Email email = new Email();
+ 		Email email = new Email();
 		email.setMailFrom(from);
 		email.setMailTo(to);
 		email.setStatus(status);
