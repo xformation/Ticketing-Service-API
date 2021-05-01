@@ -1,17 +1,26 @@
 package com.syn.tkt.controller;
 
+import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
+import org.graylog2.gelfclient.GelfConfiguration;
+import org.graylog2.gelfclient.GelfMessage;
+import org.graylog2.gelfclient.GelfMessageBuilder;
+import org.graylog2.gelfclient.GelfMessageLevel;
+import org.graylog2.gelfclient.GelfTransports;
+import org.graylog2.gelfclient.transport.GelfTransport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -48,10 +57,8 @@ import com.syn.tkt.repository.AgentRepository;
 import com.syn.tkt.repository.ContactRepository;
 import com.syn.tkt.repository.TicketHistoryRepository;
 import com.syn.tkt.repository.TicketRepository;
-import com.syn.tkt.service.dto.TicketDTO;
 
 import io.github.jhipster.web.util.HeaderUtil;
-import io.github.jhipster.web.util.ResponseUtil;
 
 @RestController
 @RequestMapping("/api")
@@ -79,6 +86,9 @@ public class TicketController {
 	@Autowired
 	RestTemplate restTemplate;
 
+	@Autowired
+	GelfTransport gelfTransport;
+	
 	/**
 	 * {@code POST  /tickets} : Create a new ticket.
 	 *
@@ -108,7 +118,7 @@ public class TicketController {
 		if (ticket.getAssociatedEntityName().equalsIgnoreCase("alert")) {
 			logger.info("Begin alert activity push to kafka");
 			try {
-				sendAlertActivity(alertName, applicationProperties, ticket);
+				sendAlertActivityToKafka(alertName, applicationProperties, ticket);
 			} catch (Exception e) {
 				logger.error("Exception in sending alert activity to kafka : ", e);
 			}
@@ -129,7 +139,8 @@ public class TicketController {
 			@RequestParam String priority, @RequestParam String description, @RequestParam String tag,
 			@RequestParam String assignedToUserType, @RequestParam String requesterUserType,
 			@RequestParam Long requesterId, @RequestParam Long assignedToId, @RequestParam String associatedEntityName,
-			@RequestParam String associatedEntityId, @RequestParam String alertName) throws URISyntaxException {
+			@RequestParam String associatedEntityId, @RequestParam String alertName,
+			@RequestParam String alertState, @RequestParam Long createdOn) throws URISyntaxException {
 
 		ApplicationProperties applicationProperties = ServicedeskApp.getBean(ApplicationProperties.class);
 		logger.info("Begin saving ticket ");
@@ -141,13 +152,19 @@ public class TicketController {
 		saveTicketHistory(ticket);
 		logger.info("End saving ticket history");
 		if (ticket.getAssociatedEntityName().equalsIgnoreCase("alert")) {
-			logger.info("Begin alert activity push to kafka");
+			logger.info("Begin alert activity GELF message transfer to alert manager");
 			try {
-				sendAlertActivity(alertName, applicationProperties, ticket);
+				Instant i = Instant.now();
+				LocalDateTime datetime = LocalDateTime.ofInstant(i, ZoneOffset.UTC);
+				String formattedDate = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss").format(datetime);
+//				System.out.println(formattedDate);
+				
+				JSONObject jsonObj = createAlertActivityObject(alertName, ticket, alertState, createdOn, formattedDate);
+				sendAlertActivityAsGelfMessage(jsonObj, applicationProperties, formattedDate);
 			} catch (Exception e) {
-				logger.error("Exception in sending alert activity to kafka : ", e);
+				logger.error("Exception in GELF message transter : ", e);
 			}
-			logger.info("End alert activity push to kafka");
+			logger.info("End alert activity GELF message transfer to alert manager");
 		}
 
 		return ResponseEntity
@@ -556,7 +573,7 @@ public class TicketController {
 		return ticketHistory;
 	}
 
-	private void sendAlertActivity(String alertName, ApplicationProperties applicationProperties, Ticket ticket)
+	private void sendAlertActivityToKafka(String alertName, ApplicationProperties applicationProperties, Ticket ticket)
 			throws JSONException {
 		String url = applicationProperties.getAlertSrvUrl() + "/api/getAlert/" + ticket.getAssociatedEntityId();
 		Alert alert = restTemplate.getForObject(url, Alert.class);
@@ -587,10 +604,44 @@ public class TicketController {
 		logger.debug("Alert activity sent to kafka topic  " + applicationProperties.getAlertActivityKafaTopic()
 				+ ". Alert activity: " + jsonObject);
 	}
+	
 	@GetMapping("/getTicketById/{id}")
     public Ticket getTicket(@PathVariable Long id) {
 //        log.debug("REST request to get Ticket : {}", id);
         Ticket ticket=ticketRepository.findById(id).get();
         return ticket;
     }
+	
+	public void sendAlertActivityAsGelfMessage(JSONObject jsonObject, ApplicationProperties applicationProperties, String formattedDate) throws InterruptedException {
+		logger.info("Sending alert activity GELF message to alert manager. Activity object : "+jsonObject.toString());
+		String json = formattedDate+" "+jsonObject.toString();
+		logger.info("Activity json : "+json);
+		final GelfMessageBuilder builder = new GelfMessageBuilder(json, applicationProperties
+				.getGelfTcpHost())
+                .level(GelfMessageLevel.INFO);
+		
+		final GelfMessage message = builder.build();
+		gelfTransport.send(message);
+	}
+	
+	private JSONObject createAlertActivityObject(String alertName, Ticket ticket, String alertState, Long createdOn, String formattedDate) throws JSONException {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("guid", ticket.getAssociatedEntityId());
+		jsonObject.put("name", alertName);
+		jsonObject.put("action", "New ticket created");
+		jsonObject.put("action_description", "New ticket created. Ticket Id - " + ticket.getId());
+		jsonObject.put("created_on", createdOn);
+		jsonObject.put("updated_on", Instant.now().toEpochMilli());
+		jsonObject.put("alert_state", alertState);
+		jsonObject.put("ticket_id", ticket.getId());
+		jsonObject.put("ticket_name", ticket.getSubject());
+		jsonObject.put("ticket_url", "");
+		jsonObject.put("ticket_description", "New ticket created for alert - " + alertName + "");
+		jsonObject.put("user_name", "Automated");
+		jsonObject.put("event_type", "Update");
+		jsonObject.put("change_log", "");
+		jsonObject.put("fired_time", formattedDate);
+		return jsonObject;
+	}
+	
 }

@@ -14,6 +14,9 @@ public class ApplicationProperties {
 	private String host;
 	private String alertSrvUrl;
 	private String alertActivityKafaTopic;
+	private String alertActivityUrl;
+	private String gelfTcpHost;
+	private String alertActivityGelfTcpPort;
 	
 	public String getKafkaSendDataUrl() {
 		return kafkaSendDataUrl;
@@ -45,6 +48,30 @@ public class ApplicationProperties {
 
 	public void setAlertActivityKafaTopic(String alertActivityKafaTopic) {
 		this.alertActivityKafaTopic = alertActivityKafaTopic;
+	}
+
+	public String getAlertActivityUrl() {
+		return alertActivityUrl;
+	}
+
+	public void setAlertActivityUrl(String alertActivityUrl) {
+		this.alertActivityUrl = alertActivityUrl;
+	}
+
+	public String getGelfTcpHost() {
+		return gelfTcpHost;
+	}
+
+	public void setGelfTcpHost(String gelfTcpHost) {
+		this.gelfTcpHost = gelfTcpHost;
+	}
+
+	public String getAlertActivityGelfTcpPort() {
+		return alertActivityGelfTcpPort;
+	}
+
+	public void setAlertActivityGelfTcpPort(String alertActivityGelfTcpPort) {
+		this.alertActivityGelfTcpPort = alertActivityGelfTcpPort;
 	}
 
 	

@@ -128,5 +128,8 @@ application:
 #    host: http://100.64.108.25
     host: http://localhost
     kafkaSendDataUrl: "http://100.64.108.25:8190/kafka/send"
+    alertActivityUrl: "http://localhost:3000/api/alert-notifications/sendAlertActivity"
     alertSrvUrl: http://100.64.108.25:5055
     alertActivityKafaTopic: alert_activity
+    gelfTcpHost: "100.64.108.25"
+    alertActivityGelfTcpPort: "12202"

@@ -15,9 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,46 +83,49 @@ public class CompanyController {
 	 * @throws URISyntaxException if the Location URI syntax is incorrect.
 	 */
 	@PostMapping("/addCompany")
-	public ResponseEntity<Company> addCompany(@RequestParam(required = false) MultipartFile companyLogo,
-			@RequestParam String companyName, @RequestParam String description, @RequestParam String notes,
-			@RequestParam String domain, @RequestParam String healthScore, @RequestParam String accountTier,
-			@RequestParam(required = false) LocalDate renewalDate, @RequestParam String industry)
-			throws URISyntaxException {
-		log.debug("REST request to save Company : {}", companyName);
-		try {
-			File file = new File(Constants.COMPANY_LOGO_FILE_PATH);
-			if (!file.exists()) {
-				file.mkdirs();
-			}
-			Path path = Paths.get(Constants.COMPANY_LOGO_FILE_PATH, companyLogo.getOriginalFilename());
-			try {
-				Files.write(path, companyLogo.getBytes());
-			} catch (IOException e) {
-				log.error("IOException while creating company logo file. ", e);
-			}
-
-			Company company = new Company();
-			company.setCompanyName(companyName);
-			company.setDescription(description);
-			company.setNotes(notes);
-			company.setDomain(domain);
-			company.setHealthScore(healthScore);
-			company.setAccountTier(accountTier);
-			company.setRenewalDate(renewalDate);
-			company.setIndustry(industry);
-			company.setCompanyLogoFileName(companyLogo.getOriginalFilename());
-			company.setCompanyLogoFileLocation(Constants.COMPANY_LOGO_FILE_PATH);
-			Company result = companyRepository.save(company);
-
-			return ResponseEntity
-					.created(new URI("/api/company/" + result.getId())).headers(HeaderUtil
-							.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-					.body(result);
-		} catch (Exception e) {
-			// TODO: handle exception
-			return new ResponseEntity<Company>(HttpStatus.BAD_REQUEST);
+	public ResponseEntity<Company> addCompany(@RequestParam(required = false) MultipartFile logo, @RequestParam String companyName,
+			@RequestParam String description, @RequestParam String notes, @RequestParam String domain,
+			@RequestParam String healthScore, @RequestParam String accountTier, @RequestParam(required = false) LocalDate renewalDate,
+			@RequestParam String industry) throws URISyntaxException {
+        	log.debug("REST request to save Company : {}", companyName);
+        	
+        	Company company=new Company();
+        	try {
+	        	if(logo != null) {
+	        		File file=new File(Constants.COMPANY_LOGO_FILE_PATH);
+	    			if(!file.exists()) {
+	    				file.mkdirs();
+	    			}
+	    			Path path=Paths.get(Constants.COMPANY_LOGO_FILE_PATH,logo.getOriginalFilename());
+	    			try {
+	    				Files.write(path, logo.getBytes());
+	    			} catch (IOException e) {
+	    				log.error("IOException while creating company logo file. ",e);
+	    			}
+	    			company.setCompanyLogoFileName(logo.getOriginalFilename());
+	        	}
+	        
+				company.setCompanyName(companyName);
+		        company.setDescription(description);
+		        company.setNotes(notes);
+		        company.setDomain(domain);
+		        company.setHealthScore(healthScore);
+		        company.setAccountTier(accountTier);
+		        company.setRenewalDate(renewalDate);
+		        company.setIndustry(industry);
+		        
+		        
+		        company.setCompanyLogoFileLocation(Constants.COMPANY_LOGO_FILE_PATH);
+		        Company result = companyRepository.save(company);
+		       
+		        return ResponseEntity.created(new URI("/api/company/" + result.getId()))
+		            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+		            .body(result);
+        }catch (Exception e) {
+			log.error("Exception : ",e);
+        	return new ResponseEntity<Company>(HttpStatus.BAD_REQUEST);
 		}
-	}
+    }
 
 	/**
 	 * {@code PUT  /company} : Updates an existing company.
