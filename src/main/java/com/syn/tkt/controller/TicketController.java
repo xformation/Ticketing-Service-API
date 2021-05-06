@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.graylog2.gelfclient.GelfConfiguration;
 import org.graylog2.gelfclient.GelfMessage;
 import org.graylog2.gelfclient.GelfMessageBuilder;
@@ -138,14 +139,14 @@ public class TicketController {
 	public ResponseEntity<List<TicketUIObject>> createTicket(@RequestParam String type, @RequestParam String subject,
 			@RequestParam String priority, @RequestParam String description, @RequestParam String tag,
 			@RequestParam String assignedToUserType, @RequestParam String requesterUserType,
-			@RequestParam Long requesterId, @RequestParam Long assignedToId, @RequestParam String associatedEntityName,
-			@RequestParam String associatedEntityId, @RequestParam String alertName,
-			@RequestParam String alertState, @RequestParam Long createdOn) throws URISyntaxException {
+			@RequestParam Long requesterId, @RequestParam Long assignedToId, @RequestParam(required = false) String associatedEntityName,
+			@RequestParam(required = false) String associatedEntityId, @RequestParam(required = false) String alertName,
+			@RequestParam(required = false) String alertState, @RequestParam(required = false) Long createdOn) throws URISyntaxException {
 
 		ApplicationProperties applicationProperties = ServicedeskApp.getBean(ApplicationProperties.class);
 		logger.info("Begin saving ticket ");
 		Ticket ticket = saveTicket(type, subject, priority, description, tag, assignedToUserType, requesterUserType,
-				requesterId, assignedToId, associatedEntityName, associatedEntityId, alertName);
+				requesterId, assignedToId, associatedEntityName, associatedEntityId);
 		logger.info("End saving ticket ");
 
 		logger.info("Begin saving ticket history");
@@ -158,9 +159,12 @@ public class TicketController {
 				LocalDateTime datetime = LocalDateTime.ofInstant(i, ZoneOffset.UTC);
 				String formattedDate = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss").format(datetime);
 //				System.out.println(formattedDate);
+				if(StringUtils.isBlank(alertState)) {
+//					logger.info("Sending alert activity as GELF message");
+					JSONObject jsonObj = createAlertActivityObject(alertName, ticket, alertState, createdOn, formattedDate);
+					sendAlertActivityAsGelfMessage(jsonObj, applicationProperties, formattedDate);
+				}
 				
-				JSONObject jsonObj = createAlertActivityObject(alertName, ticket, alertState, createdOn, formattedDate);
-				sendAlertActivityAsGelfMessage(jsonObj, applicationProperties, formattedDate);
 			} catch (Exception e) {
 				logger.error("Exception in GELF message transter : ", e);
 			}
@@ -513,7 +517,7 @@ public class TicketController {
 
 	private Ticket saveTicket(String type, String subject, String priority, String description, String tag,
 			String assignedToUserType, String requesterUserType, Long requesterId, Long assignedToId,
-			String associatedEntityName, String associatedEntityId, String alertName) {
+			String associatedEntityName, String associatedEntityId) {
 		Ticket ticket = new Ticket();
 		ticket.setType(type);
 		ticket.setSubject(subject);
