@@ -43,7 +43,7 @@ spring:
 #    url: jdbc:postgresql://localhost:5432/servicedesk
     username: postgres
 #    password: postgres
-    password: P0$tGr3$&s3qua1$n3t!k5    
+    password: P0$tGr3$&s3qua1$n3t!k5
     hikari:
       poolName: Hikari
       auto-commit: false
