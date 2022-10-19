@@ -132,5 +132,5 @@ application:
     alertActivityUrl: "http://34.199.12.114:3000/api/alert-notifications/sendAlertActivity"
     alertSrvUrl: http://34.199.12.114:5055
     alertActivityKafaTopic: alert_activity
-    gelfTcpHost: "34.199.12.114"
+    gelfTcpHost: "127.0.0.1"
     alertActivityGelfTcpPort: "12202"
