@@ -1,13 +1,13 @@
 {
   "generator-jhipster": {
     "promptValues": {
-      "packageName": "com.syn.tkt"
+      "packageName": "com.synectiks.tkt"
     },
     "jhipsterVersion": "6.9.1",
     "applicationType": "microservice",
     "baseName": "servicedesk",
-    "packageName": "com.syn.tkt",
-    "packageFolder": "com/syn/tkt",
+    "packageName": "com.synectiks.tkt",
+    "packageFolder": "com/synectiks/tkt",
     "serverPort": "7011",
     "authenticationType": "jwt",
     "cacheProvider": "no",

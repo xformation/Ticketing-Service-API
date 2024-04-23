@@ -4,11 +4,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.syn.tkt</groupId>
-	<artifactId>servicedesk</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<groupId>com.synectiks.tkt</groupId>
+	<artifactId>ticketing-service-api</artifactId>
+	<version>${build.revision}</version>
 	<packaging>jar</packaging>
-	<name>Servicedesk</name>
+<!--	<name>Servicedesk</name>-->
 
 	<repositories>
 		<!-- jhipster-needle-maven-repository -->
@@ -22,6 +22,7 @@
 
 	<properties>
 		<!-- Build properties -->
+        <build.revision>0.0.1-SNAPSHOT</build.revision>
 		<maven.version>3.3.9</maven.version>
 		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -52,7 +53,7 @@
 		<validation-api.version>2.0.1.Final</validation-api.version>
 		<jaxb-runtime.version>2.3.3</jaxb-runtime.version>
 		<archunit-junit5.version>0.14.1</archunit-junit5.version>
-		<mapstruct.version>1.3.1.Final</mapstruct.version>
+		<mapstruct.version>1.5.3.Final</mapstruct.version>
 		<!-- Plugin versions -->
 		<maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -79,6 +80,7 @@
 		<jacoco.itReportFile>${jacoco.itReportFolder}/integrationTest.exec</jacoco.itReportFile>
 		<junit.utReportFolder>${project.testresult.directory}/test</junit.utReportFolder>
 		<junit.itReportFolder>${project.testresult.directory}/integrationTest</junit.itReportFolder>
+        <lombok.version>1.18.20</lombok.version>
 		<!-- jhipster-needle-maven-property -->
 	</properties>
 
@@ -110,6 +112,29 @@
 			<artifactId>javax.annotation-api</artifactId>
 		</dependency>
 
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20230227</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <version>0.2.0</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-csv</artifactId>
+            <version>2.13.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.13.0</version>
+        </dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.module</groupId>
 			<artifactId>jackson-module-jaxb-annotations</artifactId>
@@ -178,11 +203,13 @@
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct-processor</artifactId>
-			<scope>provided</scope>
+            <version>${mapstruct.version}</version>
+<!--			<scope>provided</scope>-->
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -259,7 +286,7 @@
 			<version>${archunit-junit5.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- Adding the engine dependency to the surefire-plugin unfortunately 
+		<!-- Adding the engine dependency to the surefire-plugin unfortunately
 			does not work in the current version. -->
 		<!-- https://www.archunit.org/userguide/html/000_Index.html#_junit_5 -->
 		<dependency>
@@ -452,6 +479,16 @@
 								<artifactId>jaxb-runtime</artifactId>
 								<version>${jaxb-runtime.version}</version>
 							</path>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </path>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok-mapstruct-binding</artifactId>
+                                <version>0.2.0</version>
+                            </path>
 							<!-- jhipster-needle-maven-add-annotation-processor -->
 						</annotationProcessorPaths>
 					</configuration>
@@ -538,7 +575,7 @@
 								<destFile>${jacoco.utReportFile}</destFile>
 							</configuration>
 						</execution>
-						<!-- Ensures that the code coverage report for unit tests is created 
+						<!-- Ensures that the code coverage report for unit tests is created
 							after unit tests have been run -->
 						<execution>
 							<id>post-unit-test</id>
@@ -561,7 +598,7 @@
 								<destFile>${jacoco.itReportFile}</destFile>
 							</configuration>
 						</execution>
-						<!-- Ensures that the code coverage report for integration tests is 
+						<!-- Ensures that the code coverage report for integration tests is
 							created after integration tests have been run -->
 						<execution>
 							<id>post-integration-tests</id>
@@ -585,7 +622,7 @@
 							<image>adoptopenjdk:11-jre-hotspot</image>
 						</from>
 						<to>
-							<image>servicedesk:latest</image>
+							<image>ticketing-service-api:latest</image>
 						</to>
 						<container>
 							<entrypoint>
@@ -621,11 +658,11 @@
 						<changeLogFile>${project.basedir}/src/main/resources/config/liquibase/master.xml</changeLogFile>
 						<diffChangeLogFile>${project.basedir}/src/main/resources/config/liquibase/changelog/${maven.build.timestamp}_changelog.xml</diffChangeLogFile>
 						<driver>org.postgresql.Driver</driver>
-						<url>jdbc:postgresql://localhost:5432/servicedesk</url>
+						<url>jdbc:postgresql://localhost:5432/ticketing-service-api</url>
 						<defaultSchemaName></defaultSchemaName>
-						<username>servicedesk</username>
+						<username>ticketing-service-api</username>
 						<password></password>
-						<referenceUrl>hibernate:spring:com.syn.tkt.domain?dialect=io.github.jhipster.domain.util.FixedPostgreSQL10Dialect&amp;hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&amp;hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy</referenceUrl>
+						<referenceUrl>hibernate:spring:com.synectiks.tkt.domain?dialect=io.github.jhipster.domain.util.FixedPostgreSQL10Dialect&amp;hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&amp;hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy</referenceUrl>
 						<verbose>true</verbose>
 						<logging>debug</logging>
 						<contexts>!test</contexts>
@@ -779,7 +816,7 @@
 					<artifactId>maven-failsafe-plugin</artifactId>
 					<version>${maven-failsafe-plugin.version}</version>
 					<configuration>
-						<!-- Due to spring-boot repackage, without adding this property test 
+						<!-- Due to spring-boot repackage, without adding this property test
 							classes are not found See https://github.com/spring-projects/spring-boot/issues/6254 -->
 						<classesDirectory>${project.build.outputDirectory}</classesDirectory>
 						<!-- Force alphabetical order to have a reproducible build -->
@@ -824,7 +861,7 @@
 					<configuration>
 						<mainClass>${start-class}</mainClass>
 						<fork>true</fork>
-						<!-- Enable the line below to have remote debugging of your application 
+						<!-- Enable the line below to have remote debugging of your application
 							on port 5005 <jvmArguments>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</jvmArguments> -->
 					</configuration>
 
@@ -937,8 +974,8 @@
 			</dependencies>
 		</profile>
 		<profile>
-			<!-- Profile for applying IDE-specific configuration. At the moment it 
-				configures MapStruct and Hibernate JPA Metamodel Generator, which you need 
+			<!-- Profile for applying IDE-specific configuration. At the moment it
+				configures MapStruct and Hibernate JPA Metamodel Generator, which you need
 				when working with DTOs and entity filtering. -->
 			<id>IDE</id>
 			<dependencies>
@@ -970,8 +1007,8 @@
 			<build>
 				<pluginManagement>
 					<plugins>
-						<!-- This plugin's configuration is used to store Eclipse m2e settings 
-							only. It has no influence on the Maven build itself. Remove when the m2e 
+						<!-- This plugin's configuration is used to store Eclipse m2e settings
+							only. It has no influence on the Maven build itself. Remove when the m2e
 							plugin can correctly bind to Maven lifecycle -->
 						<plugin>
 							<groupId>org.eclipse.m2e</groupId>
